@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Carátula — Informática Aplicada a la Gestión</title>
+<style>
+  @page { margin: 0; size: A4; }
+  html, body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, Helvetica, sans-serif;
+  }
+  .hoja {
+    width: 210mm;
+    height: 297mm;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(160deg, #BDE0FE 0%, #E8F5E9 55%, #FFF8E1 100%);
+    box-sizing: border-box;
+  }
+  .contenido {
+    text-align: center;
+    padding: 40px;
+  }
+  .escudo {
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background: #1B4965;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 26px;
+    font-weight: bold;
+    margin-bottom: 18px;
+    box-shadow: 0 3px 10px rgba(27,73,101,0.25);
+  }
+  .escuela {
+    font-size: 14px;
+    color: #37474F;
+    letter-spacing: 0.5px;
+    margin: 0 0 4px 0;
+    text-transform: uppercase;
+  }
+  .curso {
+    font-size: 13px;
+    color: #607D8B;
+    margin: 0 0 30px 0;
+  }
+  .materia {
+    font-size: 34px;
+    font-weight: bold;
+    color: #1B4965;
+    margin: 0 0 6px 0;
+    line-height: 1.2;
+  }
+  .subtitulo {
+    font-size: 15px;
+    color: #455A64;
+    margin: 0 0 34px 0;
+  }
+  .card-qr {
+    background: white;
+    border-radius: 16px;
+    padding: 28px 32px;
+    box-shadow: 0 6px 24px rgba(27,73,101,0.15);
+    display: inline-block;
+  }
+  .card-qr img {
+    width: 220px;
+    height: 220px;
+    display: block;
+  }
+  .url {
+    margin-top: 14px;
+    font-size: 15px;
+    font-weight: bold;
+    color: #1B4965;
+    letter-spacing: 0.3px;
+  }
+  .indicacion {
+    margin-top: 10px;
+    font-size: 12px;
+    color: #78909C;
+  }
+  .footer-caratula {
+    margin-top: 40px;
+    font-size: 12.5px;
+    color: #546E7A;
+  }
+  .footer-caratula strong { color: #1B4965; }
+  .linea {
+    width: 60px;
+    height: 3px;
+    background: #FFB74D;
+    border-radius: 2px;
+    margin: 22px 0;
+  }
+</style>
+</head>
+<body>
+<div class="hoja">
+<div class="contenido">
+
+  <div class="escudo">SB</div>
+  <p class="escuela">Esc. N° 4-084 &mdash; "Libertador Simón Bolívar"</p>
+  <p class="curso">3° 1° &middot; Bachiller de Economía</p>
+
+  <h1 class="materia">Informática Aplicada<br>a la Gestión</h1>
+  <p class="subtitulo">Carpeta digital</p>
+
+  <div class="card-qr">
+    <img src="qr_informatica31simon.png" alt="Código QR de acceso a la carpeta digital">
+    <p class="url">informatica31simon.vercel.app</p>
+    <p class="indicacion">Escaneá el código para acceder</p>
+  </div>
+
+  <div class="linea"></div>
+
+  <p class="footer-caratula"><strong>Profesor:</strong> Humberto Montaldi</p>
+
+</div>
+</div>
+</body>
+</html>
