@@ -16,96 +16,110 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(160deg, #BDE0FE 0%, #E8F5E9 55%, #FFF8E1 100%);
+    background: linear-gradient(160deg, #F5EFE3 0%, #FBF6ED 50%, #F8ECEA 100%);
     box-sizing: border-box;
+    position: relative;
+  }
+  .marco {
+    position: absolute;
+    top: 30px; left: 30px; right: 30px; bottom: 30px;
+    border: 3px solid #CDA957;
+    border-radius: 24px;
+    opacity: 0.55;
+  }
+  .marco-interno {
+    position: absolute;
+    top: 42px; left: 42px; right: 42px; bottom: 42px;
+    border: 1px solid #7A9CBB;
+    border-radius: 18px;
+    opacity: 0.5;
   }
   .contenido {
     text-align: center;
     padding: 40px;
+    width: 100%;
   }
-  .escudo {
-    width: 70px;
-    height: 70px;
-    border-radius: 50%;
-    background: #1B4965;
-    color: white;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 26px;
-    font-weight: bold;
-    margin-bottom: 18px;
-    box-shadow: 0 3px 10px rgba(27,73,101,0.25);
+  .logo-escudo {
+    width: 230px;
+    height: auto;
+    margin: 0 auto 26px auto;
+    display: block;
+    filter: drop-shadow(0 8px 18px rgba(23,36,48,0.18));
   }
   .escuela {
-    font-size: 14px;
-    color: #37474F;
-    letter-spacing: 0.5px;
-    margin: 0 0 4px 0;
+    font-size: 24px;
+    color: #182430;
+    letter-spacing: 0.8px;
+    margin: 0 0 8px 0;
     text-transform: uppercase;
+    font-weight: bold;
   }
   .curso {
-    font-size: 13px;
-    color: #607D8B;
-    margin: 0 0 30px 0;
+    font-size: 21px;
+    color: #7A9CBB;
+    margin: 0 0 46px 0;
   }
   .materia {
-    font-size: 34px;
+    font-size: 60px;
     font-weight: bold;
-    color: #1B4965;
-    margin: 0 0 6px 0;
-    line-height: 1.2;
+    color: #182430;
+    margin: 0 0 12px 0;
+    line-height: 1.18;
   }
   .subtitulo {
-    font-size: 15px;
-    color: #455A64;
-    margin: 0 0 34px 0;
+    font-size: 26px;
+    color: #B96B72;
+    margin: 0 0 54px 0;
   }
   .card-qr {
     background: white;
-    border-radius: 16px;
-    padding: 28px 32px;
-    box-shadow: 0 6px 24px rgba(27,73,101,0.15);
+    border: 1px solid #EAD9B0;
+    border-radius: 26px;
+    padding: 46px 56px;
+    box-shadow: 0 14px 40px rgba(205,169,87,0.22);
     display: inline-block;
   }
   .card-qr img {
-    width: 220px;
-    height: 220px;
+    width: 340px;
+    height: 340px;
     display: block;
+    margin: 0 auto;
   }
   .url {
-    margin-top: 14px;
-    font-size: 15px;
+    margin-top: 24px;
+    font-size: 26px;
     font-weight: bold;
-    color: #1B4965;
-    letter-spacing: 0.3px;
+    color: #182430;
+    letter-spacing: 0.4px;
   }
   .indicacion {
-    margin-top: 10px;
-    font-size: 12px;
-    color: #78909C;
+    margin-top: 12px;
+    font-size: 17px;
+    color: #7A9CBB;
   }
   .footer-caratula {
-    margin-top: 40px;
-    font-size: 12.5px;
-    color: #546E7A;
+    margin-top: 54px;
+    font-size: 21px;
+    color: #182430;
   }
-  .footer-caratula strong { color: #1B4965; }
+  .footer-caratula strong { color: #B96B72; }
   .linea {
-    width: 60px;
-    height: 3px;
-    background: #FFB74D;
+    width: 100px;
+    height: 4px;
+    background: #CDA957;
     border-radius: 2px;
-    margin: 22px 0;
+    margin: 36px auto;
   }
 </style>
 </head>
 <body>
 <div class="hoja">
+<div class="marco"></div>
+<div class="marco-interno"></div>
 <div class="contenido">
 
-  <div class="escudo">SB</div>
-  <p class="escuela">Esc. N° 4-084 &mdash; "Libertador Simón Bolívar"</p>
+  <img class="logo-escudo" src="logo_sb_recortado.png" alt="Escudo Escuela N° 4-084 Libertador Simón Bolívar">
+  <p class="escuela">Escuela N° 4-084</p>
   <p class="curso">3° 1° &middot; Bachiller de Economía</p>
 
   <h1 class="materia">Informática Aplicada<br>a la Gestión</h1>
