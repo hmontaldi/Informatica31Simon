@@ -1,0 +1,174 @@
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #263238;
+  line-height: 1.5;
+  margin: 0;
+  background: #FAFCFF;
+}
+.wrap { max-width: 900px; margin: 0 auto; padding: 24px 20px 60px; }
+.portada {
+  background: linear-gradient(135deg, #BDE0FE, #E8F5E9);
+  padding: 36px 32px;
+  border-radius: 10px;
+  margin-bottom: 24px;
+}
+.portada h1 { color: #1B4965; font-size: 26px; margin: 0 0 8px 0; }
+.portada p.subtitulo { color: #37474F; font-size: 14.5px; margin: 2px 0; }
+.etiqueta {
+  display: inline-block;
+  background: #FFE8B3;
+  color: #7A5B00;
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+.topnav {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+  font-size: 13.5px;
+}
+.topnav a { color: #1B4965; text-decoration: none; font-weight: bold; }
+.topnav a:hover { text-decoration: underline; }
+h2 {
+  color: #1B4965;
+  font-size: 19px;
+  border-bottom: 2px solid #BDE0FE;
+  padding-bottom: 6px;
+  margin-top: 30px;
+}
+h3 { color: #2E7D32; font-size: 15px; margin: 18px 0 4px 0; }
+ul { margin: 6px 0 0 0; padding-left: 22px; }
+li { margin-bottom: 4px; }
+.archivo {
+  display: inline-block;
+  background: #E8F5E9;
+  color: #1B5E20;
+  border: 1px solid #A5D6A7;
+  border-radius: 5px;
+  padding: 2px 8px;
+  font-size: 12.5px;
+  font-family: "Courier New", monospace;
+}
+a.boton-descarga {
+  display: inline-block;
+  background: #1B4965;
+  color: white;
+  text-decoration: none;
+  padding: 9px 18px;
+  border-radius: 6px;
+  font-size: 13.5px;
+  font-weight: bold;
+  margin: 10px 0;
+}
+a.boton-descarga:hover { background: #16374F; }
+.tip {
+  background: #FFF8E1;
+  border: 1px solid #FFE082;
+  border-radius: 6px;
+  padding: 10px 14px;
+  margin: 12px 0;
+  font-size: 13.5px;
+}
+.tip strong { color: #8D6E00; }
+.modelo-img {
+  max-width: 100%;
+  border: 1px solid #CFD8DC;
+  border-radius: 8px;
+  margin: 10px 0 6px 0;
+  display: block;
+}
+.modelo-caption {
+  font-size: 12px;
+  color: #78909C;
+  margin-bottom: 10px;
+}
+.formula-card {
+  background: #F5FAFF;
+  border: 1px solid #BDE0FE;
+  border-radius: 8px;
+  padding: 12px 16px;
+  margin: 10px 0;
+}
+.formula-card h4 { margin: 0 0 6px 0; color: #1B4965; font-size: 14px; }
+.formula-card .que-hace { font-size: 13px; color: #37474F; margin: 4px 0; }
+.formula-sintaxis, .formula-ejemplo {
+  font-family: "Courier New", monospace;
+  background: #FFFFFF;
+  border: 1px solid #E0E0E0;
+  border-radius: 4px;
+  padding: 5px 9px;
+  font-size: 12.5px;
+  margin: 4px 0;
+  display: block;
+}
+.formula-ejemplo { background: #E8F5E9; border-color: #A5D6A7; color: #1B5E20; }
+.formula-label {
+  font-size: 10.5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: #78909C;
+  margin-top: 6px;
+}
+.checklist li { list-style: none; margin-bottom: 6px; }
+.checklist li:before { content: "☐ "; color: #1B4965; font-weight: bold; }
+.etapa-cards {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+  margin-top: 18px;
+}
+@media (max-width: 640px) { .etapa-cards { grid-template-columns: 1fr; } }
+.etapa-card {
+  display: block;
+  text-decoration: none;
+  background: white;
+  border: 1px solid #CFD8DC;
+  border-left: 6px solid #1B4965;
+  border-radius: 8px;
+  padding: 16px 18px;
+  transition: box-shadow 0.15s;
+}
+.etapa-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.10); }
+.etapa-card .num {
+  display: inline-block;
+  background: #1B4965;
+  color: white;
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 26px;
+  font-size: 13px;
+  font-weight: bold;
+  margin-right: 8px;
+}
+.etapa-card h3 { display: inline; color: #1B4965; font-size: 16px; }
+.etapa-card p { font-size: 13px; color: #546E7A; margin: 8px 0 0 0; }
+.bottomnav {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 40px;
+  padding-top: 16px;
+  border-top: 1px solid #E0E0E0;
+  font-size: 13.5px;
+}
+.bottomnav a {
+  color: #1B4965;
+  text-decoration: none;
+  font-weight: bold;
+  background: #F5FAFF;
+  border: 1px solid #BDE0FE;
+  padding: 8px 14px;
+  border-radius: 6px;
+}
+.bottomnav a:hover { background: #E3F2FD; }
+footer {
+  margin-top: 30px;
+  font-size: 11px;
+  color: #90A4AE;
+  text-align: center;
+}

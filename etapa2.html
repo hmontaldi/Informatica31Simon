@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Etapa 2 — Encuesta de hábitos de consumo</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topnav">
+    <a href="etapa1.html">&larr; Etapa 1: Presupuesto familiar</a>
+    <a href="etapa3.html">Etapa 3: Calculadora de huella &rarr;</a>
+  </div>
+
+  <div class="portada">
+    <span class="etiqueta">ETAPA 2 DE 4</span>
+    <h1>Encuesta de hábitos de consumo</h1>
+    <p class="subtitulo">Informática Aplicada a la Gestión · Prof. Humberto Montaldi</p>
+  </div>
+
+  <p>Vamos a encuestar a compañeros de la escuela sobre sus hábitos (luces, ducha, transporte, residuos) y a
+  analizar los resultados construyendo ustedes mismos las fórmulas de conteo y promedio.</p>
+
+  <h2>Archivo de trabajo</h2>
+  <p>Archivo a usar: <span class="archivo">2_Analisis_Habitos_Consumo_ALUMNOS.xlsx</span></p>
+  <a class="boton-descarga" href="2_Analisis_Habitos_Consumo_ALUMNOS.xlsx">⬇ Descargar planilla (Alumnos)</a>
+  <ul>
+    <li>Hoja "Respuestas": reemplacen los datos de ejemplo por las respuestas reales de su encuesta</li>
+    <li>Hoja "Resumen": las celdas naranjas las completan ustedes con fórmulas</li>
+    <li>Inserten un gráfico de barras con el detalle por curso</li>
+  </ul>
+
+  <h2>Fórmulas explicadas</h2>
+
+  <div class="formula-card">
+    <h4>CONTARA — para contar cuántos encuestados hay</h4>
+    <p class="que-hace">Cuenta cuántas celdas de un rango tienen algún dato (no importa cuál).</p>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=CONTARA(rango)</span>
+    <span class="formula-label">Ejemplo en este archivo</span>
+    <span class="formula-ejemplo">=CONTARA(Respuestas!A5:A24)</span>
+  </div>
+
+  <div class="formula-card">
+    <h4>CONTAR.SI — para un porcentaje con UNA condición</h4>
+    <p class="que-hace">Cuenta cuántas celdas de un rango cumplen una condición (por ejemplo, cuántos respondieron
+    "Sí"). Dividiendo ese resultado por el total de encuestados, se obtiene el porcentaje.</p>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=CONTAR.SI(rango,"criterio")/CONTARA(rango)</span>
+    <span class="formula-label">Ejemplo en este archivo (% que apaga las luces)</span>
+    <span class="formula-ejemplo">=CONTAR.SI(Respuestas!C5:C24,"Sí")/CONTARA(Respuestas!C5:C24)</span>
+  </div>
+
+  <div class="formula-card">
+    <h4>CONTAR.SI.CONJUNTO — para un porcentaje con DOS condiciones a la vez</h4>
+    <p class="que-hace">Igual que CONTAR.SI, pero permite pedir que se cumplan varias condiciones al mismo tiempo
+    (por ejemplo: apaga las luces Y separa residuos).</p>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=CONTAR.SI.CONJUNTO(rango1,"criterio1",rango2,"criterio2")/CONTARA(rango)</span>
+    <span class="formula-label">Ejemplo en este archivo</span>
+    <span class="formula-ejemplo">=CONTAR.SI.CONJUNTO(Respuestas!C5:C24,"Sí",Respuestas!G5:G24,"Sí")/CONTARA(Respuestas!A5:A24)</span>
+  </div>
+
+  <div class="formula-card">
+    <h4>PROMEDIO — para los promedios</h4>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=PROMEDIO(rango)</span>
+    <span class="formula-label">Ejemplo en este archivo (minutos de ducha)</span>
+    <span class="formula-ejemplo">=PROMEDIO(Respuestas!D5:D24)</span>
+  </div>
+
+  <div class="formula-card">
+    <h4>CONTAR.SI y PROMEDIO.SI.CONJUNTO — para el detalle por curso</h4>
+    <p class="que-hace">Para saber cuántos encuestados hay de un curso puntual, usás CONTAR.SI comparando contra
+    la celda del curso. Para el porcentaje que apaga luces DE ESE curso, combinás dos condiciones con
+    CONTAR.SI.CONJUNTO. Para el promedio de ducha DE ESE curso, usás PROMEDIO.SI.CONJUNTO.</p>
+    <span class="formula-label">Ejemplo (cantidad de encuestados de 1°1)</span>
+    <span class="formula-ejemplo">=CONTAR.SI(Respuestas!B5:B24,A14)</span>
+    <span class="formula-label">Ejemplo (% que apaga luces en 1°1)</span>
+    <span class="formula-ejemplo">=CONTAR.SI.CONJUNTO(Respuestas!B5:B24,A14,Respuestas!C5:C24,"Sí")/CONTAR.SI(Respuestas!B5:B24,A14)</span>
+    <span class="formula-label">Ejemplo (promedio de ducha en 1°1)</span>
+    <span class="formula-ejemplo">=PROMEDIO.SI.CONJUNTO(Respuestas!D5:D24,Respuestas!B5:B24,A14)</span>
+  </div>
+
+  <h2>Modelo de resultado</h2>
+  <p>Así debería quedar la hoja Resumen resuelta (con los datos de ejemplo). Usalo para comparar tu resultado —
+  acá no se ven las fórmulas, solo los valores y el gráfico.</p>
+  <img class="modelo-img" src="2_Analisis_Habitos_Consumo_MODELO.png" alt="Modelo del análisis de hábitos de consumo resuelto, con tabla resumen y gráfico de barras por curso">
+  <p class="modelo-caption">2_Analisis_Habitos_Consumo_MODELO.png</p>
+
+  <div class="bottomnav">
+    <a href="etapa1.html">&larr; Etapa 1: Presupuesto familiar</a>
+    <a href="etapa3.html">Etapa 3: Calculadora de huella &rarr;</a>
+  </div>
+
+  <footer>Informática Aplicada a la Gestión · Prof. Humberto Montaldi · Esc. N° 4-084 "Libertador Simón Bolívar" · 3° 1°</footer>
+
+</div>
+</body>
+</html>

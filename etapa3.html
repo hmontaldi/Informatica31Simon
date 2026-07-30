@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Etapa 3 — Calculadora de huella de carbono</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topnav">
+    <a href="etapa2.html">&larr; Etapa 2: Encuesta de hábitos</a>
+    <a href="etapa4.html">Etapa 4: Campaña &rarr;</a>
+  </div>
+
+  <div class="portada">
+    <span class="etiqueta">ETAPA 3 DE 4</span>
+    <h1>Calculadora de huella de carbono</h1>
+    <p class="subtitulo">Informática Aplicada a la Gestión · Prof. Humberto Montaldi</p>
+  </div>
+
+  <p>Vas a cargar tu consumo semanal de electricidad, agua, gas y transporte para estimar el costo y el impacto
+  ambiental, clasificar tu nivel de impacto y simular cuánto ahorrarías si reducís tu consumo.</p>
+
+  <h2>Archivo de trabajo</h2>
+  <p>Archivo a usar: <span class="archivo">3_Calculadora_Huella_Carbono_ALUMNOS.xlsx</span></p>
+  <a class="boton-descarga" href="3_Calculadora_Huella_Carbono_ALUMNOS.xlsx">⬇ Descargar planilla (Alumnos)</a>
+  <ul>
+    <li>Completá las celdas verdes con tu consumo semanal aproximado</li>
+    <li>Las celdas naranjas (Costo, CO2, Nivel de impacto, Simulador) las resolvés vos con fórmulas</li>
+    <li>Hoja "Factores": ahí están los precios y factores usados (podés investigar y ajustarlos)</li>
+  </ul>
+
+  <h2>Fórmulas explicadas</h2>
+
+  <div class="formula-card">
+    <h4>Multiplicación con nombres definidos — para Costo y CO2</h4>
+    <p class="que-hace">La hoja "Factores" tiene precios y factores guardados con un nombre (por ejemplo
+    PRECIO_KWH). Podés usar ese nombre directamente en la fórmula, en vez de escribir la celda.</p>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=consumo*NOMBRE_DEL_FACTOR</span>
+    <span class="formula-label">Ejemplo en este archivo (costo de electricidad)</span>
+    <span class="formula-ejemplo">=B6*PRECIO_KWH</span>
+    <span class="formula-label">Ejemplo en este archivo (CO2 de electricidad)</span>
+    <span class="formula-ejemplo">=B6*FACTOR_KWH</span>
+  </div>
+
+  <div class="formula-card">
+    <h4>SI anidados — para clasificar el "Nivel de impacto"</h4>
+    <p class="que-hace">SI evalúa una condición: si se cumple, devuelve un resultado; si no, devuelve otro.
+    "Anidar" significa poner un SI adentro de otro SI, para poder evaluar más de dos posibilidades en cadena.</p>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=SI(condición1,"resultado1",SI(condición2,"resultado2","resultado3"))</span>
+    <span class="formula-label">Ejemplo en este archivo (Bajo &lt; 20, Medio hasta 40, Alto más de 40)</span>
+    <span class="formula-ejemplo">=SI(D10&lt;20,"Bajo",SI(D10&lt;=40,"Medio","Alto"))</span>
+    <p class="que-hace">Se lee así: "si el total de CO2 es menor a 20, poné Bajo; si no, fijate si es menor o
+    igual a 40 (Medio); si no cumple ninguna de las dos, es Alto".</p>
+  </div>
+
+  <div class="formula-card">
+    <h4>Multiplicación y referencia a otra celda — para el Simulador</h4>
+    <span class="formula-label">Ahorro semanal en $</span>
+    <span class="formula-ejemplo">=C10*B14</span>
+    <span class="formula-label">Ahorro anual estimado (ahorro semanal x 52 semanas)</span>
+    <span class="formula-ejemplo">=B15*52</span>
+    <span class="formula-label">Reducción de CO2 semanal</span>
+    <span class="formula-ejemplo">=D10*B14</span>
+  </div>
+
+  <h2>Modelo de resultado</h2>
+  <p>Así debería quedar tu planilla resuelta (con los datos de ejemplo). Usalo para comparar tu resultado — acá
+  no se ven las fórmulas, solo los valores.</p>
+  <img class="modelo-img" src="3_Calculadora_Huella_Carbono_MODELO.png" alt="Modelo de la calculadora de huella de carbono resuelto, con costos, CO2, nivel de impacto y simulador">
+  <p class="modelo-caption">3_Calculadora_Huella_Carbono_MODELO.png</p>
+
+  <div class="bottomnav">
+    <a href="etapa2.html">&larr; Etapa 2: Encuesta de hábitos</a>
+    <a href="etapa4.html">Etapa 4: Campaña &rarr;</a>
+  </div>
+
+  <footer>Informática Aplicada a la Gestión · Prof. Humberto Montaldi · Esc. N° 4-084 "Libertador Simón Bolívar" · 3° 1°</footer>
+
+</div>
+</body>
+</html>

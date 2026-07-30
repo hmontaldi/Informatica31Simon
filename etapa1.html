@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Etapa 1 — Presupuesto familiar</title>
+<link rel="stylesheet" href="estilos.css">
+</head>
+<body>
+<div class="wrap">
+
+  <div class="topnav">
+    <a href="index.html">&larr; Volver al inicio</a>
+    <a href="etapa2.html">Etapa 2: Encuesta de hábitos &rarr;</a>
+  </div>
+
+  <div class="portada">
+    <span class="etiqueta">ETAPA 1 DE 4</span>
+    <h1>Presupuesto familiar</h1>
+    <p class="subtitulo">Informática Aplicada a la Gestión · Prof. Humberto Montaldi</p>
+  </div>
+
+  <p>Vas a armar un presupuesto (el tuyo, el de tu familia, o uno inventado) cargando ingresos y gastos, y vas a
+  construir vos mismo/a las fórmulas que calculan los totales, el saldo y el porcentaje de cada gasto.</p>
+
+  <h2>Archivo de trabajo</h2>
+  <p>Archivo a usar: <span class="archivo">1_Presupuesto_Familiar_ALUMNOS.xlsx</span></p>
+  <a class="boton-descarga" href="1_Presupuesto_Familiar_ALUMNOS.xlsx">⬇ Descargar planilla (Alumnos)</a>
+  <ul>
+    <li>Completá solo las celdas <strong>verdes</strong>: ingresos y montos de gastos por categoría</li>
+    <li>Las celdas <strong>naranjas</strong> las resolvés vos con fórmulas (no vienen precargadas)</li>
+    <li>Observá el <strong>saldo</strong>: si se pinta de rojo, el gasto supera al ingreso</li>
+    <li>Insertá un gráfico de torta con la columna Categoría y la columna Monto</li>
+  </ul>
+
+  <h2>Fórmulas explicadas</h2>
+
+  <div class="formula-card">
+    <h4>SUMA — para los totales</h4>
+    <p class="que-hace">Suma todos los valores de un rango de celdas.</p>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=SUMA(celda_inicial:celda_final)</span>
+    <span class="formula-label">Ejemplo en este archivo (Total Ingresos)</span>
+    <span class="formula-ejemplo">=SUMA(B6:B7)</span>
+    <p class="que-hace">Para Total Gastos es la misma lógica, pero sumando el rango de la columna Monto de gastos.</p>
+  </div>
+
+  <div class="formula-card">
+    <h4>Resta simple — para el Saldo</h4>
+    <p class="que-hace">El saldo es el Total de Ingresos menos el Total de Gastos. No hace falta una función
+    especial, alcanza con restar dos celdas.</p>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=celda_total_ingresos-celda_total_gastos</span>
+    <span class="formula-label">Ejemplo en este archivo</span>
+    <span class="formula-ejemplo">=B8-C19</span>
+  </div>
+
+  <div class="formula-card">
+    <h4>División con referencia absoluta — para el % sobre total de gastos</h4>
+    <p class="que-hace">Cada gasto dividido por el total de gastos, para saber qué porcentaje representa. El
+    truco: el total de gastos NO cambia fila a fila, así que hay que "fijarlo" con el símbolo <strong>$</strong>
+    delante de la fila y la columna (referencia absoluta). Si no ponés el $, al copiar la fórmula hacia abajo
+    Excel va a correr la referencia y el cálculo va a estar mal.</p>
+    <span class="formula-label">Sintaxis</span>
+    <span class="formula-sintaxis">=celda_del_gasto/$celda_total_gastos$</span>
+    <span class="formula-label">Ejemplo en este archivo (fila de Vivienda)</span>
+    <span class="formula-ejemplo">=C12/$C$19</span>
+    <p class="que-hace">Fijate: C12 (el gasto de esa fila) queda "libre" para que cambie en cada fila, pero
+    $C$19 (el total) queda fijo en todas.</p>
+  </div>
+
+  <h2>Modelo de resultado</h2>
+  <p>Así debería quedar tu planilla resuelta (con los datos de ejemplo). Usalo para comparar tu resultado —
+  fijate que acá no se ven las fórmulas, solo los valores y el gráfico.</p>
+  <img class="modelo-img" src="1_Presupuesto_Familiar_MODELO.png" alt="Modelo del Presupuesto Familiar resuelto, con gráfico de torta de gastos por categoría">
+  <p class="modelo-caption">1_Presupuesto_Familiar_MODELO.png</p>
+
+  <div class="bottomnav">
+    <a href="index.html">&larr; Inicio</a>
+    <a href="etapa2.html">Etapa 2: Encuesta de hábitos &rarr;</a>
+  </div>
+
+  <footer>Informática Aplicada a la Gestión · Prof. Humberto Montaldi · Esc. N° 4-084 "Libertador Simón Bolívar" · 3° 1°</footer>
+
+</div>
+</body>
+</html>
