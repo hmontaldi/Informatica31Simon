@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Guía del proyecto: tu juego, paso a paso</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#eef1ee; --card:#fbfbf8; --ink:#1f2e2b; --ink-soft:#5c6a64;
+    --gold:#b8902f; --teal:#2c6e63; --teal-soft:#e2eeec;
+    --coral:#b0492f; --coral-soft:#f6e6e0; --rule:#d3d9d2;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size:14px 14px;
+    font-family:'Source Serif 4', serif; color:var(--ink);
+    padding: 28px 14px 60px;
+  }
+  .wrap{ max-width: 720px; margin: 0 auto; }
+  .cover{
+    background:var(--card); border:1px solid var(--rule); border-radius:4px;
+    padding: 30px 26px; margin-bottom: 22px; text-align:center;
+    box-shadow: 0 14px 30px rgba(20,30,25,0.08);
+  }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; }
+  h1{ font-size:26px; margin:0 0 8px; font-weight:700; }
+  .cover p{ color:var(--ink-soft); font-size:15px; margin:0; }
+
+  section{
+    background:var(--card); border:1px solid var(--rule); border-radius:4px;
+    padding: 24px 22px; margin-bottom: 18px;
+  }
+  h2{
+    font-family:'IBM Plex Mono',monospace; font-size:13px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--teal); margin:0 0 4px; display:flex; align-items:center; gap:8px;
+  }
+  h2 .num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:22px; height:22px; border-radius:50%; background:var(--teal); color:var(--card);
+    font-size:11px; flex-shrink:0;
+  }
+  h3{ font-size:17px; margin: 18px 0 8px; font-weight:700; }
+  p{ font-size:15px; line-height:1.55; margin: 0 0 10px; }
+  .sub{ color:var(--ink-soft); font-size:13.5px; margin-top:-4px; margin-bottom:16px; }
+
+  table{ width:100%; border-collapse:collapse; margin: 10px 0 6px; font-size:14px; }
+  th, td{ text-align:left; padding: 9px 8px; border-bottom: 1px dashed var(--rule); vertical-align:top; }
+  th{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-soft); font-weight:600; }
+  td.g{ font-family:'IBM Plex Mono',monospace; font-weight:700; color:var(--teal); white-space:nowrap; }
+  td.tema{ font-weight:600; }
+  td.pregunta{ color:var(--ink-soft); font-size:13px; }
+
+  .steps{ counter-reset: step; margin: 14px 0 0; padding:0; list-style:none; }
+  .steps li{
+    counter-increment: step; position:relative; padding: 12px 12px 12px 44px;
+    border: 1px solid var(--rule); border-radius:4px; margin-bottom: 10px; font-size:14.5px; line-height:1.5;
+  }
+  .steps li::before{
+    content: counter(step); position:absolute; left:10px; top:50%; transform:translateY(-50%);
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px;
+    width:22px; height:22px; border-radius:50%; background:var(--gold); color:var(--card);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .steps li strong{ display:block; margin-bottom:2px; }
+  .steps li code{
+    background:var(--paper); border:1px solid var(--rule); border-radius:3px;
+    padding: 1px 5px; font-family:'IBM Plex Mono',monospace; font-size:12.5px;
+  }
+
+  .callout{
+    background:var(--teal-soft); border-left:3px solid var(--teal); border-radius:2px;
+    padding:12px 14px; font-size:13.5px; margin-top:14px; line-height:1.5;
+  }
+  .callout.warn{ background:var(--coral-soft); border-left-color:var(--coral); }
+  .callout strong{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em; display:block; margin-bottom:4px; }
+
+  .prompt-box{
+    background:var(--paper); border:1px dashed var(--gold); border-radius:4px;
+    padding: 14px 14px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.6;
+    white-space:pre-wrap; margin: 12px 0;
+  }
+
+  footer{ text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); margin-top: 24px; }
+
+  @media (max-width:520px){
+    table, thead, tbody, th, td, tr{ display:block; }
+    thead{ display:none; }
+    tr{ border-bottom: 1px dashed var(--rule); padding-bottom:8px; margin-bottom:8px; }
+    td{ border:none; padding: 2px 0; }
+    td.g::before{ content: "Grupo "; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <div class="eyebrow">3° 1° Bachiller de Economía</div>
+    <h1>Cuentas claras, mente sana<br>guía para armar tu juego</h1>
+    <p>Cada grupo tiene un tema. Acá tenés los pasos para crear el juego con IA y después publicarlo online para que cualquiera lo pueda jugar desde un link.</p>
+  </div>
+
+  <section>
+    <h2><span class="num">1</span> Tu tema de grupo</h2>
+    <p class="sub">Buscá tu número de grupo y usá esa pregunta como punto de partida para tu juego.</p>
+    <table>
+      <thead><tr><th>Grupo</th><th>Tema</th><th>Pregunta disparadora</th></tr></thead>
+      <tbody>
+        <tr><td class="g">1</td><td class="tema">Atrapados por el algoritmo</td><td class="pregunta">¿El algoritmo manipula nuestras compras impulsivas?</td></tr>
+        <tr><td class="g">2</td><td class="tema">La economía de la frustración</td><td class="pregunta">¿Se puede pasar un buen momento sin gastar?</td></tr>
+        <tr><td class="g">3</td><td class="tema">Finanzas en pareja/familia</td><td class="pregunta">¿El dinero puede ser una herramienta de control?</td></tr>
+        <tr><td class="g">4</td><td class="tema">La timba digital</td><td class="pregunta">Apuestas online y loot boxes: ¿plata fácil o trampa?</td></tr>
+        <tr><td class="g">5</td><td class="tema">¿Estrés o presupuesto?</td><td class="pregunta">¿El orden financiero trae paz mental?</td></tr>
+        <tr><td class="g">6</td><td class="tema">El pozo del FOMO</td><td class="pregunta">¿La vida "perfecta" de redes nos hace gastar de más?</td></tr>
+        <tr><td class="g">7</td><td class="tema">Mi primer ahorro</td><td class="pregunta">¿Ahorrar es privarse o da libertad?</td></tr>
+        <tr><td class="g">8</td><td class="tema">El valor del trabajo invisible</td><td class="pregunta">¿Cuánto valdrían las tareas domésticas no remuneradas?</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span> Crear el juego con IA (Claude)</h2>
+    <p class="sub">Repetí este proceso las veces que haga falta: pedir, probar, corregir.</p>
+    <ol class="steps">
+      <li><strong>Definan la mecánica en papel</strong> antes de escribirle a la IA: ¿decisiones con puntaje?, ¿plataforma con obstáculos?, ¿ambas cosas como el ejemplo?</li>
+      <li><strong>Arma el prompt con las 5 partes</strong> (Rol, Tarea, Formato, Estilo, Restricciones) usando tu tema de grupo en vez de "cuotas".</li>
+      <li><strong>Pedí el archivo como un único HTML</strong> autocontenido, sin dependencias externas salvo Google Fonts.</li>
+      <li><strong>Probalo</strong> abriendo el archivo en el navegador (doble clic) o pidiéndole a la IA que te lo muestre.</li>
+      <li><strong>Iterá con pedidos concretos</strong>: "cambiá el escenario 3 por...", "agregá una medalla si...", en vez de reescribir todo de nuevo.</li>
+    </ol>
+
+    <h3>Plantilla de prompt para tu grupo</h3>
+    <div class="prompt-box">Actuá como un desarrollador de videojuegos educativos especializado en HTML, CSS y JavaScript puro.
+
+Quiero que crees un juego educativo de un solo archivo HTML sobre "[TU TEMA DE GRUPO]" para adolescentes, con 5 decisiones/escenarios basados en la pregunta: "[TU PREGUNTA DISPARADORA]". Cada decisión debe sumar o restar puntos a un indicador principal, con las opciones en orden aleatorio.
+
+Entregame el resultado como un único archivo HTML autocontenido, sin dependencias externas salvo tipografías de Google Fonts.
+
+Usá una paleta de colores clara, diseño limpio, tono cercano para adolescentes.
+
+Restricciones: debe funcionar sin conexión (salvo fuentes), ser jugable desde celular, sin violencia ni lenguaje ofensivo, basado en situaciones reales de adolescentes en Argentina.</div>
+
+    <div class="callout">
+      <strong>Tip</strong>
+      Cuanto más específica la TAREA (cuántos niveles, qué mecánica, qué pasa al ganar/perder), menos tiene que inventar la IA por su cuenta.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span> Publicar el juego: GitHub + Vercel</h2>
+    <p class="sub">Así cualquiera puede jugarlo desde un link, sin instalar nada.</p>
+
+    <h3>A. Crear una cuenta en GitHub</h3>
+    <ol class="steps">
+      <li>Entrá a <code>github.com</code> y hacé clic en <strong>Sign up</strong>.</li>
+      <li>Cargá un usuario, tu email y una contraseña. Confirmá tu cuenta desde el mail que te llega.</li>
+      <li>Con la cuenta creada, hacé clic en el botón verde <strong>New</strong> (o el símbolo <code>+</code> arriba a la derecha → <strong>New repository</strong>).</li>
+      <li>Ponele un nombre al repositorio (por ejemplo, el nombre de tu juego sin espacios), marcalo como <strong>Public</strong> y hacé clic en <strong>Create repository</strong>.</li>
+      <li>Dentro del repositorio, hacé clic en <strong>Add file → Upload files</strong> y arrastrá el archivo <code>.html</code> que armaron con la IA. Asegurate de que se llame <code>index.html</code>.</li>
+      <li>Confirmá la subida con <strong>Commit changes</strong>.</li>
+    </ol>
+
+    <h3>B. Conectar con Vercel y publicar</h3>
+    <ol class="steps">
+      <li>Entrá a <code>vercel.com</code> y hacé clic en <strong>Sign Up</strong>.</li>
+      <li>Elegí <strong>Continue with GitHub</strong> para vincular directamente la cuenta que acaban de crear.</li>
+      <li>Autorizá el acceso de Vercel a GitHub cuando te lo pida.</li>
+      <li>En el panel de Vercel, hacé clic en <strong>Add New… → Project</strong>.</li>
+      <li>Buscá y seleccioná el repositorio que crearon (el de su juego) y hacé clic en <strong>Import</strong>.</li>
+      <li>Dejá la configuración por defecto y hacé clic en <strong>Deploy</strong>.</li>
+      <li>Esperá unos segundos: Vercel les va a dar un link tipo <code>tu-juego.vercel.app</code>. Ese es el link para compartir y jugar desde cualquier dispositivo.</li>
+    </ol>
+
+    <div class="callout warn">
+      <strong>Si después cambian el juego</strong>
+      Subiendo el archivo actualizado al mismo repositorio de GitHub (Upload files → Commit changes), Vercel actualiza el sitio publicado automáticamente, sin tener que repetir todo el proceso.
+    </div>
+  </section>
+
+  <footer>✧ Cuentas claras, mente sana ✧</footer>
+</div>
+</body>
+</html>
