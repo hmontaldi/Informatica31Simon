@@ -1,0 +1,790 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Mi Primer Ahorro - El Sapo Ahorrista</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg1:#e4f6ff;
+    --bg2:#eafcf3;
+    --card:#ffffff;
+    --primary:#2fb787;
+    --primary-dark:#1f9a70;
+    --accent:#ff9f5a;
+    --accent2:#5b8def;
+    --text:#233238;
+    --text-soft:#5c6b70;
+    --danger:#ef6a6a;
+    --warn:#f2b544;
+    --water1:#8fd7f0;
+    --water2:#5cb8de;
+    --pad:#4fae6d;
+    --pad-dark:#3c8f57;
+    --radius:22px;
+    --shadow: 0 10px 30px rgba(35,50,56,0.12);
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color: transparent;}
+  html,body{
+    margin:0;padding:0;height:100%;
+    font-family:'Nunito',sans-serif;
+    color:var(--text);
+    background:
+      radial-gradient(circle at 15% 5%, var(--bg2) 0%, transparent 45%),
+      radial-gradient(circle at 90% 95%, var(--bg1) 0%, transparent 45%),
+      linear-gradient(160deg,#f6fbf9, #eef6fb);
+    min-height:100vh;
+  }
+  .app{
+    max-width:480px;
+    margin:0 auto;
+    min-height:100vh;
+    display:flex;
+    flex-direction:column;
+    padding:14px 14px 24px;
+  }
+  header{
+    text-align:center;
+    margin-bottom:10px;
+  }
+  header h1{
+    font-family:'Baloo 2',cursive;
+    font-size:1.4rem;
+    margin:4px 0 2px;
+    color:var(--primary-dark);
+  }
+  header p{
+    margin:0;
+    font-size:0.8rem;
+    color:var(--text-soft);
+  }
+
+  /* TOP HUD: hearts + score */
+  .hud{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:10px;
+    margin-bottom:10px;
+  }
+  .hearts{
+    display:flex;
+    gap:4px;
+    background:var(--card);
+    padding:8px 12px;
+    border-radius:16px;
+    box-shadow:var(--shadow);
+  }
+  .heart{
+    font-size:1.25rem;
+    transition: transform .3s ease, opacity .3s ease, filter .3s ease;
+  }
+  .heart.lost{
+    filter: grayscale(1) opacity(0.35);
+    transform: scale(0.85) rotate(-15deg);
+  }
+  .score-wrap{
+    flex:1;
+    background:var(--card);
+    border-radius:16px;
+    padding:8px 12px;
+    box-shadow:var(--shadow);
+  }
+  .score-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:0.72rem;
+    font-weight:800;
+    color:var(--text-soft);
+    margin-bottom:4px;
+  }
+  .score-label span.val{ color:var(--primary-dark); font-size:0.85rem;}
+  .score-bar{
+    height:11px;
+    border-radius:20px;
+    background:#e7edec;
+    overflow:hidden;
+  }
+  .score-fill{
+    height:100%;
+    border-radius:20px;
+    background:linear-gradient(90deg, var(--accent), var(--primary));
+    transition: width .5s cubic-bezier(.4,0,.2,1);
+    width:0%;
+  }
+
+  main{ flex:1; display:flex; flex-direction:column; }
+
+  .card{
+    background:var(--card);
+    border-radius:var(--radius);
+    box-shadow:var(--shadow);
+    padding:20px 18px;
+    animation: appear .4s ease;
+  }
+  @keyframes appear{
+    from{opacity:0; transform:translateY(10px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .center-card{ text-align:center; }
+  .center-card h2{
+    font-family:'Baloo 2',cursive;
+    font-size:1.25rem;
+    margin:8px 0 10px;
+  }
+  .center-card p{
+    color:var(--text-soft);
+    font-size:0.92rem;
+    line-height:1.55;
+    margin-bottom:16px;
+  }
+  .big-emoji{ font-size:3rem; }
+
+  .primary-btn{
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:16px;
+    background:var(--primary);
+    color:#fff;
+    font-family:'Baloo 2',cursive;
+    font-size:1.05rem;
+    font-weight:700;
+    cursor:pointer;
+    box-shadow:0 6px 16px rgba(47,183,135,0.35);
+    transition:transform .15s ease, background .15s ease;
+  }
+  .primary-btn:active{ transform:scale(0.98); }
+  .primary-btn:hover{ background:var(--primary-dark); }
+
+  /* GAME SCREEN */
+  #gameScreen{ display:flex; flex-direction:column; flex:1; }
+
+  .question-card{
+    background:var(--card);
+    border-radius:20px;
+    box-shadow:var(--shadow);
+    padding:16px 18px;
+    margin-bottom:12px;
+    text-align:center;
+  }
+  .question-eyebrow{
+    font-size:0.72rem;
+    font-weight:800;
+    color:var(--accent);
+    letter-spacing:0.03em;
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .question-text{
+    font-family:'Baloo 2',cursive;
+    font-size:1.08rem;
+    line-height:1.4;
+    color:var(--text);
+  }
+
+  .pond{
+    position:relative;
+    flex:1;
+    min-height:340px;
+    border-radius:26px;
+    overflow:hidden;
+    background:
+      radial-gradient(circle at 30% 20%, rgba(255,255,255,0.35), transparent 40%),
+      linear-gradient(180deg, var(--water1), var(--water2));
+    box-shadow: inset 0 0 30px rgba(0,60,90,0.15), var(--shadow);
+  }
+  .ripple{
+    position:absolute;
+    border-radius:50%;
+    border:2px solid rgba(255,255,255,0.35);
+    width:40px;height:40px;
+    opacity:0;
+  }
+  .ripple.show{
+    animation: rippleAnim 1s ease-out;
+  }
+  @keyframes rippleAnim{
+    0%{ opacity:0.7; transform:scale(0.3);}
+    100%{ opacity:0; transform:scale(3);}
+  }
+
+  .lilypad{
+    position:absolute;
+    transform:translate(-50%,-50%);
+    width:30%;
+    max-width:150px;
+    aspect-ratio:1/1;
+    background: radial-gradient(circle at 35% 30%, #63c17f, var(--pad) 55%, var(--pad-dark) 100%);
+    border-radius: 48% 52% 45% 55% / 55% 45% 55% 45%;
+    box-shadow: 0 6px 14px rgba(0,50,40,0.25), inset 0 0 0 3px rgba(255,255,255,0.15);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:8%;
+    cursor:pointer;
+    border:none;
+    transition: transform .15s ease, filter .3s ease, box-shadow .3s ease;
+    font-family:'Nunito',sans-serif;
+  }
+  .lilypad::before{
+    content:'';
+    position:absolute;
+    top:6%; left:50%;
+    width:2px; height:40%;
+    background:rgba(0,60,30,0.25);
+    transform:translateX(-50%) rotate(0deg);
+  }
+  .lilypad-text{
+    font-size:0.72rem;
+    font-weight:800;
+    color:#0d3b26;
+    text-align:center;
+    line-height:1.25;
+    text-shadow: 0 1px 0 rgba(255,255,255,0.25);
+  }
+  .lilypad:active{ transform:translate(-50%,-50%) scale(0.94); }
+  .lilypad.correct-glow{
+    filter:brightness(1.15);
+    box-shadow: 0 0 0 4px var(--primary), 0 8px 18px rgba(47,183,135,0.5);
+  }
+  .lilypad.wrong-glow{
+    filter:brightness(0.9);
+    box-shadow: 0 0 0 4px var(--danger), 0 8px 18px rgba(239,106,106,0.5);
+  }
+  .lilypad.disabled{ cursor:default; }
+
+  .home-pad{
+    position:absolute;
+    top:12%; left:50%;
+    transform:translate(-50%,-50%);
+    width:26%;
+    max-width:120px;
+    aspect-ratio:1/1;
+    background: radial-gradient(circle at 35% 30%, #7fd39a, var(--pad) 55%, var(--pad-dark) 100%);
+    border-radius: 45% 55% 50% 50% / 50% 45% 55% 50%;
+    box-shadow: 0 6px 14px rgba(0,50,40,0.2), inset 0 0 0 3px rgba(255,255,255,0.15);
+  }
+
+  .frog{
+    position:absolute;
+    font-size:2.4rem;
+    line-height:1;
+    transform: translate(-50%,-70%);
+    z-index:5;
+    transition: left .5s cubic-bezier(.5,0,.2,1), top .5s cubic-bezier(.5,0,.2,1);
+    filter: drop-shadow(0 6px 4px rgba(0,0,0,0.2));
+    user-select:none;
+    pointer-events:none;
+  }
+  .frog.jumping{ animation: hop .5s ease-out; }
+  @keyframes hop{
+    0%{ transform: translate(-50%,-70%) scale(1) rotate(0deg); }
+    35%{ transform: translate(-50%, -140%) scale(1.08) rotate(-6deg); }
+    70%{ transform: translate(-50%, -140%) scale(1.05) rotate(4deg); }
+    100%{ transform: translate(-50%,-70%) scale(1) rotate(0deg); }
+  }
+
+  .floating-tag{
+    position:absolute;
+    font-family:'Baloo 2',cursive;
+    font-weight:700;
+    font-size:1rem;
+    color:#fff;
+    padding:3px 10px;
+    border-radius:20px;
+    transform:translate(-50%,-50%);
+    pointer-events:none;
+    z-index:6;
+    opacity:0;
+  }
+  .floating-tag.show{
+    animation: floatUp 1.1s ease-out forwards;
+  }
+  @keyframes floatUp{
+    0%{ opacity:0; transform:translate(-50%,-30%); }
+    15%{ opacity:1; transform:translate(-50%,-60%); }
+    100%{ opacity:0; transform:translate(-50%,-140%); }
+  }
+  .floating-tag.pos{ background:var(--primary); }
+  .floating-tag.neg{ background:var(--danger); }
+
+  .feedback-banner{
+    margin-top:12px;
+    padding:12px 16px;
+    border-radius:16px;
+    font-size:0.85rem;
+    line-height:1.4;
+    background:#f1f8f6;
+    border-left:5px solid var(--primary);
+    text-align:center;
+    min-height:1px;
+    opacity:0;
+    transform:translateY(6px);
+    transition: opacity .3s ease, transform .3s ease;
+  }
+  .feedback-banner.show{ opacity:1; transform:translateY(0); }
+  .feedback-banner.bad{ border-left-color:var(--danger); background:#fdeeee; }
+
+  /* OVERLAYS */
+  .overlay{
+    position:fixed;
+    inset:0;
+    background:rgba(20,35,40,0.55);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:50;
+  }
+  .overlay-card{
+    background:#fff;
+    border-radius:24px;
+    padding:26px 22px;
+    max-width:380px;
+    width:100%;
+    text-align:center;
+    box-shadow:0 20px 50px rgba(0,0,0,0.3);
+    animation: appear .35s ease;
+  }
+  .overlay-card .big-emoji{ font-size:3.2rem; margin-bottom:6px;}
+  .overlay-card h2{
+    font-family:'Baloo 2',cursive;
+    font-size:1.3rem;
+    margin:4px 0 10px;
+  }
+  .overlay-card p{
+    color:var(--text-soft);
+    font-size:0.92rem;
+    line-height:1.55;
+    margin-bottom:18px;
+  }
+
+  .hidden{ display:none !important; }
+
+  footer{
+    text-align:center;
+    margin-top:16px;
+    font-size:0.7rem;
+    color:#9aa9ac;
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <h1>🐸 El Sapo Ahorrista</h1>
+    <p>Saltá a la respuesta correcta y sumá puntos</p>
+  </header>
+
+  <!-- INTRO -->
+  <div class="card center-card" id="introScreen">
+    <div class="big-emoji">🐸💰</div>
+    <h2>¿Ahorrar te priva de disfrutar o te da libertad?</h2>
+    <p>Ayudá al sapito a cruzar el estanque saltando sobre la hoja con la respuesta correcta. Tenés <strong>3 vidas</strong>: si te equivocás perdés una. Sumá <strong>10 puntos</strong> por cada acierto hasta llegar a <strong>100</strong> y ganar. Si perdés las 3 vidas, ¡el puntaje vuelve a cero y arrancás de nuevo!</p>
+    <button class="primary-btn" id="startBtn">Empezar a jugar 🚀</button>
+  </div>
+
+  <!-- GAME -->
+  <div id="gameScreen" class="hidden">
+    <div class="hud">
+      <div class="hearts" id="hearts">
+        <span class="heart">❤️</span>
+        <span class="heart">❤️</span>
+        <span class="heart">❤️</span>
+      </div>
+      <div class="score-wrap">
+        <div class="score-label"><span>Puntos</span><span class="val"><span id="scoreVal">0</span>/100</span></div>
+        <div class="score-bar"><div class="score-fill" id="scoreFill"></div></div>
+      </div>
+    </div>
+
+    <main>
+      <div class="question-card">
+        <div class="question-eyebrow">Pregunta</div>
+        <div class="question-text" id="questionText">Cargando...</div>
+      </div>
+
+      <div class="pond" id="pond">
+        <div class="home-pad"></div>
+        <div class="frog" id="frog">🐸</div>
+        <!-- lily pads y ripples se generan por JS -->
+      </div>
+
+      <div class="feedback-banner" id="feedbackBanner"></div>
+    </main>
+  </div>
+
+  <footer>Juego educativo · Ahorro y libertad financiera para adolescentes</footer>
+</div>
+
+<!-- OVERLAY: GAME OVER -->
+<div class="overlay hidden" id="overlayGameOver">
+  <div class="overlay-card">
+    <div class="big-emoji">💦</div>
+    <h2>¡El sapito se cayó al agua!</h2>
+    <p>Te quedaste sin vidas y el puntaje vuelve a cero. No pasa nada: equivocarse también es parte de aprender a manejar la plata. ¡Probá de nuevo!</p>
+    <button class="primary-btn" id="retryBtn">Volver a intentar 🔁</button>
+  </div>
+</div>
+
+<!-- OVERLAY: WIN -->
+<div class="overlay hidden" id="overlayWin">
+  <div class="overlay-card">
+    <div class="big-emoji">🏆🐸</div>
+    <h2>¡Llegaste a 100 puntos!</h2>
+    <p>El sapito cruzó todo el estanque. Ahorrar no es privarte de disfrutar: es la herramienta que te da libertad, tranquilidad y te permite cumplir tus propios proyectos. ¡Gran laburo!</p>
+    <button class="primary-btn" id="playAgainBtn">Jugar de nuevo 🔁</button>
+  </div>
+</div>
+
+<script>
+(function(){
+  const questionPool = [
+    {
+      q:"¿Qué significa realmente “ahorrar”?",
+      options:[
+        {text:"Guardar toda la plata y no gastar nunca", correct:false},
+        {text:"Separar una parte de tu dinero para cumplir tus propios objetivos", correct:true},
+        {text:"Gastar todo apenas lo tenés en la mano", correct:false}
+      ]
+    },
+    {
+      q:"Recibís $15.000 de regalo por tu cumpleaños. ¿Qué estrategia te acerca más a tus proyectos?",
+      options:[
+        {text:"Gastarlo todo el mismo fin de semana", correct:false},
+        {text:"Separar una parte para una meta y usar el resto para un gusto", correct:true},
+        {text:"Prestárselo a un amigo sin anotar nada", correct:false}
+      ]
+    },
+    {
+      q:"¿Por qué ahorrar puede darte más libertad en el futuro?",
+      options:[
+        {text:"Porque te obliga a no disfrutar nunca de nada", correct:false},
+        {text:"Porque te permite elegir en qué gastar cuando realmente lo necesitás o querés", correct:true},
+        {text:"Porque la plata guardada se multiplica sola sin hacer nada", correct:false}
+      ]
+    },
+    {
+      q:"Cobrás $20.000 por una changa de fin de semana. ¿Qué es lo más sano con esa plata?",
+      options:[
+        {text:"Gastarlo todo porque te lo ganaste vos", correct:false},
+        {text:"Separar una parte para ahorrar y usar el resto sin culpa", correct:true},
+        {text:"Guardarlo todo y no gastar absolutamente nada", correct:false}
+      ]
+    },
+    {
+      q:"Ves ropa baratísima en una feria americana. ¿Qué conviene hacer antes de comprar?",
+      options:[
+        {text:"Comprar todo lo que te guste porque está barato", correct:false},
+        {text:"Pensar si realmente lo necesitás o lo vas a usar", correct:true},
+        {text:"Comprar sin pensarlo, después se ve", correct:false}
+      ]
+    },
+    {
+      q:"¿Cuál de estas frases es más cierta sobre el ahorro?",
+      options:[
+        {text:"Ahorrar es privarte de disfrutar tu adolescencia", correct:false},
+        {text:"Ahorrar es una herramienta para cumplir tus propios proyectos", correct:true},
+        {text:"Ahorrar solo sirve para la gente grande", correct:false}
+      ]
+    },
+    {
+      q:"Estás juntando plata para el viaje de egresados y te tienta una compra que no necesitás. ¿Qué es lo más recomendable?",
+      options:[
+        {text:"Comprarlo igual, una compra chica no afecta nada", correct:false},
+        {text:"Esperar unos días y decidir con la cabeza fría", correct:true},
+        {text:"Pedir plata prestada para comprarlo", correct:false}
+      ]
+    },
+    {
+      q:"¿Qué pasa si gastás toda tu plata apenas la recibís, siempre?",
+      options:[
+        {text:"Nunca vas a poder cumplir metas que requieren juntar plata", correct:true},
+        {text:"Vas a tener más libertad financiera", correct:false},
+        {text:"No pasa nada, siempre vas a tener la misma plata", correct:false}
+      ]
+    },
+    {
+      q:"Tus amigos te invitan a una previa y estás ahorrando. ¿Qué opción te permite disfrutar sin frenar tu meta?",
+      options:[
+        {text:"Ir y gastar toda la plata que tenías ahorrada", correct:false},
+        {text:"Llevar algo de tu casa y gastar lo mínimo posible", correct:true},
+        {text:"No volver a salir nunca más con amigos", correct:false}
+      ]
+    },
+    {
+      q:"¿Cuál es un buen primer paso para empezar a ahorrar?",
+      options:[
+        {text:"Esperar a ganar mucha plata para recién ahí empezar", correct:false},
+        {text:"Separar una pequeña parte de cualquier plata que recibas, aunque sea poca", correct:true},
+        {text:"Ahorrar solo si sobra algo al final del mes", correct:false}
+      ]
+    },
+    {
+      q:"¿Tener una meta clara (como un viaje o unas zapatillas) ayuda a ahorrar?",
+      options:[
+        {text:"No, es mejor ahorrar sin pensar en nada puntual", correct:false},
+        {text:"Sí, tener un objetivo concreto ayuda a sostener el hábito", correct:true},
+        {text:"No, tener metas solo genera ansiedad", correct:false}
+      ]
+    },
+    {
+      q:"¿Ahorrar significa que nunca más te vas a poder dar un gusto?",
+      options:[
+        {text:"Sí, ahorrar es privarte de todo", correct:false},
+        {text:"No, se trata de encontrar un equilibrio entre ahorrar y disfrutar", correct:true},
+        {text:"Sí, pero solo hasta cumplir 18 años", correct:false}
+      ]
+    }
+  ];
+
+  const WIN_SCORE = 100;
+  const POINTS_PER_CORRECT = 10;
+  const MAX_LIVES = 3;
+
+  let lives = MAX_LIVES;
+  let score = 0;
+  let queue = [];
+  let queuePtr = 0;
+  let busy = false;
+
+  const introScreen = document.getElementById('introScreen');
+  const gameScreen = document.getElementById('gameScreen');
+  const startBtn = document.getElementById('startBtn');
+  const retryBtn = document.getElementById('retryBtn');
+  const playAgainBtn = document.getElementById('playAgainBtn');
+  const overlayGameOver = document.getElementById('overlayGameOver');
+  const overlayWin = document.getElementById('overlayWin');
+  const heartsWrap = document.getElementById('hearts');
+  const scoreVal = document.getElementById('scoreVal');
+  const scoreFill = document.getElementById('scoreFill');
+  const questionText = document.getElementById('questionText');
+  const pond = document.getElementById('pond');
+  const frog = document.getElementById('frog');
+  const feedbackBanner = document.getElementById('feedbackBanner');
+
+  const PAD_POSITIONS = [
+    {left:18, top:80},
+    {left:50, top:88},
+    {left:82, top:80}
+  ];
+  const HOME_POS = {left:50, top:14};
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]]=[a[j],a[i]];
+    }
+    return a;
+  }
+
+  function buildQueue(){
+    queue = shuffle(questionPool);
+    queuePtr = 0;
+  }
+
+  function nextQuestionData(){
+    if(queuePtr >= queue.length){
+      const last = queue[queue.length-1];
+      let reshuffled = shuffle(questionPool);
+      if(reshuffled[0] === last){
+        reshuffled.push(reshuffled.shift());
+      }
+      queue = reshuffled;
+      queuePtr = 0;
+    }
+    const item = queue[queuePtr];
+    queuePtr++;
+    return item;
+  }
+
+  function renderHearts(){
+    const hs = heartsWrap.querySelectorAll('.heart');
+    hs.forEach((h, i)=>{
+      if(i < MAX_LIVES - lives){
+        h.classList.add('lost');
+      } else {
+        h.classList.remove('lost');
+      }
+    });
+  }
+
+  function renderScore(){
+    scoreVal.textContent = score;
+    scoreFill.style.width = score + '%';
+  }
+
+  function setFrogPos(pos, animate){
+    frog.style.left = pos.left + '%';
+    frog.style.top = pos.top + '%';
+    if(animate){
+      frog.classList.remove('jumping');
+      void frog.offsetWidth;
+      frog.classList.add('jumping');
+    }
+  }
+
+  function clearPond(){
+    pond.querySelectorAll('.lilypad, .ripple, .floating-tag').forEach(el=>el.remove());
+  }
+
+  function spawnRipple(pos){
+    const r = document.createElement('div');
+    r.className = 'ripple show';
+    r.style.left = pos.left + '%';
+    r.style.top = pos.top + '%';
+    r.style.transform = 'translate(-50%,-50%)';
+    pond.appendChild(r);
+    setTimeout(()=> r.remove(), 1000);
+  }
+
+  function spawnFloatingTag(pos, text, positive){
+    const tag = document.createElement('div');
+    tag.className = 'floating-tag ' + (positive ? 'pos' : 'neg') + ' show';
+    tag.textContent = text;
+    tag.style.left = pos.left + '%';
+    tag.style.top = pos.top + '%';
+    pond.appendChild(tag);
+    setTimeout(()=> tag.remove(), 1200);
+  }
+
+  function loadQuestion(){
+    busy = false;
+    feedbackBanner.classList.remove('show','bad');
+    feedbackBanner.textContent = '';
+
+    const data = nextQuestionData();
+    questionText.textContent = data.q;
+
+    clearPond();
+    setFrogPos(HOME_POS, false);
+
+    const opts = shuffle(data.options);
+    opts.forEach((opt, i)=>{
+      const pos = PAD_POSITIONS[i];
+      const pad = document.createElement('button');
+      pad.className = 'lilypad';
+      pad.style.left = pos.left + '%';
+      pad.style.top = pos.top + '%';
+      pad.innerHTML = '<span class="lilypad-text">' + opt.text + '</span>';
+      pad.addEventListener('click', ()=> handleChoice(pad, pos, opt, opts));
+      pond.appendChild(pad);
+    });
+  }
+
+  function handleChoice(pad, pos, opt, allOpts){
+    if(busy) return;
+    busy = true;
+
+    pond.querySelectorAll('.lilypad').forEach(p=> p.classList.add('disabled'));
+
+    setFrogPos(pos, true);
+    spawnRipple(pos);
+
+    setTimeout(()=>{
+      if(opt.correct){
+        pad.classList.add('correct-glow');
+        score = Math.min(WIN_SCORE, score + POINTS_PER_CORRECT);
+        renderScore();
+        spawnFloatingTag(pos, '+10', true);
+        feedbackBanner.classList.remove('bad');
+        feedbackBanner.textContent = '¡Bien ahí! ' + pickPositiveMsg();
+        feedbackBanner.classList.add('show');
+
+        setTimeout(()=>{
+          if(score >= WIN_SCORE){
+            showWin();
+          } else {
+            loadQuestion();
+          }
+        }, 1100);
+
+      } else {
+        pad.classList.add('wrong-glow');
+        const correctPad = findCorrectPadEl(allOpts);
+        if(correctPad) correctPad.el.classList.add('correct-glow');
+
+        lives -= 1;
+        renderHearts();
+        spawnFloatingTag(pos, '-1 vida', false);
+        feedbackBanner.classList.add('bad','show');
+        feedbackBanner.textContent = 'Esa no era... ' + (correctPad ? 'la correcta era: "' + correctPad.text + '"' : '');
+
+        setTimeout(()=>{
+          if(lives <= 0){
+            showGameOver();
+          } else {
+            loadQuestion();
+          }
+        }, 1300);
+      }
+    }, 480);
+  }
+
+  function findCorrectPadEl(allOpts){
+    const pads = Array.from(pond.querySelectorAll('.lilypad'));
+    for(let i=0;i<allOpts.length;i++){
+      if(allOpts[i].correct){
+        return { el: pads[i], text: allOpts[i].text };
+      }
+    }
+    return null;
+  }
+
+  const positiveMsgs = [
+    "vas cada vez más cerca de la libertad financiera.",
+    "esa es una decisión que te acerca a tus metas.",
+    "así se construye el hábito del ahorro.",
+    "elegir bien también es una forma de disfrutar."
+  ];
+  function pickPositiveMsg(){
+    return positiveMsgs[Math.floor(Math.random()*positiveMsgs.length)];
+  }
+
+  function showGameOver(){
+    overlayGameOver.classList.remove('hidden');
+  }
+  function showWin(){
+    overlayWin.classList.remove('hidden');
+  }
+
+  function resetGameState(){
+    lives = MAX_LIVES;
+    score = 0;
+    renderHearts();
+    renderScore();
+    buildQueue();
+  }
+
+  function startGame(){
+    introScreen.classList.add('hidden');
+    gameScreen.classList.remove('hidden');
+    resetGameState();
+    loadQuestion();
+  }
+
+  startBtn.addEventListener('click', startGame);
+
+  retryBtn.addEventListener('click', ()=>{
+    overlayGameOver.classList.add('hidden');
+    resetGameState();
+    loadQuestion();
+  });
+
+  playAgainBtn.addEventListener('click', ()=>{
+    overlayWin.classList.add('hidden');
+    resetGameState();
+    loadQuestion();
+  });
+
+  renderHearts();
+  renderScore();
+})();
+</script>
+</body>
+</html>

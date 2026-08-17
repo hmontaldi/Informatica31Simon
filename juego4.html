@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=no">
+<title>La Ruleta de la Timba Digital</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#F1F4FF; --panel:#FFFFFF; --ink:#241B3A; --ink-soft:#5C5470;
+    --magenta:#FF3E8E; --violet:#7B5CFA; --mint:#17C3A2; --amber:#FFB020; --coral:#FF6B57;
+    --line:#E3E1F5; --danger:#EF476F; --good:#17C3A2;
+    --shadow:0 10px 30px rgba(66,46,130,.12);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(circle at 15% -10%, #E4E9FF 0%, transparent 55%),
+      radial-gradient(circle at 110% 10%, #FFE6F1 0%, transparent 45%),
+      var(--bg);
+    min-height:100vh; font-family:'Poppins',sans-serif; color:var(--ink);
+    display:flex; justify-content:center; padding:18px 12px 40px;
+  }
+  .app{width:100%; max-width:460px;}
+  h1,h2,h3{font-family:'Baloo 2',sans-serif; margin:0;}
+
+  /* ---------- HUD ---------- */
+  .hud{background:var(--panel); border-radius:20px; padding:14px 16px; box-shadow:var(--shadow); margin-bottom:16px; position:relative; overflow:hidden;}
+  .hud-top{display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .brand{display:flex; align-items:center; gap:8px;}
+  .brand .dot{width:12px;height:12px;border-radius:50%; background:linear-gradient(135deg,var(--magenta),var(--violet)); flex-shrink:0;}
+  .brand span{font-family:'Baloo 2',sans-serif; font-weight:700; font-size:15px;}
+  .round-pill{font-size:12px; font-weight:600; color:var(--violet); background:#F0EDFF; padding:5px 10px; border-radius:999px; white-space:nowrap;}
+  .meter-row{margin-top:12px;}
+  .meter-label{display:flex; justify-content:space-between; font-size:12px; font-weight:600; color:var(--ink-soft); margin-bottom:6px;}
+  .meter-label b{color:var(--ink); font-size:13px;}
+  .meter-track{height:12px; border-radius:999px; background:#EEECFB; overflow:hidden; position:relative;}
+  .meter-fill{height:100%; border-radius:999px; background:linear-gradient(90deg,var(--coral),var(--amber),var(--good)); transition:width .6s ease;}
+  .meter-pop{position:absolute; right:6px; top:-2px; font-family:'Baloo 2',sans-serif; font-weight:800; font-size:14px; opacity:0; pointer-events:none;}
+  .meter-pop.show{animation:popFloat 1s ease forwards;}
+  @keyframes popFloat{0%{opacity:0; transform:translateY(6px) scale(.8);}20%{opacity:1; transform:translateY(0) scale(1.1);}70%{opacity:1;}100%{opacity:0; transform:translateY(-16px) scale(1);}}
+  .chips-row{margin-top:10px; display:flex; align-items:center; gap:6px; font-size:12.5px; color:var(--ink-soft); font-weight:600;}
+  .chips-row .chip-icon{font-size:14px;}
+  .chips-row b{color:var(--ink);}
+
+  /* ---------- SCREENS ---------- */
+  .screen{display:none;}
+  .screen.active{display:block; animation:fadeIn .35s ease;}
+  @keyframes fadeIn{from{opacity:0; transform:translateY(6px);} to{opacity:1; transform:translateY(0);}}
+  .card{background:var(--panel); border-radius:22px; padding:22px 20px; box-shadow:var(--shadow); position:relative; overflow:hidden;}
+  .eyebrow{font-size:12px; font-weight:700; letter-spacing:.06em; text-transform:uppercase; color:var(--magenta); margin-bottom:8px;}
+  h1.title{font-size:26px; line-height:1.15; margin-bottom:10px;}
+  p{line-height:1.55; color:var(--ink-soft); font-size:14.5px; margin:0 0 12px;}
+  .btn{border:none; font-family:'Poppins',sans-serif; font-weight:700; font-size:15px; padding:14px 18px; border-radius:16px; cursor:pointer; width:100%; color:#fff; background:linear-gradient(135deg,var(--violet),var(--magenta)); box-shadow:0 8px 20px rgba(123,92,250,.35); transition:transform .15s ease;}
+  .btn:active{transform:scale(.97);}
+  .btn:disabled{opacity:.45; cursor:not-allowed; box-shadow:none; transform:none;}
+  .btn.secondary{background:var(--panel); color:var(--violet); border:2px solid var(--line); box-shadow:none;}
+
+  .intro-points{list-style:none; padding:0; margin:14px 0 18px; display:flex; flex-direction:column; gap:10px;}
+  .intro-points li{display:flex; gap:10px; align-items:flex-start; font-size:13.5px; color:var(--ink-soft); background:#F7F6FF; border-radius:14px; padding:10px 12px;}
+  .intro-points li .ico{font-size:18px; line-height:1;}
+
+  /* ---------- ROUND / WHEEL ---------- */
+  .scenario-tag{display:inline-block; font-size:11.5px; font-weight:700; color:var(--mint); background:#E6FBF6; padding:4px 10px; border-radius:999px; margin-bottom:10px;}
+  .scenario-text{font-size:14.5px; color:var(--ink); line-height:1.5; margin-bottom:16px;}
+  .bet-title{font-size:12.5px; font-weight:700; color:var(--ink-soft); text-transform:uppercase; letter-spacing:.04em; margin-bottom:8px;}
+  .bet-options{display:flex; gap:8px; margin-bottom:16px;}
+  .bet-btn{flex:1; border:2px solid var(--line); background:#fff; border-radius:14px; padding:10px 6px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:15px; color:var(--ink); cursor:pointer;}
+  .bet-btn small{display:block; font-family:'Poppins',sans-serif; font-weight:500; font-size:10px; color:var(--ink-soft);}
+  .bet-btn.selected{border-color:var(--violet); background:#F0EDFF; color:var(--violet);}
+
+  .wheel-wrap{position:relative; width:250px; height:250px; margin:6px auto 8px;}
+  .wheel-wrap.shake{animation:shake .5s;}
+  @keyframes shake{10%,90%{transform:translateX(-2px);}20%,80%{transform:translateX(4px);}30%,50%,70%{transform:translateX(-8px);}40%,60%{transform:translateX(8px);}}
+  .pointer{position:absolute; top:-6px; left:50%; transform:translateX(-50%); width:0;height:0; border-left:11px solid transparent; border-right:11px solid transparent; border-top:20px solid var(--ink); z-index:4; filter:drop-shadow(0 2px 2px rgba(0,0,0,.2));}
+  .wheel-hub{position:absolute; top:50%;left:50%; transform:translate(-50%,-50%); width:46px;height:46px; border-radius:50%; background:var(--panel); border:3px solid var(--ink); z-index:2; display:flex;align-items:center;justify-content:center; font-size:18px;}
+  .wheel{width:100%; height:100%; border-radius:50%; border:5px solid var(--ink); position:relative; transform:rotate(0deg); box-shadow:0 6px 18px rgba(0,0,0,.15) inset, 0 10px 24px rgba(66,46,130,.25); transition:transform 4s cubic-bezier(.17,.67,.32,1.15);}
+  .wheel-label{position:absolute; top:50%;left:50%; width:0;height:0;}
+  .wheel-label span{position:absolute; left:-38px; top:-92px; width:76px; text-align:center; font-size:9.5px; font-weight:700; color:#fff; line-height:1.15; text-shadow:0 1px 2px rgba(0,0,0,.25); display:block;}
+  .fx-layer{position:absolute; inset:0; pointer-events:none; overflow:visible; z-index:5;}
+  .coin{position:absolute; top:40%; left:50%; font-size:20px; animation:coinFall 1.15s ease-in forwards;}
+  @keyframes coinFall{0%{transform:translate(-50%,-10px) rotate(0deg); opacity:1;}100%{transform:translate(var(--dx,0),240px) rotate(380deg); opacity:0;}}
+  .flash-red{position:absolute; inset:-4px; border-radius:50%; background:rgba(239,71,111,0); pointer-events:none; z-index:5;}
+  .flash-red.on{animation:flashRed .55s ease;}
+  @keyframes flashRed{0%{background:rgba(239,71,111,0);}25%{background:rgba(239,71,111,.35);}100%{background:rgba(239,71,111,0);}}
+  .result-pop{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%) scale(.4); font-family:'Baloo 2',sans-serif; font-weight:800; font-size:19px; text-align:center; padding:8px 14px; border-radius:14px; opacity:0; z-index:6; white-space:nowrap; box-shadow:0 8px 18px rgba(0,0,0,.18);}
+  .result-pop.show{animation:popIn .7s cubic-bezier(.34,1.56,.64,1) forwards;}
+  @keyframes popIn{0%{opacity:0; transform:translate(-50%,-50%) scale(.3) rotate(-8deg);}55%{opacity:1; transform:translate(-50%,-50%) scale(1.12) rotate(2deg);}75%{transform:translate(-50%,-50%) scale(.96) rotate(0deg);}100%{opacity:1; transform:translate(-50%,-50%) scale(1) rotate(0deg);}}
+  .result-pop.lose{background:var(--danger); color:#fff;}
+  .result-pop.win{background:var(--good); color:#fff;}
+  .result-pop.neutral{background:var(--amber); color:#fff;}
+
+  #spin-caption{text-align:center; font-size:13px; font-weight:600; color:var(--ink-soft); min-height:18px; margin-bottom:14px;}
+
+  /* ---------- CHAT / DECISION SCREEN ---------- */
+  .phone{background:#0F0B1F; border-radius:26px; padding:10px 10px 14px; box-shadow:var(--shadow);}
+  .phone-topbar{display:flex; align-items:center; gap:8px; color:#fff; padding:8px 10px 12px; font-size:13px; font-weight:700; font-family:'Baloo 2',sans-serif;}
+  .phone-topbar .avatar{width:26px;height:26px;border-radius:50%; background:linear-gradient(135deg,var(--magenta),var(--violet)); display:flex;align-items:center;justify-content:center; font-size:13px; flex-shrink:0;}
+  .phone-topbar .status{margin-left:auto; font-size:10px; font-weight:600; color:#8CF2C9; display:flex; align-items:center; gap:4px;}
+  .phone-topbar .status .live-dot{width:6px;height:6px;border-radius:50%; background:#8CF2C9; animation:blink 1.2s infinite;}
+  @keyframes blink{0%,100%{opacity:1;}50%{opacity:.3;}}
+  .chat-thread{background:#1B1533; border-radius:18px; padding:14px 12px; min-height:130px; display:flex; flex-direction:column; gap:8px;}
+  .bubble{max-width:82%; padding:10px 12px; border-radius:16px; font-size:13px; line-height:1.4; animation:bubbleIn .3s ease;}
+  @keyframes bubbleIn{from{opacity:0; transform:translateY(6px) scale(.96);} to{opacity:1; transform:translateY(0) scale(1);}}
+  .bubble.in{align-self:flex-start; background:#332A57; color:#fff; border-bottom-left-radius:4px;}
+  .bubble.out{align-self:flex-end; background:linear-gradient(135deg,var(--violet),var(--magenta)); color:#fff; border-bottom-right-radius:4px;}
+  .bubble.sys{align-self:center; background:#0F0B1F; border:1px solid #3A3260; color:#C9C3ED; font-size:11.5px; text-align:center; max-width:92%;}
+  .typing{align-self:flex-start; display:flex; gap:4px; background:#332A57; padding:10px 14px; border-radius:16px; border-bottom-left-radius:4px;}
+  .typing span{width:6px;height:6px;border-radius:50%; background:#B8AEEF; animation:typingBounce 1s infinite;}
+  .typing span:nth-child(2){animation-delay:.15s;}
+  .typing span:nth-child(3){animation-delay:.3s;}
+  @keyframes typingBounce{0%,60%,100%{transform:translateY(0); opacity:.5;}30%{transform:translateY(-4px); opacity:1;}}
+
+  .timer-wrap{margin:10px 4px 8px; display:flex; align-items:center; gap:8px;}
+  .timer-icon{font-size:13px;}
+  .timer-track{flex:1; height:8px; border-radius:999px; background:#2A2350; overflow:hidden;}
+  .timer-fill{height:100%; width:100%; border-radius:999px; background:linear-gradient(90deg,var(--good),var(--amber),var(--danger)); transform-origin:left; transition:width .1s linear;}
+
+  .reply-bubbles{display:flex; flex-direction:column; gap:8px; margin-top:4px;}
+  .reply-btn{opacity:0; transform:translateY(8px); text-align:left; background:#231D40; border:1.5px solid #3A3260; border-radius:14px; padding:10px 12px; font-family:'Poppins',sans-serif; font-size:12.8px; font-weight:500; color:#fff; cursor:pointer; animation:replyIn .35s ease forwards;}
+  .reply-btn:nth-child(1){animation-delay:.05s;}
+  .reply-btn:nth-child(2){animation-delay:.15s;}
+  .reply-btn:nth-child(3){animation-delay:.25s;}
+  .reply-btn:nth-child(4){animation-delay:.35s;}
+  @keyframes replyIn{to{opacity:1; transform:translateY(0);}}
+  .reply-btn:active{transform:scale(.98);}
+  .reply-btn:disabled{opacity:.35; cursor:default;}
+  .reply-btn.picked{border-color:var(--mint); background:#1D3B34;}
+
+  .feedback-wrap{margin-top:12px;}
+  .next-wrap{margin-top:14px;}
+
+  .hidden{display:none !important;}
+
+  /* ---------- FINAL ---------- */
+  .final-badge{width:78px;height:78px; border-radius:50%; margin:0 auto 14px; display:flex;align-items:center;justify-content:center; font-size:34px; background:linear-gradient(135deg,var(--violet),var(--magenta));}
+  .final-score{text-align:center; font-family:'Baloo 2',sans-serif; font-weight:800; font-size:42px; margin-bottom:2px;}
+  .final-score-label{text-align:center; font-size:12.5px; color:var(--ink-soft); font-weight:600; margin-bottom:18px; text-transform:uppercase; letter-spacing:.05em;}
+  .final-msg{text-align:center;}
+  .tips-box{margin-top:18px; background:#F7F6FF; border-radius:16px; padding:14px 16px;}
+  .tips-box h3{font-size:14px; margin-bottom:8px;}
+  .tips-box ul{margin:0; padding-left:18px; font-size:13px; color:var(--ink-soft); line-height:1.6;}
+  footer{text-align:center; font-size:11px; color:#A7A2C4; margin-top:18px;}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="hud">
+    <div class="hud-top">
+      <div class="brand"><span class="dot"></span><span>Timba Digital</span></div>
+      <div class="round-pill" id="round-pill">Ronda 0 / 5</div>
+    </div>
+    <div class="meter-row">
+      <div class="meter-label"><span>Tu Bienestar</span> <b id="meter-number">50</b></div>
+      <div class="meter-track"><div class="meter-fill" id="meter-fill" style="width:50%"></div></div>
+      <div class="meter-pop" id="meter-pop"></div>
+    </div>
+    <div class="chips-row"><span class="chip-icon">🪙</span> Fichas: <b id="chips-number">100</b></div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="screen active" id="screen-intro">
+    <div class="card">
+      <div class="eyebrow">Antes de girar</div>
+      <h1 class="title">La ruleta de la timba digital</h1>
+      <p>¿Plata fácil y diversión... o una trampa digital que te desgasta y te engancha? 5 rondas. En cada una apostás, girás la ruleta y después tenés segundos para responder un chat real antes de que se te acabe el tiempo.</p>
+      <ul class="intro-points">
+        <li><span class="ico">🎡</span> La ruleta casi siempre te hace perder la apuesta, como una de verdad.</li>
+        <li><span class="ico">⏱️</span> Vas a tener que responder rápido — así presionan estas apps de verdad.</li>
+        <li><span class="ico">🧠</span> Lo que importa de verdad es tu <b>Bienestar</b>, no las fichas.</li>
+      </ul>
+      <button class="btn" id="start-btn">Empezar a jugar</button>
+    </div>
+  </section>
+
+  <!-- ROUND / WHEEL -->
+  <section class="screen" id="screen-round">
+    <div class="card">
+      <span class="scenario-tag" id="scenario-tag">Situación</span>
+      <div class="scenario-text" id="scenario-text"></div>
+
+      <div id="bet-panel">
+        <div class="bet-title">Elegí cuánto apostar</div>
+        <div class="bet-options" id="bet-options"></div>
+      </div>
+
+      <div class="wheel-wrap" id="wheel-wrap">
+        <div class="pointer"></div>
+        <div class="wheel" id="wheel"></div>
+        <div class="wheel-hub">🎯</div>
+        <div class="flash-red" id="flash-red"></div>
+        <div class="fx-layer" id="fx-layer"></div>
+        <div class="result-pop" id="result-pop"></div>
+      </div>
+
+      <div id="spin-caption"></div>
+      <button class="btn" id="spin-btn" disabled>Elegí una apuesta primero</button>
+    </div>
+  </section>
+
+  <!-- DECISION (CHAT) -->
+  <section class="screen" id="screen-question">
+    <div class="card">
+      <div class="phone">
+        <div class="phone-topbar">
+          <span class="avatar" id="chat-avatar">💬</span>
+          <span id="chat-sender">Chat</span>
+          <span class="status" id="chat-status"><span class="live-dot"></span>en vivo</span>
+        </div>
+        <div class="chat-thread" id="chat-thread"></div>
+        <div class="timer-wrap" id="timer-wrap">
+          <span class="timer-icon">⏱️</span>
+          <div class="timer-track"><div class="timer-fill" id="timer-fill"></div></div>
+        </div>
+        <div class="reply-bubbles" id="reply-bubbles"></div>
+      </div>
+      <div class="next-wrap">
+        <button class="btn hidden" id="next-btn">Continuar</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL -->
+  <section class="screen" id="screen-final">
+    <div class="card">
+      <div class="final-badge" id="final-badge">🎯</div>
+      <div class="final-score" id="final-score">50</div>
+      <div class="final-score-label">Bienestar final</div>
+      <div class="final-msg" id="final-msg"></div>
+      <div class="tips-box">
+        <h3>Posta, para llevarte</h3>
+        <ul>
+          <li>Las apuestas online están diseñadas para que la casa gane casi siempre: no es mala suerte, es matemática.</li>
+          <li>Los "casi gano", los bonos gratis y la presión del tiempo son técnicas para que sigas jugando, no premios.</li>
+          <li>Si sentís que apostar (o abrir sobres, o pagar por skins) te genera ansiedad o ganas de recuperar lo perdido, hablalo con un adulto de confianza.</li>
+        </ul>
+      </div>
+      <button class="btn secondary" style="margin-top:16px" id="restart-btn">Jugar de nuevo</button>
+    </div>
+    <footer>Juego educativo — pensado para adolescentes en Argentina.</footer>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------------- DATA ----------------
+  const rounds = [
+    {
+      tag: "Ronda 1 · EA FC",
+      scenario: "Jugás EA FC con tus amigos y en el grupo todos hablan de comprar 'sobres' (packs) para sacar jugadores top. Tenés algo de plata guardada de tu cumpleaños.",
+      sender: "Grupo EA FC ⚽",
+      avatar: "⚽",
+      incoming: "Che, TODOS están sacando cracks del sobre especial de hoy 🔥 ¿te comprás uno con la plata del cumple?",
+      options: [
+        { text:"Dale, compro el más caro 🤑", delta:-15, npc:"jaja tranqui, la casa siempre gana algo eh 👀", fb:"Comprar 'a ciegas' es exactamente lo que buscan estos sistemas: que apuestes sin pensar." },
+        { text:"Primero miro las probabilidades reales", delta:15, npc:"ah mirá vos, el analista 😂", fb:"Revisar las probabilidades antes de gastar te saca del piloto automático." },
+        { text:"Le pregunto a mis viejos antes", delta:10, npc:"posta? bueno, contame qué te dicen", fb:"Sumar otra mirada antes de gastar plata real es una jugada inteligente." },
+        { text:"Paso, juego con lo que tengo", delta:5, npc:"aa bueno, vos tranqui entonces", fb:"No caer en la presión del grupo ya suma." }
+      ]
+    },
+    {
+      tag: "Ronda 2 · Stream en vivo",
+      scenario: "Estás viendo un stream y el streamer promociona una casa de apuestas online: 'usá mi código y te regalan plata para jugar, no perdés nada'.",
+      sender: "StreamerXD",
+      avatar: "🎥",
+      incoming: "🎁 Usá mi código GANASOL100 y la casa te regala plata para apostar, ¡no perdés nada, posta!",
+      options: [
+        { text:"Me registro ya mismo", delta:-20, npc:"ahí está, bienvenido 😏", fb:"Nada es 'gratis': el bono es la puerta de entrada para que sigas jugando." },
+        { text:"Busco si es legal en Argentina", delta:10, npc:"eh, buena pregunta la verdad", fb:"Chequear la legalidad y el respaldo real de la plataforma te protege." },
+        { text:"Se lo mando a un amigo para pensarlo", delta:10, npc:"dale, avisame qué opina", fb:"Frenar y consultar antes de decidir corta el impulso." },
+        { text:"Sigo mirando el stream nomás", delta:15, npc:"como quieras 🤷", fb:"No morder el anzuelo del código 'gratis' ya es una gran decisión." }
+      ]
+    },
+    {
+      tag: "Ronda 3 · Grupo de WhatsApp",
+      scenario: "Un compañero te agrega a un grupo de WhatsApp que promete 'tips ganadores 100% seguros' para apostar en los partidos del finde.",
+      sender: "Grupo Pronósticos 🔒",
+      avatar: "🔒",
+      incoming: "Tengo el tip GARANTIZADO de hoy 🔥 apostá y listo, no falla nunca 💸",
+      options: [
+        { text:"Apuesto la plata del recreo ya", delta:-20, npc:"eso, así se gana plata 💰", fb:"Ningún tip es 'garantizado': esa palabra sola ya es una alarma." },
+        { text:"Salgo del grupo", delta:15, npc:"uh bueno, te lo perdés 🙄", fb:"Cortar el contacto con estos grupos reduce la presión constante." },
+        { text:"Pregunto cómo ganan ellos si el tip es tan bueno", delta:10, npc:"eh... por las comisiones jeje", fb:"Esa pregunta desarma la mayoría de estas promesas." },
+        { text:"Me quedo mirando nomás, no apuesto", delta:-5, npc:"dale, cuando quieras te sumás", fb:"Seguir mirando 'por las dudas' mantiene la tentación activa igual." }
+      ]
+    },
+    {
+      tag: "Ronda 4 · Mercado de skins",
+      scenario: "En un juego shooter que jugás con amigos, hay un sitio donde podés apostar tus skins para intentar ganar una más rara y valiosa.",
+      sender: "Mercado de Skins 🔫",
+      avatar: "🎮",
+      incoming: "Subí tu skin y probá suerte por una legendaria 🎰 ¡hoy están cayendo un montón!",
+      options: [
+        { text:"Subo mi skin más valiosa", delta:-20, npc:"suerte... la vas a necesitar 😅", fb:"Arriesgar justo lo que más te costó conseguir es la trampa más común." },
+        { text:"Subo una skin chica, 'no importa'", delta:-10, npc:"dale, probemos", fb:"Apostar 'poquito' sigue siendo entrenar el hábito de apostar." },
+        { text:"Leo comentarios de gente que perdió todo ahí", delta:10, npc:"eh... mejor no leas eso jaja", fb:"Buscar la otra cara de la historia te da información real, no marketing." },
+        { text:"Cierro la página", delta:15, npc:"bueno, quedará para otro que sí", fb:"Salir a tiempo evita perder algo que ya tenías conseguido." }
+      ]
+    },
+    {
+      tag: "Ronda 5 · El 'casi gano'",
+      scenario: "Después de perder varias veces en un juego con ruleta, sentís que 'estuviste re cerca' de ganar y tenés muchas ganas de seguir para recuperar lo perdido.",
+      sender: "Ruleta Online 🎡",
+      avatar: "🎡",
+      incoming: "¡UY, casi! 😳 Estuviste a un casillero de ganar todo... ¿seguís un rato más para recuperarlo?",
+      options: [
+        { text:"Sigo, tengo que recuperarlo", delta:-20, npc:"así me gusta, un giro más 🔥", fb:"Perseguir la pérdida es el momento donde más plata (y calma) se pierde." },
+        { text:"Pido plata prestada para seguir", delta:-25, npc:"eso, no te quedes corto 💸", fb:"Pedir plata prestada para apostar es una señal de alarma grande." },
+        { text:"Paro un rato y hago otra cosa", delta:15, npc:"bueno... acá voy a estar", fb:"Cortar a tiempo es la decisión más difícil y la más sana." },
+        { text:"Me doy cuenta que el 'casi gano' es diseño para engancharme", delta:20, npc:"...", fb:"Excelente: el 'casi ganás' está calculado a propósito, no es casualidad." }
+      ]
+    }
+  ];
+
+  // 8 casilleros — la mayoría hacen perder, como una ruleta real
+  const slices = [
+    { label:"Perdiste todo",     color:"#FF6B57", result:"lose" },
+    { label:"Casi... pero no",   color:"#FFB020", result:"lose" },
+    { label:"Perdiste la mitad", color:"#FFD166", result:"half" },
+    { label:"Empate",            color:"#B8E0D2", result:"tie"  },
+    { label:"Perdiste todo",     color:"#FF6B57", result:"lose" },
+    { label:"Bonus trampa",      color:"#C9A7EB", result:"trap" },
+    { label:"Casi... pero no",   color:"#FFB020", result:"lose" },
+    { label:"¡Doblaste!",        color:"#17C3A2", result:"win"  }
+  ];
+
+  const betChoices = [10, 25, 50];
+  const DECIDE_SECONDS = 8;
+
+  // ---------------- STATE ----------------
+  let state = {
+    round: 0, bienestar: 50, fichas: 100, bet: 0,
+    currentRotation: 0, timerInterval:null, timerTimeout:null, decided:false
+  };
+
+  // ---------------- DOM ----------------
+  const $ = (id) => document.getElementById(id);
+  const screens = { intro:$("screen-intro"), round:$("screen-round"), question:$("screen-question"), final:$("screen-final") };
+  function showScreen(name){ Object.values(screens).forEach(s=>s.classList.remove("active")); screens[name].classList.add("active"); }
+
+  function popBienestar(delta){
+    const el = $("meter-pop");
+    el.textContent = (delta>=0?"+":"") + delta;
+    el.style.color = delta>=0 ? "#0C7A63" : "#B3234A";
+    el.classList.remove("show"); void el.offsetWidth; el.classList.add("show");
+  }
+
+  function animateChips(from, to){
+    const el = $("chips-number");
+    const dur = 500, start = performance.now();
+    function step(t){
+      const p = Math.min(1,(t-start)/dur);
+      el.textContent = Math.round(from + (to-from)*p);
+      if(p<1) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  function updateHud(prevFichas){
+    $("round-pill").textContent = `Ronda ${Math.min(state.round+1,5)} / 5`;
+    $("meter-number").textContent = state.bienestar;
+    $("meter-fill").style.width = state.bienestar + "%";
+    if(prevFichas !== undefined){ animateChips(prevFichas, state.fichas); }
+    else { $("chips-number").textContent = state.fichas; }
+  }
+
+  // ---------------- WHEEL ----------------
+  function buildWheel(){
+    const wheel = $("wheel");
+    const sliceAngle = 360/slices.length;
+    const stops = slices.map((s,i)=>`${s.color} ${i*sliceAngle}deg ${(i+1)*sliceAngle}deg`).join(", ");
+    wheel.style.background = `conic-gradient(${stops})`;
+    wheel.innerHTML = slices.map((s,i)=>{
+      const angle = i*sliceAngle + sliceAngle/2;
+      return `<div class="wheel-label" style="transform:rotate(${angle}deg) translate(0,-95px) rotate(${-angle}deg);"><span>${s.label}</span></div>`;
+    }).join("");
+  }
+
+  function renderRound(){
+    const r = rounds[state.round];
+    $("scenario-tag").textContent = r.tag;
+    $("scenario-text").textContent = r.scenario;
+
+    state.bet = 0;
+    $("spin-caption").textContent = "";
+    $("spin-btn").disabled = true;
+    $("spin-btn").textContent = "Elegí una apuesta primero";
+    $("result-pop").className = "result-pop";
+    $("result-pop").textContent = "";
+
+    const betPanel = $("bet-options");
+    betPanel.innerHTML = "";
+    betChoices.forEach(amount=>{
+      const btn = document.createElement("button");
+      btn.className = "bet-btn"; btn.type="button";
+      btn.innerHTML = `${amount}<small>fichas</small>`;
+      btn.addEventListener("click", ()=>selectBet(amount, btn));
+      betPanel.appendChild(btn);
+    });
+    $("bet-panel").classList.remove("hidden");
+    $("spin-btn").classList.remove("hidden");
+    updateHud();
+    showScreen("round");
+  }
+
+  function selectBet(amount, btnEl){
+    state.bet = amount;
+    document.querySelectorAll(".bet-btn").forEach(b=>b.classList.remove("selected"));
+    btnEl.classList.add("selected");
+    $("spin-btn").disabled = false;
+    $("spin-btn").textContent = `Girar apostando ${amount} fichas`;
+  }
+
+  function spinWheel(){
+    $("spin-btn").disabled = true;
+    document.querySelectorAll(".bet-btn").forEach(b=>b.disabled=true);
+    $("spin-caption").textContent = "Girando...";
+
+    const sliceAngle = 360/slices.length;
+    const idx = Math.floor(Math.random()*slices.length);
+    const centerAngle = idx*sliceAngle + sliceAngle/2;
+    const jitter = (Math.random()*(sliceAngle*0.5)) - (sliceAngle*0.25);
+    const targetMod = (360 - (centerAngle+jitter) + 360) % 360;
+    const extraSpins = 5 + Math.floor(Math.random()*2);
+    const base = state.currentRotation - (state.currentRotation % 360);
+    let newRotation = base + 360*extraSpins + targetMod;
+    if(newRotation <= state.currentRotation) newRotation += 360;
+    state.currentRotation = newRotation;
+    $("wheel").style.transform = `rotate(${state.currentRotation}deg)`;
+
+    setTimeout(()=>resolveSpin(slices[idx]), 4100);
+  }
+
+  function spawnCoins(good){
+    const layer = $("fx-layer");
+    layer.innerHTML = "";
+    const n = good ? 14 : 6;
+    for(let i=0;i<n;i++){
+      const c = document.createElement("span");
+      c.className = "coin";
+      c.textContent = good ? "🪙" : "💸";
+      c.style.setProperty("--dx", (Math.random()*140-70)+"px");
+      c.style.left = (40+Math.random()*20) + "%";
+      c.style.animationDelay = (Math.random()*.3)+"s";
+      layer.appendChild(c);
+    }
+    setTimeout(()=>{ layer.innerHTML=""; }, 1500);
+  }
+
+  function resolveSpin(slice){
+    const bet = state.bet;
+    const prevFichas = state.fichas;
+    let msg="", cls="neutral", popText="";
+
+    switch(slice.result){
+      case "lose":
+        state.fichas -= bet;
+        msg = `Perdiste tus ${bet} fichas apostadas.`; cls="lose"; popText="PERDISTE 😬";
+        $("wheel-wrap").classList.add("shake"); $("flash-red").classList.add("on");
+        spawnCoins(false);
+        break;
+      case "half":
+        state.fichas -= Math.round(bet/2);
+        msg = `Recuperás la mitad, perdiste ${Math.round(bet/2)} fichas.`; cls="lose"; popText="A MEDIAS 😕";
+        $("flash-red").classList.add("on");
+        spawnCoins(false);
+        break;
+      case "tie":
+        msg = `Ni ganás ni perdés, recuperás tu apuesta.`; cls="neutral"; popText="EMPATE 😐";
+        break;
+      case "trap":
+        state.fichas += Math.round(bet/2);
+        msg = `Ganaste un poco... pero te dan ganas de seguir jugando.`; cls="neutral"; popText="CUIDADO 🤔";
+        spawnCoins(true);
+        break;
+      case "win":
+        state.fichas += bet*2;
+        msg = `¡Ganaste el doble! La mayoría no tiene esta suerte.`; cls="win"; popText="¡DOBLASTE! 🎉";
+        spawnCoins(true);
+        break;
+    }
+
+    const pop = $("result-pop");
+    pop.className = "result-pop " + cls;
+    pop.textContent = popText;
+    void pop.offsetWidth;
+    pop.classList.add("show");
+
+    $("spin-caption").textContent = msg;
+    updateHud(prevFichas);
+
+    setTimeout(()=>{
+      $("wheel-wrap").classList.remove("shake");
+      $("flash-red").classList.remove("on");
+    }, 600);
+
+    setTimeout(()=>{
+      $("bet-panel").classList.add("hidden");
+      $("spin-btn").classList.add("hidden");
+      renderDecision();
+    }, 1700);
+  }
+
+  // ---------------- DECISION (CHAT) ----------------
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; }
+    return a;
+  }
+
+  function clearTimers(){
+    if(state.timerInterval){ clearInterval(state.timerInterval); state.timerInterval=null; }
+    if(state.timerTimeout){ clearTimeout(state.timerTimeout); state.timerTimeout=null; }
+  }
+
+  function renderDecision(){
+    clearTimers();
+    state.decided = false;
+    const r = rounds[state.round];
+
+    $("chat-avatar").textContent = r.avatar;
+    $("chat-sender").textContent = r.sender;
+    $("chat-status").innerHTML = '<span class="live-dot"></span>en vivo';
+
+    const thread = $("chat-thread");
+    thread.innerHTML = `<div class="typing"><span></span><span></span><span></span></div>`;
+    $("reply-bubbles").innerHTML = "";
+    $("timer-wrap").classList.add("hidden");
+    $("next-btn").classList.add("hidden");
+
+    setTimeout(()=>{
+      thread.innerHTML = `<div class="bubble in">${r.incoming}</div>`;
+      const shuffled = shuffle(r.options);
+      renderReplies(shuffled);
+      startTimer(shuffled);
+    }, 900);
+
+    showScreen("question");
+  }
+
+  function renderReplies(options){
+    const wrap = $("reply-bubbles");
+    wrap.innerHTML = "";
+    options.forEach(opt=>{
+      const btn = document.createElement("button");
+      btn.className = "reply-btn"; btn.type="button";
+      btn.textContent = opt.text;
+      btn.addEventListener("click", ()=>chooseOption(opt, btn));
+      wrap.appendChild(btn);
+    });
+  }
+
+  function startTimer(options){
+    const fill = $("timer-fill");
+    $("timer-wrap").classList.remove("hidden");
+    fill.style.width = "100%";
+    let elapsed = 0;
+    const tick = 100;
+    state.timerInterval = setInterval(()=>{
+      elapsed += tick;
+      const pct = Math.max(0, 100 - (elapsed/(DECIDE_SECONDS*1000))*100);
+      fill.style.width = pct + "%";
+    }, tick);
+
+    state.timerTimeout = setTimeout(()=>{
+      if(state.decided) return;
+      let worst = options[0];
+      options.forEach(o=>{ if(o.delta < worst.delta) worst = o; });
+      autoPick(worst);
+    }, DECIDE_SECONDS*1000);
+  }
+
+  function autoPick(opt){
+    state.decided = true;
+    clearTimers();
+    document.querySelectorAll(".reply-btn").forEach(b=>b.disabled=true);
+    $("timer-wrap").classList.add("hidden");
+
+    const thread = $("chat-thread");
+    thread.innerHTML += `<div class="bubble sys">⏱️ Se te acabó el tiempo... elegiste sin pensar, como pasa muchas veces con estas apps.</div>`;
+    applyDecision(opt, thread);
+  }
+
+  function chooseOption(opt, btnEl){
+    if(state.decided) return;
+    state.decided = true;
+    clearTimers();
+    $("timer-wrap").classList.add("hidden");
+
+    document.querySelectorAll(".reply-btn").forEach(b=>b.disabled=true);
+    btnEl.classList.add("picked");
+
+    const thread = $("chat-thread");
+    thread.innerHTML += `<div class="bubble out">${opt.text}</div>`;
+    applyDecision(opt, thread);
+  }
+
+  function applyDecision(opt, thread){
+    setTimeout(()=>{
+      thread.innerHTML += `<div class="bubble in">${opt.npc}</div>`;
+      thread.scrollTop = thread.scrollHeight;
+
+      setTimeout(()=>{
+        state.bienestar = Math.max(0, Math.min(100, state.bienestar + opt.delta));
+        popBienestar(opt.delta);
+        updateHud();
+
+        const sign = opt.delta>=0 ? "+" : "";
+        thread.innerHTML += `<div class="bubble sys">${sign}${opt.delta} Bienestar — ${opt.fb}</div>`;
+        thread.scrollTop = thread.scrollHeight;
+        $("next-btn").classList.remove("hidden");
+      }, 700);
+    }, 500);
+  }
+
+  function nextStep(){
+    state.round++;
+    if(state.round >= rounds.length){ renderFinal(); }
+    else { renderRound(); }
+  }
+
+  // ---------------- FINAL ----------------
+  function renderFinal(){
+    const score = state.bienestar;
+    $("final-score").textContent = score;
+
+    let badge, msg;
+    if(score <= 30){
+      badge="😵";
+      msg = `Terminaste con un Bienestar bajo (${score}/100), igual que le puede pasar a cualquiera que entra sin pensarlo dos veces. Las plataformas de apuestas y las cajas sorpresa están hechas por profesionales para que perdamos el control y encima nos apuran con el tiempo. Si en la vida real sentís que apostar, abrir sobres o pagar por skins te genera ansiedad, hablalo con un adulto de confianza: no es un tema menor.`;
+    } else if(score <= 60){
+      badge="🤨";
+      msg = `Terminaste en un punto medio (${score}/100). Tomaste algunas decisiones críticas y en otras caíste en la presión del "total es poco" o del "casi gano". Vas por buen camino: seguí cuestionando estas propuestas antes de meterte, aunque el reloj corra.`;
+    } else {
+      badge="🧠";
+      msg = `¡Terminaste con un Bienestar alto (${score}/100)! Supiste identificar que la plata "fácil", los bonos gratis y la presión del tiempo están diseñados para que la casa gane y vos sigas jugando. Ese pensamiento crítico es tu mejor herramienta.`;
+    }
+    $("final-badge").textContent = badge;
+    $("final-msg").innerHTML = `<p>${msg}</p>`;
+    showScreen("final");
+  }
+
+  function restartGame(){
+    clearTimers();
+    state = { round:0, bienestar:50, fichas:100, bet:0, currentRotation:0, timerInterval:null, timerTimeout:null, decided:false };
+    $("wheel").style.transition = "none";
+    $("wheel").style.transform = "rotate(0deg)";
+    requestAnimationFrame(()=>{ $("wheel").style.transition = "transform 4s cubic-bezier(.17,.67,.32,1.15)"; });
+    updateHud();
+    renderRound();
+  }
+
+  // ---------------- INIT ----------------
+  buildWheel();
+  updateHud();
+  $("start-btn").addEventListener("click", ()=>renderRound());
+  $("spin-btn").addEventListener("click", spinWheel);
+  $("next-btn").addEventListener("click", nextStep);
+  $("restart-btn").addEventListener("click", restartGame);
+
+})();
+</script>
+</body>
+</html>

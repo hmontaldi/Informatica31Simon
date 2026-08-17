@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>¿La plata manda? · Un juego sobre acuerdos sanos</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#12262B;
+    --bg:#0F2A2E;
+    --bg-soft:#163A3F;
+    --paper:#FBF7EE;
+    --paper-dim:#EFE8D8;
+    --gold:#F5B942;
+    --gold-dim:#8a733a;
+    --green:#3FCB8C;
+    --green-dim:#1f5a45;
+    --coral:#FF4D6D;
+    --coral-dim:#7a2534;
+    --line: rgba(18,38,43,0.12);
+    --radius: 18px;
+    --shadow: 0 18px 40px rgba(0,0,0,0.35);
+  }
+  *{box-sizing:border-box;}
+  html,body{height:100%;}
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(circle at 15% 8%, #1c4d52 0%, transparent 45%),
+      radial-gradient(circle at 90% 90%, #0c2226 0%, transparent 50%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Inter', sans-serif;
+    display:flex;
+    justify-content:center;
+    padding: 18px 12px 40px;
+  }
+  .app{
+    width:100%;
+    max-width:460px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+  h1,h2,h3{ font-family:'Fredoka', sans-serif; margin:0; }
+  .eyebrow{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:12px;
+    letter-spacing:.14em;
+    text-transform:uppercase;
+    color:var(--gold);
+    opacity:.9;
+  }
+
+  /* ---------- Screens ---------- */
+  .screen{ display:none; flex-direction:column; gap:16px; }
+  .screen.active{ display:flex; animation: rise .4s ease both; }
+  @keyframes rise{ from{opacity:0; transform:translateY(10px);} to{opacity:1; transform:translateY(0);} }
+
+  /* ---------- Ticket / signature element ---------- */
+  .ticket{
+    background: var(--paper);
+    color:var(--ink);
+    border-radius: 14px 14px 0 0;
+    position:relative;
+    padding:16px 18px 22px;
+    box-shadow: var(--shadow);
+  }
+  .ticket::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:-11px; height:22px;
+    background:
+      linear-gradient(-45deg, transparent 10px, var(--paper) 0) 0 0,
+      linear-gradient(45deg, transparent 10px, var(--paper) 0) 0 0;
+    background-size: 20px 22px;
+    background-repeat: repeat-x;
+  }
+  .ticket .row{
+    display:flex; align-items:center; justify-content:space-between;
+    gap:10px;
+  }
+  .ticket .stamp{
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    letter-spacing:.08em;
+    color:#6b6152;
+    text-transform:uppercase;
+  }
+  .money{
+    font-family:'IBM Plex Mono', monospace;
+    font-weight:700;
+    font-size:26px;
+    letter-spacing:.01em;
+  }
+  .money.tick{ animation: tick .35s ease; }
+  @keyframes tick{ 0%{transform:scale(1);} 40%{transform:scale(1.14);} 100%{transform:scale(1);} }
+  .money.down{ color:var(--coral); }
+  .money.up{ color:var(--green-dim); }
+
+  .lives{ display:flex; gap:8px; margin-top:8px; }
+  .heart{
+    font-size:20px;
+    line-height:1;
+    display:inline-block;
+    filter: drop-shadow(0 2px 2px rgba(0,0,0,0.25));
+    transition: transform .25s ease;
+  }
+  .heart.spent{
+    animation: heart-break .5s ease forwards;
+  }
+  @keyframes heart-break{
+    0%{ transform:scale(1) rotate(0deg); filter:none; }
+    30%{ transform:scale(1.25) rotate(-8deg); }
+    55%{ transform:scale(0.85) rotate(10deg); }
+    100%{ transform:scale(0.9) rotate(0deg); opacity:.75; }
+  }
+  .progress-track{
+    height:6px; border-radius:4px; background:var(--paper-dim);
+    overflow:hidden; margin-top:10px;
+  }
+  .progress-fill{
+    height:100%; background: linear-gradient(90deg, var(--gold), var(--green));
+    border-radius:4px; transition: width .4s ease;
+  }
+
+  /* ---------- Cards ---------- */
+  .card{
+    background: var(--bg-soft);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding:20px;
+    box-shadow: var(--shadow);
+    color:#EAF3F1;
+  }
+  .card p{ line-height:1.5; margin:0; }
+  .level-tag{
+    display:inline-flex; align-items:center; gap:8px;
+    font-family:'Fredoka', sans-serif; font-weight:600; font-size:14px;
+    color:var(--gold);
+    background: rgba(245,185,66,0.12);
+    border:1px solid rgba(245,185,66,0.3);
+    padding:5px 12px; border-radius:999px;
+    width:fit-content;
+  }
+  .outcome-badge{
+    display:inline-flex; align-items:center;
+    font-family:'Fredoka', sans-serif; font-weight:600; font-size:13px;
+    padding:5px 12px; border-radius:999px;
+    background: rgba(63,203,140,0.15);
+    color:var(--green);
+    border:1px solid rgba(63,203,140,0.4);
+  }
+  .outcome-badge.lost{
+    background: rgba(255,77,109,0.15);
+    color: var(--coral);
+    border-color: rgba(255,77,109,0.4);
+  }
+  .level-result-card{
+    background: var(--bg-soft);
+    border:1px solid rgba(255,255,255,0.06);
+    border-radius: var(--radius);
+    padding:16px 18px;
+    margin-top:12px;
+    color:#EAF3F1;
+  }
+  .level-result-card h3{ font-size:16px; }
+  .level-result-card .stats-grid{ margin-top:10px; }
+
+  .bubble{
+    background:#0F2226;
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius: 16px 16px 16px 4px;
+    padding:16px 18px;
+    font-size:16.5px;
+    line-height:1.55;
+    position:relative;
+  }
+  .bubble .who{
+    display:block;
+    font-family:'IBM Plex Mono', monospace;
+    font-size:11px;
+    text-transform:uppercase;
+    letter-spacing:.1em;
+    color:#7fb8ac;
+    margin-bottom:6px;
+  }
+
+  .options{ display:flex; flex-direction:column; gap:10px; }
+  .option{
+    text-align:left;
+    background: var(--paper);
+    color:var(--ink);
+    border:2px solid transparent;
+    border-radius:14px;
+    padding:14px 16px;
+    font-family:'Inter', sans-serif;
+    font-size:15px;
+    font-weight:500;
+    line-height:1.4;
+    cursor:pointer;
+    transition: transform .15s ease, box-shadow .15s ease, border-color .15s ease;
+  }
+  .option:hover:not(:disabled){ transform: translateY(-2px); box-shadow:0 8px 18px rgba(0,0,0,0.25); }
+  .option:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .option:disabled{ cursor:default; }
+  .option.correct{ border-color: var(--green); background:#e4f9ee; }
+  .option.incorrect{ border-color: var(--coral); background:#ffe9ec; }
+  .option.dim{ opacity:.45; }
+
+  .feedback{
+    display:none;
+    border-radius:14px;
+    padding:14px 16px;
+    font-size:14.5px;
+    line-height:1.5;
+    border-left:4px solid var(--gold);
+    background: rgba(245,185,66,0.08);
+  }
+  .feedback.show{ display:block; animation: rise .3s ease both; }
+  .feedback.good{ border-left-color: var(--green); background: rgba(63,203,140,0.1); }
+  .feedback.bad{ border-left-color: var(--coral); background: rgba(255,77,109,0.1); }
+  .feedback strong{ display:block; margin-bottom:4px; font-family:'Fredoka', sans-serif; }
+
+  .btn{
+    font-family:'Fredoka', sans-serif;
+    font-weight:600;
+    font-size:16px;
+    border:none;
+    border-radius:14px;
+    padding:14px 20px;
+    cursor:pointer;
+    transition: transform .15s ease, filter .15s ease;
+  }
+  .btn:hover{ transform: translateY(-2px); filter:brightness(1.06); }
+  .btn:focus-visible{ outline:3px solid var(--gold); outline-offset:2px; }
+  .btn-primary{ background: var(--gold); color:#28210a; }
+  .btn-ghost{ background: transparent; color:#EAF3F1; border:1px solid rgba(255,255,255,0.25); }
+
+  .stats-grid{
+    display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:6px;
+  }
+  .stat{
+    background: rgba(255,255,255,0.05);
+    border:1px solid rgba(255,255,255,0.08);
+    border-radius:12px;
+    padding:12px;
+  }
+  .stat .num{ font-family:'IBM Plex Mono', monospace; font-size:20px; font-weight:700; }
+  .stat .lbl{ font-size:12px; color:#9FC6BE; margin-top:2px; }
+
+  footer.note{
+    text-align:center; font-size:12px; color:#7fa39c; padding-top:4px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation:none !important; transition:none !important; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- INTRO -->
+  <section id="screen-intro" class="screen active">
+    <div class="card">
+      <span class="eyebrow">Un juego de decisiones</span>
+      <h1 style="font-size:26px; margin-top:6px;">¿La plata puede controlar una relación?</h1>
+      <p style="margin-top:10px; color:#cfe4df;">
+        Vas a vivir 10 situaciones reales entre parejas y familias: algunas sanas, otras con
+        señales de control. Cada acierto suma $250 a la cuenta, cada error resta $500.
+        Tenés <strong>2 corazones por nivel</strong>: si se rompen los dos en el mismo nivel,
+        se termina el juego. Llegá entero/a hasta el final para ganar.
+      </p>
+    </div>
+
+    <div class="ticket">
+      <div class="row">
+        <span class="stamp">Cuenta inicial</span>
+        <span class="stamp">10 preguntas · 2 niveles</span>
+      </div>
+      <div class="money" id="intro-money">$1.000</div>
+      <div class="lives" id="intro-lives"></div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-start">Empezar el juego →</button>
+    <footer class="note">Pensado con situaciones típicas entre adolescentes en Argentina 🇦🇷</footer>
+  </section>
+
+  <!-- GAME -->
+  <section id="screen-game" class="screen">
+    <div class="ticket">
+      <div class="row">
+        <span class="stamp" id="game-level-label">Nivel 1 · Pregunta 1/5</span>
+        <span class="stamp">Cuenta</span>
+      </div>
+      <div class="row" style="margin-top:2px;">
+        <div class="lives" id="game-lives"></div>
+        <div class="money" id="game-money">$10.000</div>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+
+    <div class="card">
+      <span class="level-tag" id="level-tag">👫 En pareja</span>
+      <div class="bubble" style="margin-top:14px;">
+        <span class="who">Situación</span>
+        <span id="question-text">...</span>
+      </div>
+
+      <div class="options" id="options-container" style="margin-top:16px;"></div>
+
+      <div class="feedback" id="feedback-box">
+        <strong id="feedback-title"></strong>
+        <span id="feedback-text"></span>
+      </div>
+    </div>
+
+    <button class="btn btn-primary" id="btn-continue" style="display:none;">Continuar →</button>
+  </section>
+
+  <!-- LEVEL SUMMARY -->
+  <section id="screen-level" class="screen">
+    <div class="card">
+      <span class="level-tag" id="level-summary-tag">👫 Nivel 1 completo</span>
+      <span class="outcome-badge" id="level-outcome-badge" style="margin-left:8px;">Superado</span>
+      <h2 style="margin-top:12px; font-size:22px;" id="level-summary-title">¡Terminaste el nivel 1!</h2>
+      <p style="margin-top:8px; color:#cfe4df;" id="level-summary-msg"></p>
+      <div class="stats-grid">
+        <div class="stat"><div class="num" id="level-correct">0</div><div class="lbl">Respuestas sanas</div></div>
+        <div class="stat"><div class="num" id="level-incorrect">0</div><div class="lbl">Señales de control</div></div>
+      </div>
+    </div>
+    <div class="ticket">
+      <div class="row"><span class="stamp">Cuenta actual</span><span class="stamp" id="level-lives-lbl"></span></div>
+      <div class="money" id="level-money">$1.000</div>
+    </div>
+    <button class="btn btn-primary" id="btn-next-level">Ir al nivel 2 →</button>
+  </section>
+
+  <!-- FINAL RESULT -->
+  <section id="screen-final" class="screen">
+    <div class="card" id="final-card">
+      <span class="level-tag" id="final-tag">🏆 Resultado final</span>
+      <h2 style="margin-top:12px; font-size:24px;" id="final-title">Construyeron acuerdos sanos</h2>
+      <p style="margin-top:8px; color:#cfe4df;" id="final-msg"></p>
+      <div class="stats-grid">
+        <div class="stat"><div class="num" id="final-correct">0</div><div class="lbl">Decisiones sanas</div></div>
+        <div class="stat"><div class="num" id="final-incorrect">0</div><div class="lbl">Señales de control</div></div>
+        <div class="stat"><div class="num" id="final-question">0/10</div><div class="lbl">Preguntas llegadas</div></div>
+        <div class="stat"><div class="num" id="final-money">$0</div><div class="lbl">Cuenta final</div></div>
+      </div>
+    </div>
+
+    <div id="final-levels"></div>
+
+    <button class="btn btn-primary" id="btn-replay">Jugar de nuevo</button>
+    <footer class="note">La plata nunca debería usarse para presionar, controlar ni medir el cariño. 💛</footer>
+  </section>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  const START_MONEY = 1000;
+  const WRONG_PENALTY = 500;
+  const CORRECT_BONUS = 250;
+  const MAX_LIVES = 2; // vidas por nivel, se reinician al empezar cada nivel
+
+  const LEVELS = [
+    {
+      name: "Nivel 1 · En pareja",
+      tag: "👫 En pareja",
+      questions: [
+        {
+          text: "Tu pareja te pide la clave de tu cuenta o de tu billetera virtual \"para demostrar que confiás\".",
+          options: [
+            { text: "Le explicás que la confianza no se mide con contraseñas, y proponés hablar de plata sin compartir claves.", correct: true,
+              feedback: "La confianza se construye hablando y cumpliendo acuerdos, no entregando el control de tu cuenta." },
+            { text: "Se la das para que no se enoje y no arranque una discusión.", correct: false,
+              feedback: "Pedir acceso total a tu plata \"para probar confianza\" es una señal de control, no de amor." }
+          ]
+        },
+        {
+          text: "Salieron a comer y tu pareja te dice: \"invitame vos, dale, no seas amarga/o\", aunque nunca habían hablado de dividir los gastos así.",
+          options: [
+            { text: "Pagás todo esa vez para que no se ponga mal.", correct: false,
+              feedback: "Ceder por miedo a que se enoje abre la puerta a que la presión se repita." },
+            { text: "Proponés dividir el gasto como charlaron siempre, sin dejarte presionar.", correct: true,
+              feedback: "Poner un límite tranquilo, sin pelear, es la base de un acuerdo económico sano." }
+          ]
+        },
+        {
+          text: "Tu pareja te dice qué podés y qué no podés comprarte con tu propia plata: \"no gastes en eso, mejor ahorrá para lo nuestro\".",
+          options: [
+            { text: "Dejás de comprarte lo que te gusta para evitar el conflicto.", correct: false,
+              feedback: "Tu plata la administrás vos. Que alguien decida tus gastos personales es una forma de control." },
+            { text: "Le aclarás que tu plata la manejás vos, y los gastos compartidos se deciden entre los dos.", correct: true,
+              feedback: "Separar \"lo mío\" de \"lo nuestro\" y decidirlo en conjunto es clave para un vínculo sano." }
+          ]
+        },
+        {
+          text: "Empiezan a ahorrar juntos para un viaje. Tu pareja propone anotar cuánto pone cada uno y en qué se gasta.",
+          options: [
+            { text: "Te parece buena idea y arman juntos un registro claro.", correct: true,
+              feedback: "Anotar y ser transparentes con la plata compartida evita malos entendidos futuros." },
+            { text: "Le decís que no hace falta anotar nada, que \"el amor no necesita números\".", correct: false,
+              feedback: "No llevar registro de la plata compartida suele terminar en desconfianza o discusiones." }
+          ]
+        },
+        {
+          text: "En una discusión, tu pareja te reprocha: \"¿te olvidás todo lo que gasté en vos?\", usando la plata para hacerte sentir mal.",
+          options: [
+            { text: "Sentís culpa y tratás de compensarlo con más regalos o gastos.", correct: false,
+              feedback: "Devolver con más gastos por culpa refuerza el uso de la plata como forma de presión." },
+            { text: "Le decís que la plata no se usa para presionar en una pelea, y proponés hablarlo con calma.", correct: true,
+              feedback: "Separar el dinero de los reclamos emocionales evita que se convierta en una herramienta de control." }
+          ]
+        }
+      ]
+    },
+    {
+      name: "Nivel 2 · En familia",
+      tag: "👪 En familia",
+      questions: [
+        {
+          text: "Tu hermano/a gasta toda su mesada rápido y después te pide plata prestada, aunque nunca te devuelve nada.",
+          options: [
+            { text: "Le prestás igual \"porque es tu hermano/a\" y nunca hablan del tema.", correct: false,
+              feedback: "Prestar sin acuerdo claro, una y otra vez, suele generar tensión y resentimiento a largo plazo." },
+            { text: "Le prestás con una fecha clara para devolver, o le decís que esta vez no podés.", correct: true,
+              feedback: "Poner condiciones claras (o decir que no) es parte de un acuerdo económico sano en familia." }
+          ]
+        },
+        {
+          text: "En casa deciden repartir un gasto compartido, como el regalo para mamá o papá. Alguien propone anotar cuánto puso cada uno.",
+          options: [
+            { text: "Te parece buena idea, así queda claro y nadie termina poniendo de más.", correct: true,
+              feedback: "Ser transparentes con los gastos compartidos evita reclamos y malos entendidos." },
+            { text: "Decís que no hace falta, que ya se van a acordar todos.", correct: false,
+              feedback: "Confiar solo en la memoria suele terminar en que alguien pone más y nadie se acuerda bien." }
+          ]
+        },
+        {
+          text: "Un familiar te da plata, pero después te controla en qué la gastás, aprobando cada compra.",
+          options: [
+            { text: "Dejás que decida siempre por vos para no generar un conflicto.", correct: false,
+              feedback: "Controlar cada gasto de un regalo recibido es otra forma de manejar a la otra persona con dinero." },
+            { text: "Agradecés el gesto y proponés que la decisión de en qué usarla sea tuya, dentro de lo razonable.", correct: true,
+              feedback: "Un regalo, con acuerdos razonables, no debería venir con control total sobre cómo usarlo." }
+          ]
+        },
+        {
+          text: "Tus papás separan la plata de la casa en gastos fijos (luz, comida) y gastos de gustos, y lo charlan en familia.",
+          options: [
+            { text: "Participás y opinás, entendiendo un poco de dónde sale la plata de la casa.", correct: true,
+              feedback: "Entender cómo se organiza la plata familiar te ayuda a manejar mejor la tuya en el futuro." },
+            { text: "No prestás atención: \"eso es problema de los grandes\".", correct: false,
+              feedback: "Entender los acuerdos económicos de tu familia, aunque no decidas todo, también forma parte de aprender a manejar la plata." }
+          ]
+        },
+        {
+          text: "Un familiar te pide dinero prestado y te dice: \"si me querés, me tenés que prestar\".",
+          options: [
+            { text: "Le prestás igual para no quedar mal, aunque no tengas ganas ni la plata sobrando.", correct: false,
+              feedback: "El cariño no debería usarse como excusa para conseguir plata. Es una señal de manipulación." },
+            { text: "Le decís que el cariño no se mide en préstamos, y podés decir que no o poner condiciones claras.", correct: true,
+              feedback: "Distinguir el afecto de las obligaciones económicas es una base para vínculos familiares sanos." }
+          ]
+        }
+      ]
+    }
+  ];
+
+  // ---------- State ----------
+  let state = {
+    levelIndex: 0,
+    questionIndex: 0,
+    money: START_MONEY,
+    levelWrong: 0,
+    levelCorrect: 0,
+    levelIncorrect: 0,
+    correctCount: 0,
+    incorrectCount: 0,
+    questionsSeen: 0,
+    levelStats: [],
+    currentOptions: [],
+    answered: false
+  };
+
+  // ---------- Helpers ----------
+  function fmtMoney(n){
+    return "$" + n.toLocaleString("es-AR");
+  }
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+  function show(id){
+    document.querySelectorAll(".screen").forEach(s=>s.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+  }
+  function renderLives(containerId, brokenCount){
+    const el = document.getElementById(containerId);
+    const broken = typeof brokenCount === "number" ? brokenCount : state.levelWrong;
+    el.innerHTML = "";
+    for(let i=0;i<MAX_LIVES;i++){
+      const span = document.createElement("span");
+      const isSpent = i < broken;
+      span.className = "heart" + (isSpent ? " spent" : "");
+      span.textContent = isSpent ? "💔" : "❤️";
+      el.appendChild(span);
+    }
+  }
+
+  // ---------- Intro ----------
+  document.getElementById("intro-money").textContent = fmtMoney(START_MONEY);
+  renderLives("intro-lives", 0);
+
+  document.getElementById("btn-start").addEventListener("click", () => {
+    state = { levelIndex:0, questionIndex:0, money:START_MONEY, levelWrong:0, levelCorrect:0, levelIncorrect:0, correctCount:0, incorrectCount:0, questionsSeen:0, levelStats:[], currentOptions:[], answered:false };
+    show("screen-game");
+    renderQuestion();
+  });
+
+  // ---------- Game ----------
+  function currentQuestion(){
+    return LEVELS[state.levelIndex].questions[state.questionIndex];
+  }
+
+  function renderQuestion(){
+    state.answered = false;
+    const level = LEVELS[state.levelIndex];
+    const q = currentQuestion();
+
+    document.getElementById("game-level-label").textContent =
+      level.name + " · Pregunta " + (state.questionIndex+1) + "/5";
+    document.getElementById("level-tag").textContent = level.tag;
+    document.getElementById("question-text").textContent = q.text;
+
+    const moneyEl = document.getElementById("game-money");
+    moneyEl.textContent = fmtMoney(state.money);
+    moneyEl.classList.remove("up","down","tick");
+
+    renderLives("game-lives");
+
+    const totalDone = state.levelIndex*5 + state.questionIndex;
+    document.getElementById("progress-fill").style.width = ((totalDone/10)*100) + "%";
+
+    const container = document.getElementById("options-container");
+    container.innerHTML = "";
+    state.currentOptions = shuffle(q.options);
+
+    state.currentOptions.forEach((opt) => {
+      const btn = document.createElement("button");
+      btn.className = "option";
+      btn.type = "button";
+      btn.textContent = opt.text;
+      btn.addEventListener("click", () => handleAnswer(opt, btn));
+      container.appendChild(btn);
+    });
+
+    const fb = document.getElementById("feedback-box");
+    fb.classList.remove("show","good","bad");
+    document.getElementById("btn-continue").style.display = "none";
+  }
+
+  function handleAnswer(opt, btnEl){
+    if(state.answered) return;
+    state.answered = true;
+    state.questionsSeen++;
+
+    const allBtns = document.querySelectorAll("#options-container .option");
+    allBtns.forEach(b => { b.disabled = true; if(b !== btnEl) b.classList.add("dim"); });
+
+    const moneyEl = document.getElementById("game-money");
+    const fb = document.getElementById("feedback-box");
+    const fbTitle = document.getElementById("feedback-title");
+    const fbText = document.getElementById("feedback-text");
+
+    if(opt.correct){
+      state.correctCount++;
+      state.levelCorrect++;
+      state.money += CORRECT_BONUS;
+      btnEl.classList.add("correct");
+      moneyEl.textContent = fmtMoney(state.money);
+      moneyEl.classList.add("up","tick");
+      fb.classList.add("show","good");
+      fbTitle.textContent = "Bien ahí 👍";
+    } else {
+      state.incorrectCount++;
+      state.levelIncorrect++;
+      state.levelWrong++;
+      state.money = Math.max(0, state.money - WRONG_PENALTY);
+      btnEl.classList.add("incorrect");
+      moneyEl.textContent = fmtMoney(state.money);
+      moneyEl.classList.add("down","tick");
+      fb.classList.add("show","bad");
+      fbTitle.textContent = "Se rompió un corazón 💔";
+      renderLives("game-lives");
+    }
+    fbText.textContent = opt.feedback;
+
+    const levelEnding = (state.levelWrong >= MAX_LIVES) || (state.questionIndex === 4);
+    document.getElementById("btn-continue").textContent = levelEnding ? "Ver resultado del nivel →" : "Continuar →";
+    document.getElementById("btn-continue").style.display = "block";
+  }
+
+  document.getElementById("btn-continue").addEventListener("click", () => {
+    if(state.levelWrong >= MAX_LIVES){
+      endLevel("perdido");
+      return;
+    }
+    if(state.questionIndex < 4){
+      state.questionIndex++;
+      renderQuestion();
+    } else {
+      endLevel("superado");
+    }
+  });
+
+  // ---------- Fin de nivel ----------
+  function endLevel(outcome){
+    const level = LEVELS[state.levelIndex];
+
+    // Guardar estadísticas propias de este nivel
+    state.levelStats.push({
+      name: level.name,
+      tag: level.tag,
+      outcome: outcome,
+      correct: state.levelCorrect,
+      incorrect: state.levelIncorrect,
+      heartsLeft: MAX_LIVES - state.levelWrong,
+      questionsAnswered: state.levelCorrect + state.levelIncorrect
+    });
+
+    const badge = document.getElementById("level-outcome-badge");
+    document.getElementById("level-summary-tag").textContent = level.tag;
+
+    if(outcome === "superado"){
+      badge.textContent = "Nivel superado";
+      badge.classList.remove("lost");
+      document.getElementById("level-summary-title").textContent = "¡Terminaste el " + level.name.toLowerCase() + "!";
+      document.getElementById("level-summary-msg").textContent = state.levelWrong === 0
+        ? "Nivel perfecto, sin corazones rotos. Estás reconociendo muy bien los acuerdos sanos."
+        : "Terminaste el nivel con un corazón roto. Prestá atención a esa señal de control que ya identificaste.";
+    } else {
+      badge.textContent = "Nivel no superado";
+      badge.classList.add("lost");
+      document.getElementById("level-summary-title").textContent = "Se rompieron los 2 corazones de este nivel";
+      document.getElementById("level-summary-msg").textContent = "Algunas señales de control se colaron sin frenarlas a tiempo. No pasa nada: seguí jugando y prestá atención a esas señales en el próximo nivel.";
+    }
+
+    document.getElementById("level-correct").textContent = state.levelCorrect;
+    document.getElementById("level-incorrect").textContent = state.levelIncorrect;
+    document.getElementById("level-money").textContent = fmtMoney(state.money);
+    document.getElementById("level-lives-lbl").textContent = (MAX_LIVES - state.levelWrong) + " de " + MAX_LIVES + " corazones enteros";
+
+    const isLastLevel = state.levelIndex === LEVELS.length - 1;
+    document.getElementById("btn-next-level").textContent = isLastLevel ? "Ver resultado final →" : "Ir al nivel 2 →";
+
+    show("screen-level");
+  }
+
+  document.getElementById("btn-next-level").addEventListener("click", () => {
+    if(state.levelIndex < LEVELS.length - 1){
+      state.levelIndex++;
+      state.questionIndex = 0;
+      state.levelWrong = 0;
+      state.levelCorrect = 0;
+      state.levelIncorrect = 0;
+      show("screen-game");
+      renderQuestion();
+    } else {
+      showFinal();
+    }
+  });
+
+  // ---------- Resultado final ----------
+  function showFinal(){
+    const tag = document.getElementById("final-tag");
+    const title = document.getElementById("final-title");
+    const msg = document.getElementById("final-msg");
+
+    const superados = state.levelStats.filter(l => l.outcome === "superado").length;
+
+    if(superados === LEVELS.length){
+      tag.textContent = "🏆 ¡Ganaron los dos niveles!";
+      title.textContent = "Construyeron acuerdos económicos sanos";
+      msg.textContent = "Supieron distinguir cuándo la plata se usaba para presionar o controlar, y eligieron el diálogo y los límites claros en pareja y en familia.";
+    } else if(superados === 0){
+      tag.textContent = "💔 Ningún nivel superado";
+      title.textContent = "Las señales de control ganaron esta vuelta";
+      msg.textContent = "No pudieron frenar a tiempo las señales de control en ninguno de los dos niveles. Es un buen momento para repasarlas y volver a intentarlo.";
+    } else {
+      tag.textContent = "⚖️ Resultado mixto";
+      title.textContent = "Superaron " + superados + " de " + LEVELS.length + " niveles";
+      msg.textContent = "Hubo aciertos y también señales de control que se colaron. Revisen juntos qué nivel costó más y por qué.";
+    }
+
+    document.getElementById("final-correct").textContent = state.correctCount;
+    document.getElementById("final-incorrect").textContent = state.incorrectCount;
+    document.getElementById("final-question").textContent = state.questionsSeen + "/10";
+    document.getElementById("final-money").textContent = fmtMoney(state.money);
+
+    const levelsContainer = document.getElementById("final-levels");
+    levelsContainer.innerHTML = "";
+    state.levelStats.forEach(l => {
+      const div = document.createElement("div");
+      div.className = "level-result-card";
+      div.innerHTML =
+        '<div class="row" style="align-items:center;">' +
+          '<h3 style="margin:0;">' + l.tag + '</h3>' +
+          '<span class="outcome-badge' + (l.outcome === "perdido" ? " lost" : "") + '">' +
+            (l.outcome === "superado" ? "Superado" : "No superado") +
+          '</span>' +
+        '</div>' +
+        '<div class="stats-grid">' +
+          '<div class="stat"><div class="num">' + l.correct + '</div><div class="lbl">Respuestas sanas</div></div>' +
+          '<div class="stat"><div class="num">' + l.incorrect + '</div><div class="lbl">Señales de control</div></div>' +
+        '</div>' +
+        '<p style="margin-top:10px; font-size:13px; color:#9FC6BE;">' +
+          l.heartsLeft + ' de ' + MAX_LIVES + ' corazones enteros · ' + l.questionsAnswered + ' preguntas respondidas' +
+        '</p>';
+      levelsContainer.appendChild(div);
+    });
+
+    show("screen-final");
+  }
+
+  document.getElementById("btn-replay").addEventListener("click", () => {
+    show("screen-intro");
+  });
+
+})();
+</script>
+</body>
+</html>

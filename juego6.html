@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>La Sala de Espera — El Pozo del FOMO</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Sora:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg: #F6F5FB;
+    --bg-soft: #EDEBF9;
+    --ink: #201B34;
+    --ink-soft: #5B5578;
+    --door-deep: #14102B;
+    --door-mid: #241D47;
+    --accent-violet: #6C5CE7;
+    --accent-violet-dark: #5544D0;
+    --accent-coral: #FF6B81;
+    --accent-mint: #2FD9A6;
+    --accent-gold: #E8B84B;
+    --card-radius: 22px;
+    --shadow: 0 18px 40px -18px rgba(32,27,52,0.28);
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+
+  body{
+    background:
+      radial-gradient(circle at 15% -10%, var(--bg-soft), transparent 55%),
+      radial-gradient(circle at 90% 0%, #E4EEFF, transparent 45%),
+      var(--bg);
+    color:var(--ink);
+    font-family:'Sora', system-ui, sans-serif;
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    padding: 20px 14px 40px;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  .app{
+    width:100%;
+    max-width:460px;
+    display:flex;
+    flex-direction:column;
+    gap:16px;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    text-align:center;
+    padding-top:6px;
+  }
+  .eyebrow{
+    font-family:'JetBrains Mono', monospace;
+    font-size:12px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    color:var(--accent-violet-dark);
+    font-weight:700;
+  }
+  h1{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:28px;
+    font-weight:700;
+    margin:6px 0 4px;
+    letter-spacing:-0.01em;
+  }
+  header p{
+    margin:0;
+    color:var(--ink-soft);
+    font-size:14.5px;
+    line-height:1.5;
+    padding:0 6px;
+  }
+
+  /* ---------- Meter ---------- */
+  .meter-wrap{
+    background:#fff;
+    border-radius:16px;
+    padding:12px 16px;
+    box-shadow: var(--shadow);
+  }
+  .meter-labels{
+    display:flex;
+    justify-content:space-between;
+    align-items:baseline;
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    color:var(--ink-soft);
+    text-transform:uppercase;
+    letter-spacing:0.06em;
+    margin-bottom:8px;
+  }
+  .meter-labels span.value{
+    font-size:15px;
+    font-weight:700;
+    color:var(--ink);
+    text-transform:none;
+    letter-spacing:0;
+  }
+  .meter-track{
+    position:relative;
+    height:12px;
+    border-radius:20px;
+    background:linear-gradient(90deg, var(--accent-mint), #EFE38A 45%, var(--accent-coral));
+    opacity:0.28;
+    overflow:hidden;
+  }
+  .meter-fill{
+    position:absolute;
+    top:0; left:0; bottom:0;
+    width:50%;
+    border-radius:20px;
+    background:linear-gradient(90deg, var(--accent-mint), #EFE38A 55%, var(--accent-coral));
+    transition:width .6s cubic-bezier(.4,0,.2,1);
+    opacity:1;
+  }
+  .meter-track::after{
+    content:"";
+    position:absolute; inset:0;
+    border-radius:20px;
+    box-shadow: inset 0 0 0 1px rgba(32,27,52,0.06);
+  }
+
+  /* ---------- Scene / Door ---------- */
+  .scene{
+    position:relative;
+    background: radial-gradient(120% 90% at 50% 0%, var(--door-mid), var(--door-deep) 70%);
+    border-radius: var(--card-radius);
+    padding: 26px 18px 20px;
+    box-shadow: var(--shadow);
+    overflow:hidden;
+    min-height:190px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+  }
+  .scene::before{
+    content:"";
+    position:absolute; inset:0;
+    background:
+      repeating-linear-gradient(180deg, rgba(255,255,255,0.02) 0 2px, transparent 2px 4px);
+    pointer-events:none;
+  }
+  .scene svg{ display:block; width: 128px; height: auto; position:relative; z-index:1; }
+  .door-glow{
+    filter: drop-shadow(0 0 10px var(--glow-strength, rgba(232,184,75,0.15)));
+    transition: filter .6s ease;
+  }
+  .scene-caption{
+    position:absolute;
+    bottom:10px; left:0; right:0;
+    text-align:center;
+    font-family:'JetBrains Mono', monospace;
+    font-size:10.5px;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:rgba(255,255,255,0.55);
+  }
+
+  /* ---------- Progress dots ---------- */
+  .progress{
+    display:flex;
+    justify-content:center;
+    gap:7px;
+  }
+  .dot{
+    width:8px; height:8px; border-radius:50%;
+    background: #D9D5EE;
+    transition: background .3s ease, transform .3s ease;
+  }
+  .dot.active{ background: var(--accent-violet); transform:scale(1.25); }
+  .dot.done{ background: var(--accent-violet-dark); }
+
+  /* ---------- Card / scenario ---------- */
+  .card{
+    background:#fff;
+    border-radius: var(--card-radius);
+    padding: 20px;
+    box-shadow: var(--shadow);
+  }
+  .scenario-tag{
+    font-family:'JetBrains Mono', monospace;
+    font-size:11px;
+    font-weight:700;
+    letter-spacing:0.08em;
+    text-transform:uppercase;
+    color:var(--accent-violet);
+    margin-bottom:8px;
+  }
+  .scenario-text{
+    font-size:16.5px;
+    line-height:1.55;
+    font-weight:500;
+    color:var(--ink);
+    margin:0 0 18px;
+  }
+
+  .options{
+    display:flex;
+    flex-direction:column;
+    gap:10px;
+  }
+  .option-btn{
+    text-align:left;
+    background: var(--bg);
+    border: 1.5px solid #E2DEF6;
+    border-radius: 14px;
+    padding: 14px 16px;
+    font-family:'Sora', sans-serif;
+    font-size:14.5px;
+    line-height:1.45;
+    color:var(--ink);
+    cursor:pointer;
+    transition: border-color .18s ease, background .18s ease, transform .12s ease;
+  }
+  .option-btn:active{ transform: scale(0.98); }
+  .option-btn:hover{ border-color: var(--accent-violet); background:#fff; }
+  .option-btn:focus-visible{
+    outline: 3px solid var(--accent-violet);
+    outline-offset: 2px;
+  }
+  .option-btn:disabled{ cursor:default; }
+
+  /* ---------- Feedback ---------- */
+  .feedback{
+    display:none;
+    margin-top:16px;
+    padding:14px 16px;
+    border-radius:14px;
+    font-size:14px;
+    line-height:1.55;
+    background: var(--bg-soft);
+    border-left: 4px solid var(--accent-violet);
+  }
+  .feedback.show{ display:block; animation: fadeIn .35s ease; }
+  .feedback .fb-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:700;
+    font-size:13.5px;
+    margin-bottom:4px;
+    display:block;
+  }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .next-btn{
+    margin-top:14px;
+    width:100%;
+    padding:14px;
+    border:none;
+    border-radius:14px;
+    background: var(--accent-violet);
+    color:#fff;
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+    display:none;
+    transition: background .18s ease;
+  }
+  .next-btn.show{ display:block; }
+  .next-btn:hover{ background: var(--accent-violet-dark); }
+  .next-btn:focus-visible{ outline: 3px solid var(--accent-gold); outline-offset:2px; }
+
+  /* ---------- End screen ---------- */
+  .end-screen{ display:none; }
+  .end-screen.show{ display:block; }
+  #game-screen.hide{ display:none; }
+
+  .end-title{
+    font-family:'Space Grotesk', sans-serif;
+    font-size:22px;
+    font-weight:700;
+    text-align:center;
+    margin: 4px 0 10px;
+  }
+  .end-text{
+    font-size:15px;
+    line-height:1.6;
+    color:var(--ink-soft);
+    text-align:center;
+    margin:0 0 6px;
+  }
+  .end-note{
+    margin-top:16px;
+    padding:14px 16px;
+    border-radius:14px;
+    background: var(--bg-soft);
+    font-size:13px;
+    line-height:1.55;
+    color:var(--ink-soft);
+  }
+  .end-note b{ color:var(--ink); }
+
+  .restart-btn{
+    margin-top:16px;
+    width:100%;
+    padding:14px;
+    border:1.5px solid var(--accent-violet);
+    border-radius:14px;
+    background:#fff;
+    color:var(--accent-violet-dark);
+    font-family:'Space Grotesk', sans-serif;
+    font-weight:600;
+    font-size:15px;
+    cursor:pointer;
+  }
+  .restart-btn:hover{ background: var(--bg-soft); }
+
+  footer{
+    text-align:center;
+    font-size:11px;
+    color:#B7B2CF;
+    font-family:'JetBrains Mono', monospace;
+    letter-spacing:0.04em;
+    margin-top:6px;
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    *{ animation-duration:0.001ms !important; transition-duration:0.001ms !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="app">
+
+  <header>
+    <div class="eyebrow">El pozo del FOMO</div>
+    <h1>La Sala de Espera</h1>
+    <p>Estás en un pasillo oscuro. Al fondo hay una puerta. No se abre a las patadas — se abre si mantenés la cabeza fría en cada decisión. Tenés 5.</p>
+  </header>
+
+  <div class="meter-wrap">
+    <div class="meter-labels">
+      <span>Nivel de ansiedad</span>
+      <span class="value" id="meter-value">50%</span>
+    </div>
+    <div class="meter-track">
+      <div class="meter-fill" id="meter-fill" style="width:50%"></div>
+    </div>
+  </div>
+
+  <div id="game-screen">
+    <div class="scene">
+      <svg id="door-svg" viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="14" y="8" width="72" height="112" rx="3" fill="#0D0A1F" stroke="#3A3260" stroke-width="2"/>
+        <rect id="door-panel" x="14" y="8" width="72" height="112" rx="3" fill="#1B1638" class="door-glow"/>
+        <rect x="24" y="18" width="52" height="40" rx="2" stroke="#443B72" stroke-width="1.4"/>
+        <rect x="24" y="64" width="52" height="46" rx="2" stroke="#443B72" stroke-width="1.4"/>
+        <circle id="door-knob" cx="76" cy="66" r="3.4" fill="#E8B84B"/>
+      </svg>
+      <div class="scene-caption" id="scene-caption">esperando tu decisión…</div>
+    </div>
+
+    <div class="progress" id="progress"></div>
+
+    <div class="card">
+      <div class="scenario-tag" id="scenario-tag">Situación 1 / 5</div>
+      <p class="scenario-text" id="scenario-text"></p>
+      <div class="options" id="options"></div>
+      <div class="feedback" id="feedback">
+        <span class="fb-title" id="fb-title"></span>
+        <span id="fb-text"></span>
+      </div>
+      <button class="next-btn" id="next-btn">Seguir por el pasillo →</button>
+    </div>
+  </div>
+
+  <div class="card end-screen" id="end-screen">
+    <div class="scene" style="margin-bottom:16px;">
+      <svg id="door-svg-end" viewBox="0 0 100 130" fill="none" xmlns="http://www.w3.org/2000/svg"></svg>
+    </div>
+    <div class="end-title" id="end-title"></div>
+    <p class="end-text" id="end-text"></p>
+    <div class="end-note" id="end-note"></div>
+    <button class="restart-btn" id="restart-btn">Volver a empezar</button>
+  </div>
+
+  <footer>hecho para pensar dos veces antes de scrollear</footer>
+</div>
+
+<script>
+(function(){
+
+  // ---------- Contenido ----------
+  const scenarios = [
+    {
+      text: "Es viernes a la noche. Abrís Instagram y ves que un grupo de tu curso está en un boliche, subiendo historias con música y luces. A vos no te invitaron.",
+      options: [
+        { text: "Te quedás mirando las historias una y otra vez, sintiendo que te perdiste algo importante.", delta: 20,
+          fbTitle: "El scroll no te da respuestas.",
+          fbText: "Revisar la misma historia diez veces no cambia lo que pasó, pero sí te deja peor. La cabeza empieza a inventar razones y casi siempre son peores que la real." },
+        { text: "Cerrás la app, ponés algo que te guste y pensás: 'esta no fue, seguro sale otra'.", delta: -15,
+          fbTitle: "Cortaste el círculo.",
+          fbText: "No fuiste a un plan puntual, no perdiste tu lugar en el grupo. Elegir no perseguir esa historia es una forma de cuidarte." },
+        { text: "Le escribís a alguien de confianza para entender qué onda, sin drama.", delta: -5,
+          fbTitle: "Preguntaste en vez de imaginar.",
+          fbText: "Buena movida: la info real casi siempre pesa menos que lo que armamos en la cabeza cuando no sabemos nada." }
+      ]
+    },
+    {
+      text: "Una compañera está subiendo fotos de una escapada a la playa en pleno miércoles: agua turquesa, atardecer, la frase 'viviendo mi mejor vida'.",
+      options: [
+        { text: "Le das like sin pensarlo mucho y seguís con lo tuyo.", delta: -5,
+          fbTitle: "Ni fu ni fa.",
+          fbText: "Interactuaste sin quedarte enganchado. Eso es justamente lo que Instagram no espera que hagas." },
+        { text: "Sentís que tu semana es gris comparada con esa foto y se te baja el ánimo.", delta: 20,
+          fbTitle: "Estás comparando un rato con toda una vida.",
+          fbText: "Esa foto es un segundo elegido entre miles. Nadie postea la fila del boarding, la pelea con el hermano ni el aburrimiento del domingo." },
+        { text: "Te acordás de que las redes muestran el mejor recorte, no el día completo.", delta: -15,
+          fbTitle: "Ahí está la clave.",
+          fbText: "Tener esto presente no te hace cínico, te hace realista. Todos editamos lo que mostramos." }
+      ]
+    },
+    {
+      text: "En el grupo de WhatsApp del curso armaron una previa el sábado. A vos nadie te avisó. Te enterás al otro día viendo las fotos.",
+      options: [
+        { text: "Le preguntás derecho a alguien de confianza qué pasó, sin vueltas.", delta: -10,
+          fbTitle: "Fuiste directo a la fuente.",
+          fbText: "La mayoría de las veces 'me dejaron afuera' es en realidad 'se armó rápido y nadie pensó en avisar a todos'. Preguntar cierra el tema." },
+        { text: "Te pasás el domingo repasando el chat, buscando quién dijo qué.", delta: 15,
+          fbTitle: "Eso no suma nada.",
+          fbText: "Investigar como detective un chat viejo solo te deja dando vueltas en un lugar que no podés cambiar." },
+        { text: "Asumís que fue sin querer y seguís con tu día.", delta: -15,
+          fbTitle: "Elegiste no cargar ese peso.",
+          fbText: "No todo lo que pasa es sobre vos. A veces un plan se arma rápido entre dos o tres y no tiene más historia que esa." }
+      ]
+    },
+    {
+      text: "Tus amigos se compran unas zapatillas caras de una marca para ir todos 'combinados' a un evento. Vos no llegás con esa plata.",
+      options: [
+        { text: "Buscás algo parecido, más accesible, para sentirte parte igual.", delta: -5,
+          fbTitle: "Encontraste tu punto medio.",
+          fbText: "No hace falta gastar lo mismo que los demás para estar. Vas igual, con lo tuyo." },
+        { text: "Usás los ahorros que tenías guardados para otra cosa, con tal de no quedar afuera.", delta: 20,
+          fbTitle: "Ahí el FOMO ganó la pulseada.",
+          fbText: "Gastar plata que tenías para otro objetivo, solo para 'combinar', suele dejar más arrepentimiento que satisfacción." },
+        { text: "Les contás que no llegás con la plata pero que vas igual, con lo que tenés puesto.", delta: -15,
+          fbTitle: "Dijiste la verdad sin drama.",
+          fbText: "Un amigo de verdad no te mide por las zapatillas. Y decirlo derecho saca el peso de encima." }
+      ]
+    },
+    {
+      text: "Domingo a la noche. Tu feed está lleno de asados, viajes y salidas del finde. Vos te quedaste en tu casa sin hacer nada 'para mostrar'.",
+      options: [
+        { text: "Pensás que tu finde 'no valió nada' comparado con el de los demás.", delta: 20,
+          fbTitle: "Estás midiendo mal.",
+          fbText: "Un finde tranquilo en tu casa no vale menos por no tener fotos. Descansar también es parte de vivir la semana." },
+        { text: "Te das cuenta de que no todo necesita mostrarse para importar.", delta: -15,
+          fbTitle: "Justo ahí está la salida del pozo.",
+          fbText: "Lo que no se publica también pasó. El feed muestra un recorte, no el balance real de nadie." },
+        { text: "Empezás a pensar en armar un plan lindo para el próximo finde, sin comparar con nadie.", delta: -5,
+          fbTitle: "Mirar para adelante ayuda.",
+          fbText: "Proyectar algo propio, en vez de medirte con el finde ajeno, te devuelve el control." }
+      ]
+    }
+  ];
+
+  // ---------- Estado ----------
+  let current = 0;
+  let meter = 50;
+  const total = scenarios.length;
+
+  const meterFill = document.getElementById('meter-fill');
+  const meterValue = document.getElementById('meter-value');
+  const scenarioTag = document.getElementById('scenario-tag');
+  const scenarioText = document.getElementById('scenario-text');
+  const optionsWrap = document.getElementById('options');
+  const feedback = document.getElementById('feedback');
+  const fbTitle = document.getElementById('fb-title');
+  const fbText = document.getElementById('fb-text');
+  const nextBtn = document.getElementById('next-btn');
+  const progressWrap = document.getElementById('progress');
+  const sceneCaption = document.getElementById('scene-caption');
+  const doorPanel = document.getElementById('door-panel');
+  const doorKnob = document.getElementById('door-knob');
+  const gameScreen = document.getElementById('game-screen');
+  const endScreen = document.getElementById('end-screen');
+
+  function shuffle(arr){
+    const a = arr.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(Math.random() * (i + 1));
+      [a[i], a[j]] = [a[j], a[i]];
+    }
+    return a;
+  }
+
+  function updateMeter(){
+    meter = Math.max(0, Math.min(100, meter));
+    meterFill.style.width = meter + '%';
+    meterValue.textContent = meter + '%';
+
+    // Puerta: cuanto más baja la ansiedad, más "clara"/dorada se ve
+    const calm = 1 - (meter / 100); // 0 a 1
+    const glow = 0.12 + calm * 0.55;
+    doorPanel.style.setProperty('--glow-strength', `rgba(232,184,75,${glow.toFixed(2)})`);
+    doorPanel.setAttribute('fill', calm > 0.65 ? '#2A2354' : (calm > 0.35 ? '#201A42' : '#1B1638'));
+    doorKnob.setAttribute('fill', calm > 0.5 ? '#F3CE73' : '#E8B84B');
+
+    if(meter <= 30) sceneCaption.textContent = 'la puerta parece más liviana…';
+    else if(meter >= 70) sceneCaption.textContent = 'el pasillo se siente más pesado…';
+    else sceneCaption.textContent = 'esperando tu decisión…';
+  }
+
+  function renderProgress(){
+    progressWrap.innerHTML = '';
+    for(let i = 0; i < total; i++){
+      const d = document.createElement('div');
+      d.className = 'dot' + (i === current ? ' active' : (i < current ? ' done' : ''));
+      progressWrap.appendChild(d);
+    }
+  }
+
+  function renderScenario(){
+    renderProgress();
+    const s = scenarios[current];
+    scenarioTag.textContent = `Situación ${current + 1} / ${total}`;
+    scenarioText.textContent = s.text;
+    optionsWrap.innerHTML = '';
+    feedback.classList.remove('show');
+    nextBtn.classList.remove('show');
+
+    const shuffled = shuffle(s.options);
+    shuffled.forEach(opt => {
+      const btn = document.createElement('button');
+      btn.className = 'option-btn';
+      btn.textContent = opt.text;
+      btn.addEventListener('click', () => chooseOption(opt, shuffled));
+      optionsWrap.appendChild(btn);
+    });
+  }
+
+  function chooseOption(opt, allOptions){
+    // deshabilitar todos los botones
+    const btns = optionsWrap.querySelectorAll('.option-btn');
+    btns.forEach(b => b.disabled = true);
+
+    meter += opt.delta;
+    updateMeter();
+
+    fbTitle.textContent = opt.fbTitle;
+    fbText.textContent = opt.fbText;
+    feedback.classList.add('show');
+    nextBtn.classList.add('show');
+  }
+
+  nextBtn.addEventListener('click', () => {
+    current++;
+    if(current < total){
+      renderScenario();
+    } else {
+      showEnd();
+    }
+  });
+
+  function doorSvgMarkup(calm){
+    const panelFill = calm > 0.65 ? '#2A2354' : (calm > 0.35 ? '#201A42' : '#1B1638');
+    const knobFill = calm > 0.5 ? '#F3CE73' : '#E8B84B';
+    const openWidth = calm > 0.55 ? 30 : 0; // puerta entreabierta si la ansiedad quedó baja
+    return `
+      <rect x="14" y="8" width="72" height="112" rx="3" fill="#0D0A1F" stroke="#3A3260" stroke-width="2"/>
+      <rect x="${14+openWidth*0.15}" y="8" width="${72-openWidth}" height="112" rx="3" fill="${panelFill}"/>
+      ${openWidth > 0 ? `<rect x="${14+72-openWidth}" y="8" width="${openWidth}" height="112" fill="#FCEFC7" opacity="0.55"/>` : ''}
+      <rect x="24" y="18" width="${Math.max(0,52-openWidth)}" height="40" rx="2" stroke="#443B72" stroke-width="1.4"/>
+      <rect x="24" y="64" width="${Math.max(0,52-openWidth)}" height="46" rx="2" stroke="#443B72" stroke-width="1.4"/>
+      <circle cx="${76-openWidth}" cy="66" r="3.4" fill="${knobFill}"/>
+    `;
+  }
+
+  function showEnd(){
+    gameScreen.classList.add('hide');
+    endScreen.classList.add('show');
+
+    const calm = 1 - (meter / 100);
+    document.getElementById('door-svg-end').innerHTML = doorSvgMarkup(calm);
+
+    const endTitle = document.getElementById('end-title');
+    const endText = document.getElementById('end-text');
+    const endNote = document.getElementById('end-note');
+
+    if(meter <= 33){
+      endTitle.textContent = 'La puerta se abre sin hacer ruido.';
+      endText.textContent = 'Llegaste al final del pasillo manejando bastante bien la ansiedad de compararte con lo que ves en el feed. Elegiste pausar, preguntar y no perseguir cada historia. Eso no es magia, es una forma de mirar las redes que se entrena.';
+    } else if(meter <= 66){
+      endTitle.textContent = 'La puerta cede, un poco pesada.';
+      endText.textContent = 'Se abrió, pero te costó más de lo necesario. Es normal sentir FOMO alguna vez — pasa por todos los que usan redes. La idea no es no sentirlo nunca, sino no dejar que decida por vos cada vez que aparece.';
+    } else {
+      endTitle.textContent = 'La puerta se abre despacio, con esfuerzo.';
+      endText.textContent = 'Este recorrido te pesó bastante. Compararte todo el tiempo con lo que ves en Instagram cansa, y es más común de lo que parece. No significa que algo esté mal en vos: significa que quizás valga la pena bajarle el volumen al feed de vez en cuando.';
+    }
+
+    endNote.innerHTML = `<b>Un dato real:</b> lo que aparece en Instagram es un recorte editado de la vida de alguien, no la vida entera. Sentir FOMO no te hace exagerado ni débil — le pasa a la gran mayoría de los adolescentes que usan redes todos los días. Si notás que te genera angustia seguido, está bueno hablarlo con alguien de confianza: un adulto, un amigo, o un profesional.`;
+  }
+
+  document.getElementById('restart-btn').addEventListener('click', () => {
+    current = 0;
+    meter = 50;
+    updateMeter();
+    endScreen.classList.remove('show');
+    gameScreen.classList.remove('hide');
+    renderScenario();
+  });
+
+  // ---------- Init ----------
+  updateMeter();
+  renderScenario();
+
+})();
+</script>
+
+</body>
+</html>

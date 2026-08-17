@@ -1,0 +1,666 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1">
+<title>Penales contra la bronca | Economía de la frustración</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --sky-top:#BFE8FB;
+    --sky-bottom:#EAF7FB;
+    --grass:#2F9E44;
+    --grass-dark:#1E7A34;
+    --chalk:#FFFFFF;
+    --sand:#FFF8EC;
+    --sand-line:#F0E3C8;
+    --ink:#123524;
+    --ink-soft:#3B5D4C;
+    --sun:#FFC93C;
+    --sun-dark:#E39B00;
+    --coral:#FF6B57;
+    --coral-dark:#D8442F;
+    --ok:#2F9E44;
+    --radius:18px;
+  }
+
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    background:linear-gradient(180deg,var(--sky-top) 0%, var(--sky-bottom) 55%, #F7FBEE 100%);
+    font-family:'Poppins',sans-serif;
+    color:var(--ink);
+    display:flex;
+    justify-content:center;
+    padding:18px 12px 40px;
+  }
+
+  h1,h2,h3,.display{font-family:'Fredoka',sans-serif;}
+
+  .app{width:100%; max-width:460px;}
+  button{font-family:inherit;}
+  button:focus-visible, a:focus-visible{outline:3px solid var(--sun-dark); outline-offset:2px;}
+
+  /* ---------- Cabecera ---------- */
+  .masthead{text-align:center; margin-bottom:14px;}
+  .masthead .eyebrow{
+    display:inline-block; font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    background:var(--ink); color:var(--sand); padding:4px 12px; border-radius:999px; margin-bottom:8px;
+  }
+  .masthead h1{font-size:26px; line-height:1.15; margin:0 0 4px; color:var(--ink);}
+  .masthead p{margin:0; font-size:14px; color:var(--ink-soft);}
+
+  /* ---------- Tarjetas ---------- */
+  .card{
+    background:var(--sand); border:1px solid var(--sand-line); border-radius:var(--radius);
+    padding:20px; box-shadow:0 10px 24px -14px rgba(18,53,36,.35);
+  }
+
+  .btn{
+    display:inline-flex; align-items:center; justify-content:center; gap:8px;
+    border:none; border-radius:999px; padding:14px 22px; font-weight:600; font-size:15px;
+    cursor:pointer; transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .btn:active{transform:scale(.97);}
+  .btn-primary{background:var(--sun); color:var(--ink); box-shadow:0 6px 0 var(--sun-dark);}
+  .btn-primary:hover{filter:brightness(1.03);}
+  .btn-primary:active{box-shadow:0 2px 0 var(--sun-dark); transform:translateY(4px);}
+  .btn-ghost{background:transparent; color:var(--ink); border:2px solid var(--ink);}
+
+  .center{text-align:center;}
+
+  /* ---------- Intro ---------- */
+  #intro .tag-row{display:flex; gap:8px; flex-wrap:wrap; justify-content:center; margin:14px 0 18px;}
+  #intro .tag{background:#fff; border:1px solid var(--sand-line); border-radius:999px; padding:6px 12px; font-size:12.5px; color:var(--ink-soft);}
+  #intro .question-box{
+    background:var(--ink); color:#fff; border-radius:14px; padding:16px 18px;
+    font-size:14.5px; line-height:1.5; margin-bottom:18px;
+  }
+  #intro .question-box b{color:var(--sun);}
+
+  /* ---------- Marcador ---------- */
+  .scoreboard{
+    display:flex; align-items:center; justify-content:space-between;
+    background:var(--ink); color:#fff; border-radius:14px; padding:12px 16px; margin-bottom:14px; gap:10px;
+  }
+  .scoreboard .kicks, .scoreboard .goals{text-align:center; min-width:56px;}
+  .scoreboard .kicks span, .scoreboard .goals span{
+    display:block; font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.75;
+  }
+  .scoreboard .kicks strong, .scoreboard .goals strong{font-family:'Fredoka',sans-serif; font-size:20px;}
+  .goals strong{color:var(--sun);}
+  .meter-wrap{flex:1; min-width:120px;}
+  .meter-wrap span{display:block; font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; opacity:.8; margin-bottom:5px;}
+  .meter-track{background:rgba(255,255,255,.18); border-radius:999px; height:10px; overflow:hidden;}
+  .meter-fill{
+    height:100%; border-radius:999px;
+    background:linear-gradient(90deg, var(--coral), var(--sun) 55%, var(--ok));
+    width:50%; transition:width .5s ease;
+  }
+
+  /* ---------- Cancha ---------- */
+  .field{
+    position:relative; height:220px; border-radius:16px; margin-bottom:14px;
+    background:
+      repeating-linear-gradient(90deg, rgba(255,255,255,.06) 0 26px, rgba(0,0,0,.03) 26px 52px),
+      linear-gradient(180deg, var(--grass) 0%, var(--grass-dark) 100%);
+    overflow:hidden; box-shadow:inset 0 0 0 1px rgba(0,0,0,.05);
+  }
+  .field .arc{
+    position:absolute; left:50%; bottom:-70px; width:220px; height:220px;
+    border:3px solid var(--chalk); border-radius:50%; opacity:.55; transform:translateX(-50%);
+  }
+  .goal{
+    position:absolute; top:14px; left:12%; right:12%; height:96px;
+    border-top:6px solid var(--chalk); border-left:6px solid var(--chalk); border-right:6px solid var(--chalk);
+    border-radius:3px 3px 0 0;
+  }
+  .goal .net{
+    position:absolute; inset:0;
+    background-image:
+      repeating-linear-gradient(45deg, rgba(255,255,255,.55) 0 1px, transparent 1px 9px),
+      repeating-linear-gradient(-45deg, rgba(255,255,255,.55) 0 1px, transparent 1px 9px);
+    opacity:.5; transition:transform .25s ease, opacity .25s ease;
+  }
+  .goal.net-shake .net{transform:scale(1.03) skewX(2deg); opacity:.85;}
+
+  .keeper{
+    position:absolute; bottom:8px; left:50%; transform:translateX(-50%);
+    width:38px; height:58px; transition:transform .5s cubic-bezier(.22,.7,.3,1.15); z-index:3;
+  }
+  .keeper .k-head{width:16px;height:16px;border-radius:50%; background:#F2C9A0; margin:0 auto 2px;}
+  .keeper .k-body{width:26px;height:30px; margin:0 auto; background:var(--coral); border-radius:8px 8px 6px 6px; position:relative;}
+  .keeper .k-body::before, .keeper .k-body::after{
+    content:""; position:absolute; top:4px; width:9px;height:20px; background:var(--coral); border-radius:6px;
+  }
+  .keeper .k-body::before{left:-8px; transform:rotate(18deg);}
+  .keeper .k-body::after{right:-8px; transform:rotate(-18deg);}
+  .keeper.dive-left{transform:translate(calc(-50% - 62px), -4px) rotate(-16deg);}
+  .keeper.dive-right{transform:translate(calc(-50% + 62px), -4px) rotate(16deg);}
+  .keeper.dive-center{transform:translate(-50%, -4px) scale(1.04);}
+
+  .ball{
+    position:absolute; bottom:10px; left:50%; transform:translate(-50%,0);
+    font-size:24px; line-height:1; z-index:4; filter:drop-shadow(0 3px 2px rgba(0,0,0,.25));
+    transition:transform .62s cubic-bezier(.2,.68,.32,1);
+  }
+  .ball.shoot-left{transform:translate(calc(-50% - 92px), -158px) scale(.6);}
+  .ball.shoot-center{transform:translate(-50%, -158px) scale(.6);}
+  .ball.shoot-right{transform:translate(calc(-50% + 92px), -158px) scale(.6);}
+
+  .toast{
+    position:absolute; top:38%; left:50%; transform:translate(-50%,-50%) scale(.4);
+    font-family:'Fredoka',sans-serif; font-size:30px; font-weight:700; color:var(--sun);
+    text-shadow:0 3px 0 var(--ink); opacity:0; z-index:5; pointer-events:none;
+    transition:transform .35s cubic-bezier(.3,1.6,.4,1), opacity .35s ease;
+  }
+  .toast.miss{color:var(--chalk); text-shadow:0 3px 0 var(--coral-dark);}
+  .toast.show{opacity:1; transform:translate(-50%,-50%) scale(1);}
+
+  /* ---------- Zona de patear ---------- */
+  .kicker-label{
+    font-size:12px; letter-spacing:.1em; text-transform:uppercase; color:var(--ink-soft);
+    font-weight:600; margin-bottom:6px;
+  }
+  .situation{font-size:15px; line-height:1.5; margin:0 0 10px;}
+  .question{font-family:'Fredoka',sans-serif; font-size:17px; margin:0 0 16px; color:var(--ink);}
+
+  .aim-row{display:flex; gap:8px; margin-top:4px;}
+  .aim-btn{
+    flex:1; background:#fff; border:2px solid var(--ink); border-radius:14px;
+    padding:14px 6px; font-size:13.5px; font-weight:600; text-align:center;
+    cursor:pointer; color:var(--ink); transition:background .15s ease, transform .1s ease;
+  }
+  .aim-btn:hover:not(:disabled){background:var(--sun);}
+  .aim-btn:disabled{opacity:.5; cursor:default;}
+  .aim-btn .aim-ico{display:block; font-size:20px; margin-bottom:4px;}
+
+  .kick-result-line{
+    font-family:'Fredoka',sans-serif; font-size:16px; margin:4px 0 4px; text-align:center;
+  }
+
+  .options{display:flex; flex-direction:column; gap:10px;}
+  .option{
+    text-align:left; background:#fff; border:2px solid var(--sand-line); border-radius:14px;
+    padding:13px 15px; font-size:14px; line-height:1.4; cursor:pointer; color:var(--ink);
+    transition:border-color .15s ease, background .15s ease;
+  }
+  .option:hover:not(:disabled){border-color:var(--sun-dark); background:#FFFDF6;}
+  .option:disabled{cursor:default; opacity:.55;}
+  .option.picked-good{border-color:var(--ok); background:#EEFBF0;}
+  .option.picked-bad{border-color:var(--coral); background:#FFF0EE;}
+
+  .feedback{
+    margin-top:16px; border-radius:14px; padding:14px 16px; font-size:14px; line-height:1.5;
+    border-left:6px solid var(--ok); background:#EEFBF0;
+  }
+  .feedback.bad{border-left-color:var(--coral); background:#FFF0EE;}
+  .feedback .fb-title{font-family:'Fredoka',sans-serif; font-size:15px; margin:0 0 4px;}
+
+  .next-row{margin-top:16px; text-align:center;}
+
+  /* ---------- Resultados ---------- */
+  #results .trophy{font-size:44px; text-align:center; margin-bottom:6px;}
+  #results h2{text-align:center; margin:0 0 6px; font-size:22px;}
+  #results .tier{text-align:center; color:var(--ink-soft); font-size:14px; margin-bottom:16px;}
+  #results .final-stats{display:flex; gap:10px; margin-bottom:18px;}
+  #results .final-stats .stat{flex:1; background:#fff; border:1px solid var(--sand-line); border-radius:12px; padding:12px; text-align:center;}
+  #results .final-stats .stat strong{display:block; font-family:'Fredoka',sans-serif; font-size:22px;}
+  #results .final-stats .stat span{font-size:11px; text-transform:uppercase; letter-spacing:.06em; color:var(--ink-soft);}
+  #results .ideas-title{font-family:'Fredoka',sans-serif; font-size:16px; margin:4px 0 10px;}
+  .chip-grid{display:flex; flex-wrap:wrap; gap:8px; margin-bottom:18px;}
+  .chip{background:#fff; border:1px solid var(--sand-line); border-radius:999px; padding:7px 12px; font-size:12.5px; color:var(--ink);}
+  #results .closing-q{
+    background:var(--ink); color:#fff; border-radius:14px; padding:14px 16px;
+    font-size:14px; line-height:1.5; margin-bottom:18px;
+  }
+  #results .closing-q b{color:var(--sun);}
+
+  .hidden{display:none !important;}
+
+  footer.note{text-align:center; font-size:11.5px; color:var(--ink-soft); margin-top:16px; opacity:.8;}
+
+  @media (prefers-reduced-motion: reduce){
+    .ball, .keeper, .toast, .meter-fill, .goal .net{transition:none !important;}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <div class="masthead">
+    <span class="eyebrow">Economía de la frustración</span>
+    <h1>Penales contra la bronca ⚽</h1>
+    <p>Pateás vos. Si la ataja el arquero, pensás la jugada.</p>
+  </div>
+
+  <!-- ================= INTRO ================= -->
+  <section id="intro" class="card">
+    <p class="kicker-label">De qué va el juego</p>
+    <p class="situation">Querer algo y escuchar <strong>"no hay plata"</strong> en tu casa es re común. Lo que cambia el partido es <strong>cómo la manejás</strong> vos.</p>
+    <div class="question-box">
+      Vas a patear <b>5 penales</b>. Si la <b>convertís, sumás un punto a favor</b> y seguís. Si el <b>arquero te la ataja</b>, te toca resolver una situación real de plata con amigos o en casa. ¿Se puede pasar un buen momento sin gastar un peso? Vamos a verlo.
+    </div>
+    <div class="tag-row">
+      <span class="tag">🏠 Situaciones de casa</span>
+      <span class="tag">🧃 Planes con amigos</span>
+      <span class="tag">📱 Redes y consumo</span>
+    </div>
+    <div class="center">
+      <button class="btn btn-primary" id="start-btn">Empezar a patear →</button>
+    </div>
+  </section>
+
+  <!-- ================= JUEGO ================= -->
+  <section id="game" class="hidden">
+
+    <div class="scoreboard">
+      <div class="kicks">
+        <span>Tiro</span>
+        <strong id="kick-counter">1/5</strong>
+      </div>
+      <div class="meter-wrap">
+        <span>Cómo manejás la bronca</span>
+        <div class="meter-track"><div class="meter-fill" id="meter-fill"></div></div>
+      </div>
+      <div class="goals">
+        <span>A favor</span>
+        <strong id="goal-counter">0/5</strong>
+      </div>
+    </div>
+
+    <div class="field" id="field">
+      <div class="arc"></div>
+      <div class="goal" id="goal"><div class="net"></div></div>
+      <div class="keeper" id="keeper">
+        <div class="k-head"></div>
+        <div class="k-body"></div>
+      </div>
+      <div class="ball" id="ball">⚽</div>
+      <div class="toast" id="toast">¡GOOOL!</div>
+    </div>
+
+    <div class="card">
+      <p class="kicker-label" id="round-label">Situación 1 de 5</p>
+
+      <!-- Fase de patear -->
+      <div id="kick-phase">
+        <p class="situation" id="teaser-text"></p>
+        <p class="kicker-label" style="margin-top:10px;">🎯 Elegí dónde patear</p>
+        <div class="aim-row" id="aim-row">
+          <button class="aim-btn" data-side="left" type="button"><span class="aim-ico">↖️</span>Palo izquierdo</button>
+          <button class="aim-btn" data-side="center" type="button"><span class="aim-ico">⬆️</span>Al medio</button>
+          <button class="aim-btn" data-side="right" type="button"><span class="aim-ico">↗️</span>Palo derecho</button>
+        </div>
+        <p class="kick-result-line hidden" id="kick-result-line"></p>
+      </div>
+
+      <!-- Fase de pregunta (solo si el arquero ataja) -->
+      <div id="question-phase" class="hidden">
+        <p class="situation" id="situation-text"></p>
+        <p class="question" id="question-text"></p>
+        <div class="options" id="options"></div>
+
+        <div class="feedback hidden" id="feedback" aria-live="polite">
+          <p class="fb-title" id="fb-title"></p>
+          <p id="fb-text" style="margin:0;"></p>
+        </div>
+      </div>
+
+      <div class="next-row hidden" id="next-row">
+        <button class="btn btn-primary" id="next-btn">Siguiente tiro →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= RESULTADOS ================= -->
+  <section id="results" class="card hidden">
+    <div class="trophy" id="res-trophy">🏆</div>
+    <h2 id="res-title">¡Fin de la tanda!</h2>
+    <p class="tier" id="res-subtitle"></p>
+
+    <div class="final-stats">
+      <div class="stat">
+        <strong id="res-goals">0/5</strong>
+        <span>Puntos a favor</span>
+      </div>
+      <div class="stat">
+        <strong id="res-meter">50%</strong>
+        <span>Manejo de la bronca</span>
+      </div>
+    </div>
+
+    <p id="res-message" class="situation"></p>
+    <p id="res-note" class="situation" style="font-style:italic; color:var(--ink-soft); display:none;"></p>
+
+    <p class="ideas-title">Ideas para juntarte sin gastar ni un peso</p>
+    <div class="chip-grid">
+      <span class="chip">🧉 Ronda de mate</span>
+      <span class="chip">⚽ Picadito en la plaza</span>
+      <span class="chip">🎴 Torneo de cartas</span>
+      <span class="chip">🎧 Playlist compartida</span>
+      <span class="chip">🚶 Caminata sin rumbo</span>
+      <span class="chip">🎬 Maratón de pelis en casa</span>
+      <span class="chip">📸 Sesión de fotos random</span>
+      <span class="chip">🛹 Patio o potrero</span>
+    </div>
+
+    <div class="closing-q">
+      Como viste, muchas veces el mejor momento con amigos no depende de la plata, sino de <b>las ganas de estar</b>. La próxima vez que en casa te digan "no hay plata", ¿qué vas a elegir hacer?
+    </div>
+
+    <div class="center">
+      <button class="btn btn-ghost" id="replay-btn">Volver a jugar</button>
+    </div>
+  </section>
+
+  <footer class="note">Juego educativo · Jugás offline, sin conexión (salvo la tipografía) · Hecho para pensar, no para juzgar.</footer>
+</div>
+
+<script>
+(function(){
+
+  var scenarios = [
+    {
+      teaser: "Ronda 1: viste unas zapatillas nuevas que te mueren, pero en casa dicen que este mes no hay plata.",
+      situation: "Viste que a tu amigo le compraron las zapatillas último modelo y vos también las querés. Cuestan $80.000. En tu casa te dicen “no hay plata este mes”.",
+      question: "El arquero te la ataja. ¿Qué hacés con las zapatillas?",
+      options: [
+        { label: "Les grito que nunca me compran nada y me voy a mi cuarto dando un portazo.", points: -10,
+          feedback: "El grito no suma nada: la plata sigue sin estar, y ahora encima hay clima pesado en casa." },
+        { label: "Propongo armar un plan: ahorrar de a poco, hacer alguna changa, o esperar una oferta.", points: 15,
+          feedback: "Encontraste una forma de ir por lo que querés sin pelear. Eso es jugar en equipo con tu propia frustración." },
+        { label: "Me guardo la bronca y dejo de hablarles varios días, como “castigo”.", points: -10,
+          feedback: "El silencio no arregla nada, y encima te quedás solo/a con el enojo adentro." }
+      ]
+    },
+    {
+      teaser: "Ronda 2: tus amigos arman un plan de pizza afuera y vos andás sin un peso extra.",
+      situation: "Tus amigos arman un plan para ir a comer pizza afuera el sábado. Vos esta semana no tenés ni un peso extra.",
+      question: "El arquero te la ataja. ¿Qué hacés con el plan?",
+      options: [
+        { label: "Digo que no puedo ir y me quedo solo/a en casa, re bajoneado/a, sin contar bien por qué.", points: -10,
+          feedback: "Terminás solo/a igual, pero encima sin decir la verdad. Tus amigos ni se enteran de lo que te pasa." },
+        { label: "Les cuento la posta: que esta semana no tengo plata, y propongo juntarnos en la plaza o en lo de alguien.", points: 15,
+          feedback: "Ser sincero/a no te saca amigos, te suma. Y encontraste la forma de estar igual." },
+        { label: "Voy igual y le pido plata prestada a un amigo, sin pensar mucho en cuándo se la devolvés.", points: -10,
+          feedback: "Puede salir bien una vez, pero la deuda (de plata o de onda) suele volver en el peor momento." }
+      ]
+    },
+    {
+      teaser: "Ronda 3: se viene tu cumple importante y el presupuesto en casa está ajustado.",
+      situation: "Se viene tu cumple importante y en casa te dicen que no da el presupuesto para la fiesta que soñabas.",
+      question: "El arquero te la ataja. ¿Qué hacés con el festejo?",
+      options: [
+        { label: "Propongo festejar distinto: un asado, una junta en casa o en la plaza con los que más quiero.", points: 15,
+          feedback: "Encontraste el verdadero objetivo del festejo: estar con la gente que te importa, no la producción." },
+        { label: "Me la paso comparando mi festejo con el de otros que sí tuvieron una fiesta enorme.", points: -10,
+          feedback: "Comparándote te perdés tu propio festejo, aunque sea distinto al que imaginabas." },
+        { label: "Dejo de hablarles a mis papás por un tiempo, como forma de reclamo.", points: -10,
+          feedback: "El silencio pesa en la casa y no cambia el presupuesto ni la situación." }
+      ]
+    },
+    {
+      teaser: "Ronda 4: el grupo arma un plan de cine y shopping, pero tenés que cuidar la plata.",
+      situation: "El grupo arma un plan de cine y shopping. Vos tenés que cuidar la plata esta semana.",
+      question: "El arquero te la ataja. ¿Qué hacés con el plan?",
+      options: [
+        { label: "Invento una excusa para no ir y me voy alejando un poco del grupo.", points: -10,
+          feedback: "Te perdés el plan igual, y encima nadie sabe la verdad como para pensar otra idea juntos." },
+        { label: "Voy, cuento que ando corto/a de plata y propongo otro plan gratis: caminar, patinar, ir a la plaza.", points: 15,
+          feedback: "Vas igual, sos sincero/a y le sumás una idea al grupo. Así se pasa bien sin gastar." },
+        { label: "Voy y gasto igual, pidiéndoles plata a mis viejos por transferencia “para una emergencia”.", points: -10,
+          feedback: "Estirar la excusa funciona una vez, pero la próxima emergencia de verdad, ¿quién te cree?" }
+      ]
+    },
+    {
+      teaser: "Ronda 5: en redes parece que todos tienen el celu nuevo o la ropa de moda.",
+      situation: "En redes viste que todos parecen tener el celu nuevo o la ropa de marca que se puso de moda. Sentís que si no lo tenés, quedás afuera.",
+      question: "El arquero te la ataja. ¿Qué hacés con esas ganas?",
+      options: [
+        { label: "Insisto todos los días hasta que en casa se cansan y terminan comprándolo, aunque no puedan.", points: -10,
+          feedback: "Ganaste la pelea, pero puede que en casa tengan que dejar de pagar otra cosa importante." },
+        { label: "Me paro a pensar si de verdad lo necesito, o es más las ganas del momento por lo que vi en redes.", points: 15,
+          feedback: "Frenar un segundo antes de decidir es justamente lo que te saca del piloto automático del consumo." },
+        { label: "Empiezo a sentir que valgo menos que mis amigos por no tenerlo.", points: -10,
+          feedback: "Tu valor no lo pone una marca ni un like. Esa cuenta no cierra nunca." }
+      ]
+    }
+  ];
+
+  var state = { round: 0, meter: 50, goals: 0, questionsAnswered: 0, kicked: false, answered: false };
+
+  var introEl = document.getElementById('intro');
+  var gameEl = document.getElementById('game');
+  var resultsEl = document.getElementById('results');
+
+  var kickCounterEl = document.getElementById('kick-counter');
+  var goalCounterEl = document.getElementById('goal-counter');
+  var meterFillEl = document.getElementById('meter-fill');
+  var roundLabelEl = document.getElementById('round-label');
+
+  var kickPhaseEl = document.getElementById('kick-phase');
+  var teaserTextEl = document.getElementById('teaser-text');
+  var aimRowEl = document.getElementById('aim-row');
+  var kickResultLineEl = document.getElementById('kick-result-line');
+
+  var questionPhaseEl = document.getElementById('question-phase');
+  var situationTextEl = document.getElementById('situation-text');
+  var questionTextEl = document.getElementById('question-text');
+  var optionsEl = document.getElementById('options');
+  var feedbackEl = document.getElementById('feedback');
+  var fbTitleEl = document.getElementById('fb-title');
+  var fbTextEl = document.getElementById('fb-text');
+
+  var nextRowEl = document.getElementById('next-row');
+  var nextBtn = document.getElementById('next-btn');
+
+  var ballEl = document.getElementById('ball');
+  var keeperEl = document.getElementById('keeper');
+  var goalEl = document.getElementById('goal');
+  var toastEl = document.getElementById('toast');
+
+  function shuffle(arr){
+    var a = arr.slice();
+    for (var i = a.length - 1; i > 0; i--){
+      var j = Math.floor(Math.random() * (i + 1));
+      var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+    }
+    return a;
+  }
+
+  function clamp(v, min, max){ return Math.max(min, Math.min(max, v)); }
+
+  function updateScoreboard(){
+    kickCounterEl.textContent = (state.round + 1) + "/5";
+    goalCounterEl.textContent = state.goals + "/5";
+    meterFillEl.style.width = state.meter + "%";
+  }
+
+  function resetField(){
+    ballEl.classList.remove('shoot-left','shoot-center','shoot-right');
+    keeperEl.classList.remove('dive-left','dive-center','dive-right');
+    goalEl.classList.remove('net-shake');
+    toastEl.classList.remove('show','miss');
+    void ballEl.offsetWidth;
+  }
+
+  function renderRound(){
+    state.kicked = false;
+    state.answered = false;
+    resetField();
+
+    kickPhaseEl.classList.remove('hidden');
+    questionPhaseEl.classList.add('hidden');
+    feedbackEl.classList.add('hidden');
+    feedbackEl.classList.remove('bad');
+    nextRowEl.classList.add('hidden');
+    kickResultLineEl.classList.add('hidden');
+
+    var sc = scenarios[state.round];
+    roundLabelEl.textContent = "Situación " + (state.round + 1) + " de 5";
+    teaserTextEl.textContent = sc.teaser;
+
+    Array.prototype.forEach.call(aimRowEl.children, function(b){ b.disabled = false; });
+
+    updateScoreboard();
+  }
+
+  function doKick(side){
+    if (state.kicked) return;
+    state.kicked = true;
+    Array.prototype.forEach.call(aimRowEl.children, function(b){ b.disabled = true; });
+
+    var sides = ['left','center','right'];
+    var keeperSide = sides[Math.floor(Math.random() * 3)];
+    var isGoal = (side !== keeperSide);
+
+    keeperEl.classList.add('dive-' + keeperSide);
+    requestAnimationFrame(function(){
+      ballEl.classList.add('shoot-' + side);
+    });
+
+    setTimeout(function(){
+      if (isGoal){
+        goalEl.classList.add('net-shake');
+        toastEl.textContent = '¡GOOOL!';
+        toastEl.classList.remove('miss');
+      } else {
+        toastEl.textContent = '¡ATAJADA!';
+        toastEl.classList.add('miss');
+      }
+      toastEl.classList.add('show');
+
+      if (isGoal){
+        state.goals += 1;
+        updateScoreboard();
+        kickResultLineEl.textContent = '⚽ ¡La clavaste! +1 punto a favor.';
+        kickResultLineEl.classList.remove('hidden');
+        nextBtn.textContent = (state.round === scenarios.length - 1) ? 'Ver resultado final →' : 'Siguiente tiro →';
+        nextRowEl.classList.remove('hidden');
+      } else {
+        kickResultLineEl.textContent = '🧤 Te la atajó. A pensar la jugada de al lado de la cancha.';
+        kickResultLineEl.classList.remove('hidden');
+        showQuestion();
+      }
+    }, 650);
+  }
+
+  function showQuestion(){
+    var sc = scenarios[state.round];
+    situationTextEl.textContent = sc.situation;
+    questionTextEl.textContent = sc.question;
+
+    optionsEl.innerHTML = '';
+    var shuffled = shuffle(sc.options);
+    shuffled.forEach(function(opt){
+      var btn = document.createElement('button');
+      btn.className = 'option';
+      btn.type = 'button';
+      btn.textContent = opt.label;
+      btn.addEventListener('click', function(){ handleAnswer(opt, btn); });
+      optionsEl.appendChild(btn);
+    });
+
+    questionPhaseEl.classList.remove('hidden');
+  }
+
+  function handleAnswer(opt, btnEl){
+    if (state.answered) return;
+    state.answered = true;
+
+    var isGood = opt.points > 0;
+
+    Array.prototype.forEach.call(optionsEl.children, function(b){
+      b.disabled = true;
+      if (b === btnEl) b.classList.add(isGood ? 'picked-good' : 'picked-bad');
+    });
+
+    state.meter = clamp(state.meter + opt.points, 0, 100);
+    state.questionsAnswered += 1;
+    updateScoreboard();
+
+    fbTitleEl.textContent = isGood ? '🙌 Buena jugada' : '🤔 Para repensar';
+    fbTextEl.textContent = opt.feedback;
+    feedbackEl.classList.remove('hidden');
+    feedbackEl.classList.toggle('bad', !isGood);
+
+    nextBtn.textContent = (state.round === scenarios.length - 1) ? 'Ver resultado final →' : 'Siguiente tiro →';
+    nextRowEl.classList.remove('hidden');
+  }
+
+  aimRowEl.addEventListener('click', function(e){
+    var btn = e.target.closest('.aim-btn');
+    if (!btn) return;
+    doKick(btn.getAttribute('data-side'));
+  });
+
+  nextBtn.addEventListener('click', function(){
+    if (state.round < scenarios.length - 1){
+      state.round += 1;
+      renderRound();
+    } else {
+      showResults();
+    }
+  });
+
+  function showResults(){
+    gameEl.classList.add('hidden');
+    resultsEl.classList.remove('hidden');
+
+    document.getElementById('res-goals').textContent = state.goals + '/5';
+    document.getElementById('res-meter').textContent = state.meter + '%';
+
+    var trophy, title, subtitle, message;
+    if (state.meter >= 80){
+      trophy = '🏆'; title = '¡Crack total!';
+      subtitle = 'Manejás la bronca como un 9 maneja el área';
+      message = 'Sabés bancarte los "no hay plata" sin que te arruinen el día, y siempre le encontrás la vuelta para pasarla bien igual. Ojo, nadie la mete siempre: seguí prestando atención a cómo reaccionás.';
+    } else if (state.meter >= 60){
+      trophy = '⚽'; title = '¡Vas bien!';
+      subtitle = 'Más aciertos que traspiés';
+      message = 'La mayoría de las veces la remás bien, pero a veces la frustración te la gana. Como en el fútbol, con un poco más de práctica mejora solo.';
+    } else if (state.meter >= 40){
+      trophy = '🤝'; title = 'Empate técnico';
+      subtitle = 'Todavía cuesta bastante';
+      message = 'Manejar el "no hay plata" no te resulta fácil, y está bien reconocerlo: no sos el único/a. Es un buen tema para charlar en casa y con amigos, sin culpas.';
+    } else {
+      trophy = '🧤'; title = 'A entrenar más';
+      subtitle = 'La bronca te ganó varias veces';
+      message = 'La frustración te termina jugando en contra bastante seguido. Buena noticia: como en el fútbol, esto se entrena. Cada situación de la vida real es una nueva chance de patear mejor.';
+    }
+
+    document.getElementById('res-trophy').textContent = trophy;
+    document.getElementById('res-title').textContent = title;
+    document.getElementById('res-subtitle').textContent = subtitle;
+    document.getElementById('res-message').textContent = message;
+
+    var noteEl = document.getElementById('res-note');
+    if (state.questionsAnswered === 0){
+      noteEl.textContent = 'Esta vuelta el arquero no te exigió pensar ninguna: las clavaste todas. Jugá de nuevo para ver qué situaciones te esperan si te la atajan.';
+      noteEl.style.display = 'block';
+    } else {
+      noteEl.style.display = 'none';
+    }
+  }
+
+  document.getElementById('start-btn').addEventListener('click', function(){
+    introEl.classList.add('hidden');
+    gameEl.classList.remove('hidden');
+    renderRound();
+  });
+
+  document.getElementById('replay-btn').addEventListener('click', function(){
+    state = { round: 0, meter: 50, goals: 0, questionsAnswered: 0, kicked: false, answered: false };
+    resultsEl.classList.add('hidden');
+    gameEl.classList.remove('hidden');
+    renderRound();
+  });
+
+})();
+</script>
+</body>
+</html>
