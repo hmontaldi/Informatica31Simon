@@ -132,6 +132,16 @@ a.boton-descarga:hover { background: #16374F; }
   padding: 16px 18px;
   transition: box-shadow 0.15s;
 }
+.etapa-card2 {
+  display: block;
+  text-decoration: none;
+  background: orange;
+  border: 1px solid #CFD8DC;
+  border-left: 6px solid #1B4965;
+  border-radius: 8px;
+  padding: 16px 18px;
+  transition: box-shadow 0.15s;
+}
 .etapa-card:hover { box-shadow: 0 3px 10px rgba(0,0,0,0.10); }
 .etapa-card .num {
   display: inline-block;
