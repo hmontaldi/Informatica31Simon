@@ -159,6 +159,19 @@ a.boton-descarga:hover { background: #16374F; }
   font-weight: bold;
   margin-right: 8px;
 }
+.etapa-card .num3 {
+  display: inline-block;
+  background: rgb(13,17,F0);
+  color: white;
+  width: 35px;
+  height: 35px;
+  border-radius: 50%;
+  text-align: center;
+  line-height: 35px;
+  font-size: 16px;
+  font-weight: bold;
+  margin-right: 8px;
+}
 .etapa-card h3 { display: inline; color: #1B4965; font-size: 16px; }
 .etapa-card p { font-size: 13px; color: #546E7A; margin: 8px 0 0 0; }
 .bottomnav {
