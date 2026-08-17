@@ -1,3 +1,7 @@
+:root{
+    --paper:#eef1ee; --card:#fbfbf8; --ink:#1f2e2b; --ink-soft:#5c6a64;
+    --gold:#b8902f; --teal:#2c6e63; --rule:#d3d9d2;
+  }
 body {
   font-family: Arial, Helvetica, sans-serif;
   color: #263238;
