@@ -198,3 +198,22 @@ footer {
   color: #90A4AE;
   text-align: center;
 }
+.enter-btn{
+    display:inline-flex; align-items:center; gap:9px;
+    margin-top: 26px;
+    background: var(--ink); color: var(--card); text-decoration:none;
+    font-family:'IBM Plex Mono', monospace; font-weight:700; font-size: 14px;
+    letter-spacing:.08em; text-transform:uppercase;
+    padding: 14px 28px; border-radius: 40px;
+    box-shadow: 0 10px 20px rgba(20,30,25,0.18);
+    transition: transform .15s ease, box-shadow .15s ease, opacity .15s ease;
+    animation: pulse 2.2s ease-in-out infinite;
+  }
+  .enter-btn:hover{
+    transform: translateY(-2px);
+    box-shadow: 0 14px 26px rgba(20,30,25,0.24);
+    opacity: 0.92;
+  }
+  .enter-btn:active{ transform: translateY(0) scale(0.98); }
+  .enter-btn .arrow{ transition: transform .15s ease; }
+  .enter-btn:hover .arrow{ transform: translateX(4px); }
