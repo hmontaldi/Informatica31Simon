@@ -207,6 +207,7 @@ footer {
     align-items:center;
     justify-content:center;
     width: 50%;
+    margin: 0 auto;
     gap:9px;
     margin-top: 26px;
     background: var(--ink); color: var(--card); text-decoration:none;
