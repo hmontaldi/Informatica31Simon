@@ -235,6 +235,6 @@ footer {
   50% {
     background: rgb(39,60,245); /* Cambiá este color por el segundo color que quieras */
     color: #ffffff;      /* Ajustá el texto para que mantenga contraste */
-    box-shadow: 0 10px 25px rgba(255, 71, 87, 0.5); /* Opcional: destello en la sombra */
+    box-shadow: 0 10px 25px rgba(39, 60, 245, 0.5); /* Opcional: destello en la sombra */
   }
 }
