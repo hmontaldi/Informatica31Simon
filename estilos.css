@@ -203,9 +203,10 @@ footer {
   text-align: center;
 }
 .enter-btn{
-    width: 50%;
-    margin: 0 auto;
-    display:inline-flex; align-items:center; gap:9px;
+    display: flex;
+    align-items:center;
+    justify-content:center;
+    gap:9px;
     margin-top: 26px;
     background: var(--ink); color: var(--card); text-decoration:none;
     font-family:'IBM Plex Mono', monospace; font-weight:700; font-size: 14px;
