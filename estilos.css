@@ -226,3 +226,15 @@ footer {
   .enter-btn:active{ transform: translateY(0) scale(0.98); }
   .enter-btn .arrow{ transition: transform .15s ease; }
   .enter-btn:hover .arrow{ transform: translateX(4px); }
+@keyframes pulse {
+  0%, 100% {
+    background: var(--ink);
+    color: var(--card);
+    box-shadow: 0 10px 20px rgba(20, 30, 25, 0.18);
+  }
+  50% {
+    background: #ff4757; /* Cambiá este color por el segundo color que quieras */
+    color: #ffffff;      /* Ajustá el texto para que mantenga contraste */
+    box-shadow: 0 10px 25px rgba(255, 71, 87, 0.5); /* Opcional: destello en la sombra */
+  }
+}
