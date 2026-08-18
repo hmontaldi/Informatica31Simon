@@ -3,6 +3,7 @@
     --gold:#b8902f; --teal:#2c6e63; --rule:#d3d9d2;
   }
 body {
+    zoom: 150%;
   font-family: Arial, Helvetica, sans-serif;
   color: #263238;
   line-height: 1.5;
