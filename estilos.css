@@ -203,7 +203,8 @@ footer {
   text-align: center;
 }
 .enter-btn{
-    text-align: center;
+    width: 50%;
+    margin: 0 auto;
     display:inline-flex; align-items:center; gap:9px;
     margin-top: 26px;
     background: var(--ink); color: var(--card); text-decoration:none;
