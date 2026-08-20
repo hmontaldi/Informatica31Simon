@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cómo armar tu folletería</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#eef1ee; --card:#fbfbf8; --ink:#1f2e2b; --ink-soft:#5c6a64;
+    --gold:#b8902f; --teal:#2c6e63; --teal-soft:#e2eeec;
+    --coral:#b0492f; --coral-soft:#f6e6e0; --rule:#d3d9d2;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size:14px 14px;
+    font-family:'Source Serif 4', serif; color:var(--ink);
+    padding: 28px 14px 60px;
+  }
+  .wrap{ max-width: 760px; margin:0 auto; }
+
+  .cover{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px;
+    padding: 28px 26px; margin-bottom:18px; text-align:center;
+    box-shadow: 0 14px 30px rgba(20,30,25,0.08);
+  }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; }
+  h1{ font-size:25px; margin:0 0 8px; font-weight:700; line-height:1.25; }
+  .cover p{ color:var(--ink-soft); font-size:14.5px; margin:0 auto; max-width:520px; }
+
+  section{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px;
+    padding:22px 22px; margin-bottom:16px;
+  }
+  h2{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--teal); margin:0 0 12px; display:flex; align-items:center; gap:8px;
+  }
+  h2 .num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:20px; height:20px; border-radius:50%; background:var(--teal); color:var(--card);
+    font-size:10.5px; flex-shrink:0;
+  }
+  h3{ font-size:15.5px; margin:16px 0 8px; font-weight:700; }
+  p{ font-size:14.5px; line-height:1.6; margin:0 0 8px; }
+  ul, ol{ margin:0 0 8px; padding-left:20px; font-size:14.5px; line-height:1.65; }
+  li{ margin-bottom:4px; }
+
+  .steps{ counter-reset: step; margin: 14px 0 0; padding:0; list-style:none; }
+  .steps li{
+    counter-increment: step; position:relative; padding: 12px 12px 12px 44px;
+    border: 1px solid var(--rule); border-radius:4px; margin-bottom: 10px; font-size:14.5px; line-height:1.5;
+  }
+  .steps li::before{
+    content: counter(step); position:absolute; left:10px; top:50%; transform:translateY(-50%);
+    font-family:'IBM Plex Mono',monospace; font-weight:700; font-size:13px;
+    width:22px; height:22px; border-radius:50%; background:var(--gold); color:var(--card);
+    display:flex; align-items:center; justify-content:center;
+  }
+  .steps li strong{ display:block; margin-bottom:2px; }
+  .steps li code{
+    background:var(--paper); border:1px solid var(--rule); border-radius:3px;
+    padding: 1px 5px; font-family:'IBM Plex Mono',monospace; font-size:12.5px;
+  }
+
+  .callout{
+    background:var(--teal-soft); border-left:3px solid var(--teal); border-radius:2px;
+    padding:12px 14px; font-size:13.5px; margin-top:14px; line-height:1.5;
+  }
+  .callout.warn{ background:var(--coral-soft); border-left-color:var(--coral); }
+  .callout strong{ font-family:'IBM Plex Mono',monospace; font-size:11px; text-transform:uppercase; letter-spacing:.06em; display:block; margin-bottom:4px; }
+
+  .prompt-box{
+    background:var(--paper); border:1px dashed var(--gold); border-radius:4px;
+    padding: 14px 14px; font-family:'IBM Plex Mono',monospace; font-size:12.5px; line-height:1.6;
+    white-space:pre-wrap; margin: 12px 0;
+  }
+
+  .specs{ display:flex; flex-wrap:wrap; gap:10px; margin:10px 0; }
+  .spec{
+    background:var(--teal-soft); color:var(--teal); font-family:'IBM Plex Mono',monospace; font-size:12px;
+    font-weight:600; padding:7px 13px; border-radius:20px;
+  }
+
+  footer{ text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); margin-top:24px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <div class="eyebrow">Cuentas claras, mente sana</div>
+    <h1>Cómo armar tu folletería</h1>
+    <p>Guía para diseñar el folleto o tríptico que le van a entregar a cada alumno de 2° año, usando Canva o IA.</p>
+  </div>
+
+  <section>
+    <h2><span class="num">1</span> Formato y medidas</h2>
+    <div class="specs">
+      <span class="spec">Folleto: mínimo A6 (10,5 × 14,8 cm)</span>
+      <span class="spec">Folleto: 1 o 2 caras</span>
+      <span class="spec">Tríptico: ambas caras, sí o sí</span>
+    </div>
+    <p>Elijan el formato que les resulte más cómodo de imprimir: un folleto simple (aunque sea de una sola cara) o un tríptico de tres paneles. Si hacen tríptico, tiene que estar diseñado e impreso de los dos lados.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span> Contenido obligatorio</h2>
+    <ul>
+      <li>Código QR de acceso al juego del grupo.</li>
+      <li>Breve explicación del tema/juego (unas pocas líneas, no un párrafo largo).</li>
+      <li>Logo de la escuela, nombre de la escuela, materia, profesor y alumnos del grupo.</li>
+    </ul>
+    <div class="callout">
+      <strong>Nota</strong>
+      El gafete y el cartel de número de grupo NO se hacen con Canva ni con IA — van a mano, en la cartulina de color, como está indicado en el reglamento.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span> Diseño limpio y humanizado</h2>
+    <ul>
+      <li>Prioricen espacios en blanco: no llenen cada centímetro del folleto.</li>
+      <li>Usen el color asignado a su grupo como acento, no como fondo completo.</li>
+      <li>Elijan ilustraciones simples (íconos, vectores) o fotos reales, en vez de imágenes generadas por IA muy "perfectas" o artificiales — se ven más cercanas y menos genéricas.</li>
+      <li>Tipografía legible: nada de letras muy finitas o decorativas para el texto explicativo.</li>
+      <li>Texto breve: alguien debería poder leerlo en menos de 20 segundos.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span> Paso a paso con Canva</h2>
+    <ol class="steps">
+      <li><strong>Entrá a canva.com</strong> y buscá una plantilla escribiendo "folleto" o "tríptico" (según el formato elegido).</li>
+      <li><strong>Elegí una plantilla simple</strong>, que tenga espacio libre para texto e imágenes — evitá las muy recargadas.</li>
+      <li><strong>Cambiá los colores</strong> de la plantilla por el color de su grupo (usá la paleta de colores de Canva y pegá el código RGB del reglamento).</li>
+      <li><strong>Reemplazá los textos</strong> por el título, la explicación breve y los datos institucionales.</li>
+      <li><strong>Insertá el código QR</strong>: descarguen la imagen del QR de su juego desde <code>qr.html</code> y súbanla como imagen a Canva.</li>
+      <li><strong>Revisen ambas caras</strong> si es tríptico, y que no falte ningún dato obligatorio.</li>
+      <li><strong>Descarguen en PDF para imprimir</strong> (Compartir → Descargar → PDF para imprimir).</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span> Paso a paso usando IA (para el texto)</h2>
+    <p>Si quieren ayuda para redactar el texto del folleto, pueden pedírselo a una IA con este prompt, cambiando lo que está entre corchetes:</p>
+    <div class="prompt-box">Rol: Actuá como redactor publicitario especializado en material educativo para adolescentes.
+
+Tarea: Escribime el texto para un [folleto/tríptico] sobre "[tema de tu grupo]", basado en la pregunta: "[pregunta disparadora de tu grupo]". Necesito: un título corto y llamativo, un texto explicativo breve (máximo 60 palabras) y una frase invitando a escanear el QR y jugar.
+
+Formato: Separá la respuesta en Título / Texto explicativo / Frase de invitación.
+
+Estilo: Tono cercano para adolescentes, claro, sin tecnicismos, que invite a pensar sin ser alarmista.
+
+Restricciones: No repitas literalmente la pregunta disparadora. El texto explicativo debe poder leerse en menos de 20 segundos.</div>
+    <p>Después, peguen ese texto dentro de la plantilla de Canva y ajusten el diseño a mano — la IA ayuda con el contenido, pero el diseño final lo arma el grupo.</p>
+    <div class="callout warn">
+      <strong>Importante</strong>
+      El gafete y el cartel de número siguen sin usar IA en ningún caso, ni para texto ni para imagen.
+    </div>
+  </section>
+
+  <footer>✧ Cuentas claras, mente sana ✧</footer>
+</div>
+</body>
+</html>
