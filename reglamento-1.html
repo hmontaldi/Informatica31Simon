@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Reglamento — Intervención "Cuentas claras, mente sana"</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700;1,400&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#eef1ee; --card:#fbfbf8; --ink:#1f2e2b; --ink-soft:#5c6a64;
+    --gold:#b8902f; --teal:#2c6e63; --teal-soft:#e2eeec;
+    --coral:#b0492f; --coral-soft:#f6e6e0; --rule:#d3d9d2;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size:14px 14px;
+    font-family:'Source Serif 4', serif; color:var(--ink);
+    padding: 28px 14px 60px;
+  }
+  .wrap{ max-width: 780px; margin:0 auto; }
+
+  /* HEADER */
+  .header{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px;
+    padding: 26px 24px; margin-bottom:18px; text-align:center;
+    box-shadow: 0 14px 30px rgba(20,30,25,0.08);
+  }
+  .header img.logo{ width:84px; height:84px; border-radius:50%; margin-bottom:12px; }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; }
+  h1{ font-size:24px; margin:0 0 6px; font-weight:700; line-height:1.25; }
+  .header .sub{ color:var(--ink-soft); font-size:14.5px; margin:2px 0; }
+  .header .meta{
+    display:flex; flex-wrap:wrap; gap:8px; justify-content:center; margin-top:14px;
+  }
+  .pill{
+    font-family:'IBM Plex Mono',monospace; font-size:11.5px; background:var(--teal-soft); color:var(--teal);
+    padding:6px 12px; border-radius:20px; font-weight:600;
+  }
+
+  .actions{ display:flex; gap:10px; flex-wrap:wrap; justify-content:center; margin-top:16px; }
+  .btn{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:.05em; text-transform:uppercase;
+    text-decoration:none; padding:11px 18px; border-radius:30px; font-weight:600;
+    transition: opacity .15s ease, transform .15s ease;
+  }
+  .btn:hover{ opacity:.85; transform:translateY(-1px); }
+  .btn-dark{ background:var(--ink); color:var(--card); }
+  .btn-outline{ background:transparent; color:var(--ink); border:1.5px dashed var(--ink); }
+
+  /* SECTIONS */
+  section{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px;
+    padding:22px 22px; margin-bottom:16px;
+  }
+  h2{
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--teal); margin:0 0 12px; display:flex; align-items:center; gap:8px;
+  }
+  h2 .num{
+    display:inline-flex; align-items:center; justify-content:center;
+    width:20px; height:20px; border-radius:50%; background:var(--teal); color:var(--card);
+    font-size:10.5px; flex-shrink:0;
+  }
+  h3{ font-size:15.5px; margin:16px 0 8px; font-weight:700; }
+  p{ font-size:14.5px; line-height:1.6; margin:0 0 8px; }
+  ul, ol{ margin:0 0 8px; padding-left:20px; font-size:14.5px; line-height:1.65; }
+  li{ margin-bottom:4px; }
+
+  table{ width:100%; border-collapse:collapse; margin:8px 0; font-size:13.5px; }
+  th, td{ text-align:left; padding:8px 8px; border-bottom:1px dashed var(--rule); vertical-align:top; }
+  th{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-soft); font-weight:600; }
+
+  .callout{
+    background:var(--teal-soft); border-left:3px solid var(--teal); border-radius:2px;
+    padding:11px 13px; font-size:13.5px; margin-top:10px; line-height:1.5;
+  }
+  .callout.warn{ background:var(--coral-soft); border-left-color:var(--coral); }
+  .callout strong{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; display:block; margin-bottom:4px; }
+
+  /* COLOR SWATCHES */
+  .colores{ display:flex; flex-direction:column; gap:6px; margin:10px 0; }
+  .color-row{ display:flex; align-items:center; gap:10px; font-size:14px; }
+  .swatch{ width:14px; height:14px; border-radius:2px; border:1px solid var(--rule); flex-shrink:0; }
+  .color-row .grupo{ font-family:'IBM Plex Mono',monospace; font-weight:700; color:var(--teal); width:64px; flex-shrink:0; }
+
+  /* STAND DIAGRAM */
+  .diagram-wrap{ display:flex; justify-content:center; margin:14px 0; }
+  .diagram-caption{ text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); margin-top:6px; }
+
+  /* CHECKLIST */
+  .checklist{ list-style:none; padding:0; margin:8px 0; }
+  .checklist li{
+    display:flex; align-items:flex-start; gap:10px; padding:6px 0; border-bottom:1px dashed var(--rule);
+    font-size:14px;
+  }
+  .checklist .box{
+    width:16px; height:16px; border:1.5px solid var(--ink); border-radius:3px; flex-shrink:0; margin-top:2px;
+  }
+  .checklist h4{
+    font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    color:var(--gold); margin: 16px 0 4px;
+  }
+
+  footer{ text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); margin-top:24px; }
+
+  @media print{
+    body{ background:var(--card); }
+    .actions{ display:none; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <img class="logo" src="logo.jpg" alt="Escuela N° 4-084 Libertador Simón Bolívar">
+    <div class="eyebrow">Escuela N° 4-084 "Libertador Simón Bolívar"</div>
+    <h1>Reglamento de la intervención<br>"Cuentas claras, mente sana"</h1>
+    <p class="sub">Muestra de juegos educativos a alumnos de 2° año</p>
+    <p class="sub">Espacio curricular: Sistemas de Información Contable I e Informática Aplicada a la Gestión</p>
+    <p class="sub">Curso: 3° 1° Bachiller de Economía · Profesoras/es: Mariela Arrojo y Humberto Montaldi</p>
+    <div class="meta">
+      <span class="pill">📅 10 y 17 de septiembre</span>
+      <span class="pill">🕒 15:00 a 16:00 hs</span>
+      <span class="pill">📍 SUM del colegio</span>
+    </div>
+    <div class="actions">
+      <a class="btn btn-dark" href="reglamento.pdf" download>⬇ Descargar PDF</a>
+      <a class="btn btn-outline" href="qr.html">QR de los juegos</a>
+    </div>
+  </div>
+
+  <section>
+    <h2><span class="num">1</span> Vestimenta</h2>
+    <ul>
+      <li>Pantalón negro y camisa blanca.</li>
+      <li>Se puede sumar un pequeño adorno del color del grupo: pañuelo al cuello o pulsera, sin exagerar.</li>
+      <li>Maquillaje y peinado formales.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">2</span> Gafete y cartel de grupo</h2>
+    <p><strong>Gafete:</strong> cartulina del color asignado al grupo, medida estándar <strong>9 × 6 cm</strong>. Lleva únicamente el nombre del alumno (sin apellido) — sin logo ni otro dato.</p>
+    <p><strong>Cartel de número:</strong> misma cartulina de color, tamaño <strong>A4</strong>, con el número de grupo escrito en grande, para identificar el stand.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">3</span> Colores por grupo</h2>
+    <p>Se usan en el gafete, el mantel de la mesa auxiliar y los adornos de la vestimenta.</p>
+    <div class="colores">
+      <div class="color-row"><span class="grupo">Grupo 1</span><span class="swatch" style="background:rgb(216,191,226)"></span><!-- rgb(216,191,226) --> Morado</div>
+      <div class="color-row"><span class="grupo">Grupo 2</span><span class="swatch" style="background:rgb(198,224,199)"></span><!-- rgb(198,224,199) --> Verde</div>
+      <div class="color-row"><span class="grupo">Grupo 3</span><span class="swatch" style="background:rgb(245,224,158)"></span><!-- rgb(245,224,158) --> Amarillo</div>
+      <div class="color-row"><span class="grupo">Grupo 4</span><span class="swatch" style="background:rgb(214,188,156)"></span><!-- rgb(214,188,156) --> Marrón</div>
+      <div class="color-row"><span class="grupo">Grupo 5</span><span class="swatch" style="background:rgb(244,199,208)"></span><!-- rgb(244,199,208) --> Rosa</div>
+      <div class="color-row"><span class="grupo">Grupo 6</span><span class="swatch" style="background:rgb(248,200,158)"></span><!-- rgb(248,200,158) --> Naranja</div>
+      <div class="color-row"><span class="grupo">Grupo 7</span><span class="swatch" style="background:rgb(190,222,240)"></span><!-- rgb(190,222,240) --> Celeste</div>
+      <div class="color-row"><span class="grupo">Grupo 8</span><span class="swatch" style="background:rgb(255,255,255)"></span><!-- rgb(255,255,255) --> Blanco</div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">4</span> Armado del stand</h2>
+    <p>Tres bancos colocados en forma de U (vista desde el visitante): uno al frente, de cara al público, y dos hacia el fondo, contra la pared. Mantel o tela vegetal: grupos <strong>impares</strong> (1, 3, 5, 7) en blanco, grupos <strong>pares</strong> (2, 4, 6, 8) en negro.</p>
+    <div class="diagram-wrap">
+      <svg width="280" height="180" viewBox="0 0 280 180">
+        <!-- banco frontal (horizontal, cerca del visitante) -->
+        <rect x="70" y="118" width="140" height="18" rx="3" fill="none" stroke="#1f2e2b" stroke-width="2"/>
+        <!-- banco izquierdo (vertical, hacia atrás) -->
+        <rect x="45" y="32" width="18" height="100" rx="3" fill="none" stroke="#1f2e2b" stroke-width="2"/>
+        <!-- banco derecho (vertical, hacia atrás) -->
+        <rect x="217" y="32" width="18" height="100" rx="3" fill="none" stroke="#1f2e2b" stroke-width="2"/>
+        <!-- espacio interior stand -->
+        <text x="140" y="80" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="10" fill="#5c6a64">STAND</text>
+        <!-- flecha hacia el publico, apuntando al banco frontal -->
+        <line x1="140" y1="150" x2="140" y2="168" stroke="#b8902f" stroke-width="2" marker-end="url(#arrow)"/>
+        <defs>
+          <marker id="arrow" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 z" fill="#b8902f"/>
+          </marker>
+        </defs>
+        <text x="140" y="12" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#5c6a64">PARED / FONDO</text>
+        <text x="140" y="176" text-anchor="middle" font-family="IBM Plex Mono, monospace" font-size="9" fill="#b8902f">VISITANTE</text>
+      </svg>
+    </div>
+    <p class="diagram-caption">Banco frontal (de cara al visitante) + dos bancos laterales hacia el fondo, contra la pared.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">5</span> Impresiones y folletería</h2>
+    <ul>
+      <li>Hasta dos impresiones tamaño A3 por stand. Una de ellas debe incluir el código QR con la dirección del juego.</li>
+      <li>Folleto o tríptico para entregar a cada alumno de 2° año, con el QR de acceso al juego (para jugarlo cuando quiera) y una breve explicación del tema/juego.</li>
+      <li>Toda la papelería con datos institucionales (impresiones A3, folleto) debe incluir: logo de la escuela, nombre de la escuela, materia, profesor y alumnos del grupo. El gafete y el cartel de número son la excepción — solo llevan el nombre o el número, en la cartulina de color.</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">6</span> Roles dentro del grupo</h2>
+    <ul>
+      <li><strong>2 a 3 integrantes:</strong> presentan el producto digital dentro del stand.</li>
+      <li><strong>1 integrante:</strong> guía — orienta a los alumnos de 2° en el uso del QR y el ingreso al juego.</li>
+      <li><strong>1 integrante:</strong> registro fotográfico y fílmico, con al menos una entrevista breve a un alumno de 2°.</li>
+    </ul>
+    <div class="callout warn">
+      <strong>Durante la intervención</strong>
+      No se puede comer ni beber en el stand. El celular solo se usa para las tareas del proyecto.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">7</span> Alumnos de 2° año</h2>
+    <p>Se dividen en 6 a 8 grupos de 3 a 5 integrantes, que recorren los stands en orden numérico a partir de aquel por donde comenzaron.</p>
+  </section>
+
+  <section>
+    <h2><span class="num">8</span> Cronograma</h2>
+    <table>
+      <thead><tr><th>Horario</th><th>Actividad</th></tr></thead>
+      <tbody>
+        <tr><td>14:30 – 15:00</td><td>Armado del stand</td></tr>
+        <tr><td>15:00 – 15:30</td><td>Primer tramo de muestra</td></tr>
+        <tr><td>15:30 – 15:40</td><td>Recreo — no se puede dejar el stand solo (mínimo 50% del grupo presente). Se permiten intervenciones con alumnos de 3° a 5° que lo deseen.</td></tr>
+        <tr><td>15:40 – 16:00</td><td>Segunda etapa — intervención con alumnos de 2°</td></tr>
+        <tr><td>16:00 – 16:20</td><td>Desarme del stand</td></tr>
+      </tbody>
+    </table>
+    <div class="callout">
+      <strong>Segundo día (17/9)</strong>
+      Puede suspenderse o reasignarse a otro curso según necesidad.
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">9</span> Formulario de evaluación (alumnos de 2°)</h2>
+    <p>Al finalizar el recorrido, los alumnos de 2° escanean un QR y completan este formulario por cada stand visitado. Esta valoración se toma en cuenta como nota del espacio curricular.</p>
+    <ol>
+      <li>¿Qué tan fácil fue entender de qué trataba el juego? <em>(1 a 10)</em></li>
+      <li>¿Te pareció entretenido el juego? <em>(1 a 10)</em></li>
+      <li>¿Sentís que aprendiste algo nuevo sobre el tema económico tratado? <em>(1 a 10)</em></li>
+      <li>¿Cómo calificarías la claridad con la que el grupo explicó el juego? <em>(1 a 10)</em></li>
+      <li>El guía del stand, ¿resolvió tus dudas? <em>(Sí, todas / Sí, algunas / No tuve dudas / No)</em></li>
+      <li>¿Cómo calificarías el orden y la prolijidad del stand? <em>(1 a 10)</em></li>
+      <li>¿Qué fue lo que más te gustó? <em>(El juego / La explicación / La decoración del stand / El trato del grupo)</em></li>
+      <li>¿Recomendarías este juego a un compañero? <em>(Sí / No / Tal vez)</em></li>
+    </ol>
+  </section>
+
+  <section>
+    <h2><span class="num">10</span> Rúbrica docente</h2>
+    <p>Completada por los docentes que visiten cada stand, en escala de 1 (mínimo) a 5 (máximo).</p>
+    <div class="actions" style="margin-top:10px;">
+      <a class="btn btn-dark" href="rubrica.pdf" download>⬇ Descargar rúbrica (PDF)</a>
+      <a class="btn btn-outline" href="rubrica.html">Ver rúbrica online</a>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="num">11</span> Premios e incentivo</h2>
+    <p>Se puede entregar un premio a quienes terminen los juegos, teniendo en cuenta:</p>
+    <ul>
+      <li>No puede ser un premio monetario.</li>
+      <li>Si es alimento o bebida, debe estar envasado/sellado (por ejemplo, golosinas en su paquete individual — nunca sueltas).</li>
+    </ul>
+  </section>
+
+  <section>
+    <h2><span class="num">12</span> Material audiovisual</h2>
+    <p>Todo el registro fotográfico y fílmico de las intervenciones se sube al Drive que indique el profesor:</p>
+    <p><strong>profesormontaldi@gmail.com</strong></p>
+  </section>
+
+  <section>
+    <h2><span class="num">13</span> Checklist final</h2>
+    <p style="font-size:13px; color:var(--ink-soft);">Resumen para imprimir y repasar antes, durante y después de la intervención.</p>
+
+    <h4>Antes</h4>
+    <ul class="checklist">
+      <li><span class="box"></span> Vestimenta según reglamento (pantalón negro, camisa blanca, adorno del color del grupo)</li>
+      <li><span class="box"></span> Gafete impreso (9×6 cm, cartulina color del grupo, solo nombre sin apellido)</li>
+      <li><span class="box"></span> Cartel de número de grupo impreso (A4, misma cartulina de color)</li>
+      <li><span class="box"></span> Impresiones A3 listas (con QR en al menos una)</li>
+      <li><span class="box"></span> Folleto/tríptico impreso para cada alumno de 2°</li>
+      <li><span class="box"></span> Mantel del color correspondiente (impar: blanco / par: negro)</li>
+      <li><span class="box"></span> Roles del grupo asignados</li>
+    </ul>
+
+    <h4>Durante</h4>
+    <ul class="checklist">
+      <li><span class="box"></span> Stand armado 14:30–15:00</li>
+      <li><span class="box"></span> Nadie come, bebe ni usa el celular fuera del proyecto</li>
+      <li><span class="box"></span> Al menos 50% del grupo presente durante el recreo</li>
+      <li><span class="box"></span> Entrevista breve realizada a un alumno de 2°</li>
+      <li><span class="box"></span> QR del formulario visible para los alumnos de 2°</li>
+    </ul>
+
+    <h4>Después</h4>
+    <ul class="checklist">
+      <li><span class="box"></span> Stand desarmado 16:00–16:20</li>
+      <li><span class="box"></span> Bancos y manteles devueltos a su lugar</li>
+      <li><span class="box"></span> Material fotográfico/fílmico subido al Drive (profesormontaldi@gmail.com)</li>
+    </ul>
+  </section>
+
+  <footer>✧ Cuentas claras, mente sana ✧</footer>
+</div>
+</body>
+</html>
