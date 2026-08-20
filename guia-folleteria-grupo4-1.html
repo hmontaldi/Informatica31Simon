@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mi folleto - Guía fácil</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#f5f7f4; --card:#ffffff; --ink:#1f2e2b;
+    --teal:#2c6e63; --teal-soft:#e2eeec;
+    --gold:#a8760f; --gold-soft:#fbf1de;
+    --rule:#d9ded9;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--paper);
+    font-family:'Atkinson Hyperlegible', sans-serif;
+    color:var(--ink);
+    padding: 20px 14px 50px;
+    font-size: 19px;
+    line-height: 1.6;
+  }
+  .wrap{ max-width: 560px; margin:0 auto; }
+
+  .cover{
+    background:var(--teal); color:#fff;
+    border-radius: 16px;
+    padding: 28px 22px;
+    text-align:center;
+    margin-bottom: 22px;
+  }
+  .cover .emoji{ font-size: 52px; margin-bottom: 6px; }
+  .cover h1{ font-size: 25px; margin: 0 0 8px; line-height:1.3; }
+  .cover p{ font-size: 17px; margin:0; opacity: 0.95; }
+
+  .step{
+    background: var(--card);
+    border: 3px solid var(--rule);
+    border-radius: 16px;
+    padding: 20px 18px;
+    margin-bottom: 18px;
+  }
+  .step-head{
+    display:flex; align-items:center; gap: 14px; margin-bottom: 10px;
+  }
+  .step-num{
+    flex-shrink:0;
+    width: 44px; height: 44px;
+    border-radius: 50%;
+    background: var(--gold);
+    color: #fff;
+    font-weight:700;
+    font-size: 22px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .step-emoji{ font-size: 34px; }
+  .step h2{ font-size: 21px; margin: 0; }
+  .step p{ margin: 0 0 8px; }
+  .step p:last-child{ margin-bottom:0; }
+
+  .option{
+    background: var(--teal-soft);
+    border: 2px solid var(--teal);
+    border-radius: 12px;
+    padding: 14px;
+    font-size: 18px;
+    margin-top: 10px;
+  }
+  .option .tag{ font-weight:700; display:block; margin-bottom:4px; font-size:15px; color:var(--teal); }
+
+  .helper{
+    background: var(--gold-soft);
+    border: 2px dashed var(--gold);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 12px;
+    font-size: 17px;
+  }
+  .helper .label{ font-weight:700; display:block; margin-bottom:4px; }
+
+  footer{ text-align:center; font-size: 15px; opacity:0.7; margin-top: 20px; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="cover">
+    <div class="emoji">🎰</div>
+    <h1>Vamos a armar<br>tu folleto</h1>
+    <p>Tu tema es: La timba digital.<br>Seguí estos pasos, uno por vez.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">1</div>
+      <div class="step-emoji">🖥️</div>
+      <h2>Abrí Canva</h2>
+    </div>
+    <p>Entrá a Canva en la computadora.</p>
+    <p>Arriba, donde dice "Buscar", escribí la palabra <strong>folleto</strong>.</p>
+    <p>Elegí una plantilla simple, que te guste.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">2</div>
+      <div class="step-emoji">✍️</div>
+      <h2>Elegí tu frase</h2>
+    </div>
+    <p>Elegí UNA de estas dos frases y ponela en el folleto:</p>
+    <div class="option">
+      <span class="tag">Frase 1</span>
+      "Las apuestas por Internet prometen ganar plata fácil. Pero se puede perder mucho más de lo que se gana."
+    </div>
+    <div class="option">
+      <span class="tag">Frase 2</span>
+      "Jugar por diversión está bien. Apostar plata todo el tiempo puede volverse un problema."
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">3</div>
+      <div class="step-emoji">✨</div>
+      <h2>Creá una imagen con IA</h2>
+    </div>
+    <p>Entrá a <strong>gemini.google.com</strong>.</p>
+    <p>Escribí esto:</p>
+    <div class="option">
+      <span class="tag">Escribí esto en Gemini</span>
+      "Creá una imagen simple y tranquila sobre apuestas online, para adolescentes, sin texto."
+    </div>
+    <p>Descargá la imagen que te guste más.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">4</div>
+      <div class="step-emoji">🖼️</div>
+      <h2>Subí la imagen a Canva</h2>
+    </div>
+    <p>En Canva, subí la imagen que descargaste.</p>
+    <p>Ponela en el folleto, donde quede bien.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">5</div>
+      <div class="step-emoji">📱</div>
+      <h2>Agregá el código QR</h2>
+    </div>
+    <p>Subí la imagen del código QR de tu grupo a Canva.</p>
+    <p>Ponela en el folleto también.</p>
+  </div>
+
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">6</div>
+      <div class="step-emoji">👀</div>
+      <h2>Mostraselo a alguien</h2>
+    </div>
+    <p>Mostrale tu folleto a un compañero o a tu profe.</p>
+    <p>Preguntale: "¿Se entiende bien?"</p>
+  </div>
+
+  <div class="step">
+    <div class="step-head">
+      <div class="step-num">7</div>
+      <div class="step-emoji">🖨️</div>
+      <h2>Guardalo</h2>
+    </div>
+    <p>Descargalo en Canva (botón "Compartir" → "Descargar").</p>
+  </div>
+
+  <p class="helper" style="margin-top:4px;">
+    <span class="label">🧑‍🏫 Si te trabás en algún paso</span>
+    Pedile ayuda a tu profe o a un compañero, en cualquier momento.
+  </p>
+
+  <footer>✧ ¡Buen trabajo! ✧</footer>
+</div>
+</body>
+</html>
