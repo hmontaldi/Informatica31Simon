@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>Rata Dash — Saltá el estrés</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bungee&family=Baloo+2:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg-1:#F2EDFC; --bg-2:#E8E0FB;
+    --cabinet:#241B3A; --cabinet-2:#34254F; --cabinet-3:#1a1330;
+    --screen-bg:#FFFDF9;
+    --ink:#241B3A; --ink-soft:#5B4E7A;
+    --gold:#FFC94A; --gold-dark:#E0A415;
+    --coral:#FF6B6B; --coral-dark:#E14C4C;
+    --teal:#2FD9A5; --teal-dark:#17B187;
+    --pink:#FF4FA3; --blue:#5B8DEF;
+    --line: rgba(36,27,58,0.12);
+  }
+  *{ box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+  html,body{
+    margin:0; padding:0; min-height:100%;
+    background:
+      radial-gradient(circle at 15% 10%, rgba(255,79,163,0.12), transparent 40%),
+      radial-gradient(circle at 85% 85%, rgba(91,141,239,0.14), transparent 45%),
+      linear-gradient(180deg, var(--bg-1), var(--bg-2));
+    font-family:'Baloo 2', sans-serif;
+    color:var(--ink);
+    overflow-x:hidden;
+    user-select:none;
+  }
+  .stage{ min-height:100vh; display:flex; align-items:center; justify-content:center; padding:18px 12px 34px; }
+
+  .cabinet{
+    width:100%; max-width:520px;
+    background: linear-gradient(180deg, var(--cabinet-2), var(--cabinet) 55%, var(--cabinet-3));
+    border-radius:34px;
+    padding:16px 16px 22px;
+    box-shadow: 0 30px 60px -20px rgba(36,27,58,0.55), inset 0 0 0 3px rgba(255,255,255,0.04);
+    position:relative;
+  }
+
+  .marquee{
+    border-radius:20px 20px 8px 8px;
+    background: linear-gradient(135deg, var(--pink), var(--blue));
+    padding:12px 12px 14px; text-align:center; position:relative; overflow:hidden;
+    box-shadow: inset 0 -6px 14px rgba(0,0,0,0.18);
+  }
+  .marquee::before, .marquee::after{
+    content:""; position:absolute; left:0; right:0; height:8px;
+    background-image: radial-gradient(circle, #fff 2px, transparent 2.4px);
+    background-size: 20px 8px; opacity:.85; animation: bulbs 1.1s steps(2) infinite;
+  }
+  .marquee::before{ top:4px; } .marquee::after{ bottom:4px; }
+  @keyframes bulbs{ 50%{ opacity:.25; } }
+  .marquee h1{
+    font-family:'Bungee', cursive; font-size:clamp(18px,5.6vw,24px); line-height:1.2;
+    color:#fff; margin:2px 0 3px; text-shadow:0 3px 0 rgba(0,0,0,0.22); letter-spacing:.5px;
+  }
+  .marquee p{ margin:0; font-weight:700; font-size:11.5px; letter-spacing:1.4px; text-transform:uppercase; color:rgba(255,255,255,0.92); }
+
+  .sound-toggle{
+    position:absolute; top:10px; right:10px; width:30px; height:30px; border-radius:50%;
+    background:rgba(255,255,255,0.12); border:1px solid rgba(255,255,255,0.15); color:#fff;
+    font-size:14px; display:flex; align-items:center; justify-content:center; cursor:pointer; z-index:6;
+  }
+
+  /* HUD */
+  .hud{ display:none; grid-template-columns: 1fr 1fr; gap:8px; margin:12px 2px 10px; }
+  .hud-card{ background:rgba(255,255,255,0.06); border:1px solid rgba(255,255,255,0.08); border-radius:14px; padding:8px 10px; }
+  .hud-title{ font-size:9px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:rgba(255,255,255,0.75); margin-bottom:4px; }
+  .rat-row{ display:flex; align-items:center; gap:8px; }
+  .rat-emoji{ font-size:22px; transition: transform .3s ease; }
+  .rat-track{ flex:1; height:9px; border-radius:6px; background:rgba(0,0,0,0.35); overflow:hidden; }
+  .rat-fill{ height:100%; border-radius:6px; background:linear-gradient(90deg, var(--coral-dark), var(--coral)); transition: width .7s cubic-bezier(.34,1.56,.64,1); }
+  .rat-num{ font-size:11px; font-weight:800; color:#fff; width:28px; text-align:right; }
+  .attempt-row{ display:flex; align-items:center; justify-content:space-between; }
+  .attempt-label{ font-size:12px; font-weight:800; color:#fff; }
+  .attempt-num{ font-size:15px; font-weight:800; color: var(--gold); font-family:'Bungee', cursive; }
+
+  .progress-outer{ margin: 0 2px 10px; }
+  .progress-track{ height:9px; border-radius:6px; background:rgba(255,255,255,0.1); overflow:hidden; }
+  .progress-fill{ height:100%; border-radius:6px; background:linear-gradient(90deg, var(--teal-dark), var(--teal)); width:0%; transition: width .1s linear; }
+  .level-name-row{ display:flex; justify-content:space-between; align-items:center; margin-bottom:5px; }
+  .level-name{ font-size:11px; font-weight:800; letter-spacing:.6px; text-transform:uppercase; color:rgba(255,255,255,0.85); }
+  .level-count{ font-size:11px; font-weight:800; color: rgba(255,255,255,0.6); }
+
+  /* SCREEN */
+  .screen-frame{ background:var(--cabinet-3); border-radius:16px; padding:8px; box-shadow: inset 0 0 0 2px rgba(255,255,255,0.05); }
+  .screen{ background:var(--screen-bg); border-radius:12px; min-height:430px; padding:20px 16px 18px; position:relative; overflow:hidden; display:flex; flex-direction:column; }
+  .screen::before{ content:""; position:absolute; inset:0; background: repeating-linear-gradient(180deg, rgba(36,27,58,0.025) 0px, rgba(36,27,58,0.025) 1px, transparent 1px, transparent 3px); pointer-events:none; }
+
+  .view{ display:flex; flex-direction:column; flex:1; animation: fadeIn .35s ease; position:relative; z-index:1; }
+  @keyframes fadeIn{ from{opacity:0; transform:translateY(8px);} to{opacity:1; transform:translateY(0);} }
+
+  .eyebrow{ font-size:11px; font-weight:800; letter-spacing:1.4px; text-transform:uppercase; color:var(--pink); margin:0 0 6px; }
+  h2.title{ font-family:'Bungee', cursive; font-size:clamp(17px,5vw,21px); line-height:1.25; margin:0 0 10px; color:var(--ink); }
+  p.body-text{ font-size:14.5px; line-height:1.5; color:var(--ink-soft); margin:0 0 14px; font-weight:600; }
+
+  .btn{ font-family:'Baloo 2', sans-serif; font-weight:800; font-size:15px; border:none; cursor:pointer; border-radius:999px; padding:14px 20px; color:#fff; background:linear-gradient(180deg, var(--blue), #3E6BD6); box-shadow:0 6px 0 #2e52ab; transition:transform .08s, box-shadow .08s; }
+  .btn:active{ transform:translateY(4px); box-shadow:0 2px 0 #2e52ab; }
+  .btn.gold{ background:linear-gradient(180deg, var(--gold), var(--gold-dark)); box-shadow:0 6px 0 #b9820c; color:#3a2900; }
+  .btn.gold:active{ box-shadow:0 2px 0 #b9820c; }
+  .btn.wide{ width:100%; }
+
+  .coin-slot{ align-self:center; width:70px; height:70px; border-radius:50%; background: radial-gradient(circle at 35% 30%, #FFE49A, var(--gold) 60%, var(--gold-dark)); display:flex; align-items:center; justify-content:center; font-size:30px; box-shadow:0 6px 0 var(--gold-dark), 0 10px 18px rgba(224,164,21,0.35); margin:4px auto 14px; animation: floaty 2.4s ease-in-out infinite; }
+  @keyframes floaty{ 50%{ transform:translateY(-6px);} }
+
+  /* GAME CANVAS */
+  .game-wrap{ display:flex; flex-direction:column; flex:1; }
+  canvas{ width:100%; height:auto; display:block; border-radius:10px; touch-action:manipulation; }
+  .hint-text{ text-align:center; font-size:12px; font-weight:700; color:var(--ink-soft); margin-top:8px; }
+  .flash{ position:absolute; inset:0; background:var(--coral); opacity:0; pointer-events:none; z-index:5; border-radius:12px; }
+  .flash.show{ animation: flashAnim .35s ease; }
+  @keyframes flashAnim{ 0%{opacity:.55;} 100%{opacity:0;} }
+
+  /* Level intro / tips */
+  .tip-card{ background:#F7F3FF; border:2px solid var(--line); border-radius:18px; padding:16px; margin-bottom:16px; text-align:center; }
+  .tip-emoji{ font-size:36px; margin-bottom:6px; }
+
+  /* Question overlay */
+  .q-tag{ display:inline-block; font-size:10.5px; font-weight:800; letter-spacing:1px; text-transform:uppercase; padding:4px 12px; border-radius:999px; margin-bottom:10px; color:#fff; background:var(--pink); align-self:flex-start; }
+  .q-options{ display:flex; flex-direction:column; gap:10px; margin-top:6px; }
+  .q-opt{ text-align:left; background:#fff; border:2px solid var(--line); border-radius:16px; padding:12px 14px; font-family:'Baloo 2',sans-serif; font-weight:700; font-size:14px; color:var(--ink); cursor:pointer; transition: transform .1s, border-color .15s; }
+  .q-opt:hover{ border-color:var(--blue); }
+  .q-opt:active{ transform:scale(.98); }
+  .q-opt:disabled{ opacity:.55; }
+  .q-opt.correct{ border-color:var(--teal); background:#EAFBF3; }
+  .q-opt.wrong{ border-color:var(--coral); background:#FFF0F0; }
+
+  .feedback-box{ display:flex; flex-direction:column; align-items:center; text-align:center; flex:1; justify-content:center; animation: popIn .4s cubic-bezier(.34,1.56,.64,1); }
+  @keyframes popIn{ from{opacity:0; transform:scale(.85);} to{opacity:1; transform:scale(1);} }
+  .fb-emoji{ font-size:48px; margin-bottom:8px; }
+  .rat-mood-big{ font-size:60px; margin: 4px 0 10px; transition: transform .4s ease; }
+  .stress-delta{ font-size:13px; font-weight:800; padding:5px 12px; border-radius:999px; margin-bottom:14px; }
+  .stress-delta.down{ background:#EAFBF3; color:var(--teal-dark); }
+  .stress-delta.up{ background:#FFF0F0; color:var(--coral-dark); }
+
+  /* Final */
+  .final-bars{ display:flex; flex-direction:column; gap:10px; margin:12px 0 16px; }
+  .stat-row{ display:flex; align-items:center; gap:10px; }
+  .stat-icon{ font-size:18px; width:22px; text-align:center; }
+  .stat-track{ flex:1; height:12px; border-radius:8px; background:#EFE9FA; overflow:hidden; }
+  .stat-fill{ height:100%; border-radius:8px; }
+  .stat-num{ font-size:12px; font-weight:800; width:34px; text-align:right; color:var(--ink-soft); }
+  .result-box{ background:#F7F3FF; border:2px solid var(--line); border-radius:18px; padding:14px; margin-bottom:16px; }
+  .result-title{ font-family:'Bungee', cursive; font-size:15px; margin:0 0 6px; color:var(--pink); }
+  .result-desc{ font-size:13.5px; line-height:1.5; color:var(--ink-soft); font-weight:600; margin:0; }
+  .btn-row{ display:flex; gap:10px; margin-top:auto; }
+
+  .confetti-piece{ position:absolute; top:-10px; font-size:16px; z-index:8; pointer-events:none; animation: fall linear forwards; }
+  @keyframes fall{ to{ transform: translateY(440px) rotate(400deg); opacity:0; } }
+
+  @media (prefers-reduced-motion: reduce){ *{ animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; } }
+</style>
+</head>
+<body>
+
+<div class="stage">
+  <div class="cabinet">
+    <button class="sound-toggle" id="soundToggle" aria-label="Sonido">🔊</button>
+    <div class="marquee">
+      <h1>RATA DASH</h1>
+      <p>Saltá y bajale el estrés</p>
+    </div>
+
+    <div class="hud" id="hud">
+      <div class="hud-card">
+        <div class="hud-title">🐭 Estrés de Toto</div>
+        <div class="rat-row">
+          <span class="rat-emoji" id="ratEmoji">😖</span>
+          <div class="rat-track"><div class="rat-fill" id="ratFill" style="width:100%"></div></div>
+          <span class="rat-num" id="ratNum">100</span>
+        </div>
+      </div>
+      <div class="hud-card">
+        <div class="hud-title">Reintentos</div>
+        <div class="attempt-row">
+          <span class="attempt-label">Intento</span>
+          <span class="attempt-num" id="attemptNum">1</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="progress-outer" id="progressOuter" style="display:none;">
+      <div class="level-name-row">
+        <span class="level-name" id="levelName">Nivel 1</span>
+        <span class="level-count" id="levelCount">1/5</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+    </div>
+
+    <div class="screen-frame">
+      <div class="screen" id="screen">
+        <div class="flash" id="flash"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  /* ============ CONFIG ============ */
+  const LEVELS = [
+    { name:"Nivel 1 · Arranque Tranqui", length:3200, speed:6.2,
+      minGap:260, maxGap:340, weights:{spike:0.6, block:0.4},
+      colors:{bg1:"#EAFBF3", bg2:"#CFF3E3", accent:"#2FD9A5", ground:"#1FAE82", dark:false},
+      tip:"Saltá con ESPACIO, la flecha ↑ o tocando la pantalla. ¡Esquivá los picos y bloques!" },
+    { name:"Nivel 2 · Ritmo Ligero", length:3600, speed:7.3,
+      minGap:225, maxGap:300, weights:{spike:0.45, block:0.30, doubleSpike:0.25},
+      colors:{bg1:"#EAF2FF", bg2:"#CFE1FB", accent:"#5B8DEF", ground:"#3E6BD6", dark:false},
+      tip:"Ahora hay picos dobles. Un salto los cubre igual, pero medí bien el momento." },
+    { name:"Nivel 3 · Modo Nervioso", length:4000, speed:8.3,
+      minGap:195, maxGap:265, weights:{spike:0.35, block:0.20, doubleSpike:0.25, pit:0.20}, pitMin:70, pitMax:100,
+      colors:{bg1:"#FBEFFF", bg2:"#F0D5FF", accent:"#C15BEF", ground:"#8F3FC0", dark:false},
+      tip:"¡Cuidado! Aparecen pozos. Saltalos con el impulso justo para no caer adentro." },
+    { name:"Nivel 4 · Subidón de Estrés", length:4400, speed:8.5,
+      minGap:195, maxGap:270, weights:{spike:0.35, block:0.25, doubleSpike:0.22, pit:0.18}, pitMin:75, pitMax:105,
+      colors:{bg1:"#FFF3E9", bg2:"#FFDCC2", accent:"#FF8A3D", ground:"#E0631A", dark:false},
+      tip:"Los obstáculos están un poco más pegados. Mantené el ritmo, no dudes al saltar." },
+    { name:"Nivel 5 · Caos Total", length:4800, speed:9.4,
+      minGap:180, maxGap:245, weights:{spike:0.30, block:0.18, doubleSpike:0.28, tripleSpike:0.06, pit:0.18}, pitMin:90, pitMax:120,
+      colors:{bg1:"#2b1030", bg2:"#4a1030", accent:"#FF4F81", ground:"#7A1740", dark:true},
+      tip:"Última posta: algún pico triple y pozos más anchos. Concentración total." }
+  ];
+
+  const QUESTIONS = [
+    { q:"¿Qué es un presupuesto?",
+      options:["Un plan para organizar tus ingresos y gastos","La plata que ganás en un año","Un préstamo que te da el banco"], correct:0 },
+    { q:"Tenés $10.000. Gastás $4.000 en salidas y $3.000 en un regalo. ¿Cuánto te queda?",
+      options:["$4.000","$7.000","$3.000"], correct:2 },
+    { q:"¿Cuál de estas es un 'gasto hormiga'?",
+      options:["Pagar el alquiler","Comprar un café todos los días sin anotarlo","Ahorrar para un viaje"], correct:1 },
+    { q:"Algo cuesta $18.000 en 3 cuotas sin interés. ¿Cuánto pagás por cuota?",
+      options:["$9.000","$5.000","$6.000"], correct:2 },
+    { q:"Te ofrecen 'duplicar tu plata en una semana' invirtiendo ya mismo. ¿Qué es lo más sensato?",
+      options:["Invertir todo antes de que se termine la oferta","Desconfiar: es una señal típica de estafa","Pedir prestado más plata para invertir más"], correct:1 }
+  ];
+
+  /* ============ CANVAS CONSTANTS ============ */
+  const CANVAS_W = 480, CANVAS_H = 260;
+  const GROUND_Y = 210;
+  const PLAYER_SIZE = 28;
+  const PLAYER_X = 70;
+  const GRAVITY = 0.9;
+  const JUMP_VELOCITY = -15;
+
+  /* ============ STATE ============ */
+  const state = {
+    levelIndex: 0,
+    obstacles: [],
+    traveled: 0,
+    player: { y: GROUND_Y - PLAYER_SIZE, vy: 0, grounded: true, rot: 0 },
+    running: false,
+    attempts: 1,
+    ratStress: 100,
+    correctCount: 0,
+    totalAttempts: 0,
+    soundOn: true,
+    canvas: null, ctx: null,
+    rafId: null, lastTs: null
+  };
+
+  const screen = document.getElementById('screen');
+  const hud = document.getElementById('hud');
+  const progressOuter = document.getElementById('progressOuter');
+
+  /* ============ SOUND ============ */
+  let audioCtx = null;
+  function ctxA(){ if(!audioCtx){ try{ audioCtx = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ audioCtx=null; } } return audioCtx; }
+  function tone(freq, dur, type, vol, delay){
+    if(!state.soundOn) return;
+    const ac = ctxA(); if(!ac) return;
+    delay = delay||0;
+    const t0 = ac.currentTime + delay;
+    const osc = ac.createOscillator(); const gain = ac.createGain();
+    osc.type = type||'square';
+    osc.frequency.setValueAtTime(freq, t0);
+    gain.gain.setValueAtTime(0, t0);
+    gain.gain.linearRampToValueAtTime(vol||0.06, t0+0.01);
+    gain.gain.exponentialRampToValueAtTime(0.0001, t0+dur);
+    osc.connect(gain).connect(ac.destination);
+    osc.start(t0); osc.stop(t0+dur+0.02);
+  }
+  function playJump(){ tone(700,0.07,'square',0.05); }
+  function playHit(){ tone(160,0.18,'sawtooth',0.07); tone(110,0.22,'sawtooth',0.05,0.05); }
+  function playClick(){ tone(520,0.07,'square',0.05); }
+  function playSelect(){ tone(660,0.09,'square',0.06); tone(880,0.09,'square',0.05,0.06); }
+  function playCorrect(){ tone(523,0.12,'triangle',0.07); tone(659,0.12,'triangle',0.07,0.12); tone(784,0.18,'triangle',0.08,0.24); }
+  function playWrong(){ tone(300,0.16,'sawtooth',0.05); tone(220,0.22,'sawtooth',0.05,0.16); }
+  function playFanfare(){ [523,659,784,1046].forEach((f,i)=> tone(f,0.18,'triangle',0.07,i*0.13)); }
+
+  document.getElementById('soundToggle').addEventListener('click', function(){
+    state.soundOn = !state.soundOn;
+    this.textContent = state.soundOn ? '🔊' : '🔇';
+    if(state.soundOn) playClick();
+  });
+
+  /* ============ HELPERS ============ */
+  function clamp(v,a,b){ return Math.max(a, Math.min(b, v)); }
+  function rand(min,max){ return Math.floor(Math.random()*(max-min+1))+min; }
+  function shuffle(arr){ const a=arr.slice(); for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+  function pickWeighted(weights){
+    const entries = Object.entries(weights);
+    const r = Math.random(); let acc=0;
+    for(const [k,w] of entries){ acc+=w; if(r<=acc) return k; }
+    return entries[entries.length-1][0];
+  }
+
+  function ratMood(stress){
+    if(stress>=75) return '😖';
+    if(stress>=50) return '😟';
+    if(stress>=25) return '😌';
+    return '😴';
+  }
+  function updateRatHUD(){
+    document.getElementById('ratEmoji').textContent = ratMood(state.ratStress);
+    document.getElementById('ratFill').style.width = state.ratStress + '%';
+    document.getElementById('ratNum').textContent = state.ratStress;
+  }
+  function updateAttemptsHUD(){
+    document.getElementById('attemptNum').textContent = state.attempts;
+  }
+  function updateLevelHeader(){
+    const lvl = LEVELS[state.levelIndex];
+    document.getElementById('levelName').textContent = lvl.name;
+    document.getElementById('levelCount').textContent = (state.levelIndex+1) + '/' + LEVELS.length;
+  }
+
+  /* ============ LEVEL GENERATION ============ */
+  function generateLevel(cfg){
+    const obstacles = [];
+    let x = 480;
+    while(x < cfg.length - 260){
+      const gap = rand(cfg.minGap, cfg.maxGap);
+      x += gap;
+      const type = pickWeighted(cfg.weights);
+      if(type === 'spike'){
+        obstacles.push({ worldX:x, type:'spike', width:28, height:28 }); x += 28;
+      } else if(type === 'doubleSpike'){
+        obstacles.push({ worldX:x, type:'spike', width:28, height:28 });
+        obstacles.push({ worldX:x+28, type:'spike', width:28, height:28 });
+        x += 56;
+      } else if(type === 'tripleSpike'){
+        for(let k=0;k<3;k++) obstacles.push({ worldX:x+k*28, type:'spike', width:28, height:28 });
+        x += 84;
+      } else if(type === 'block'){
+        obstacles.push({ worldX:x, type:'block', width:32, height:32 }); x += 32;
+      } else if(type === 'pit'){
+        const w = rand(cfg.pitMin, cfg.pitMax);
+        obstacles.push({ worldX:x, type:'pit', width:w }); x += w;
+      }
+    }
+    return obstacles;
+  }
+
+  /* ============ VIEWS ============ */
+  function renderIntro(){
+    hud.style.display = 'none';
+    progressOuter.style.display = 'none';
+    screen.innerHTML = `
+      <div class="flash" id="flash"></div>
+      <div class="view" style="justify-content:center; text-align:center;">
+        <div class="coin-slot">🐭</div>
+        <p class="eyebrow">Toto necesita una mano</p>
+        <h2 class="title">Toto, la rata de la esquina,<br>está súper estresado por la city.</h2>
+        <p class="body-text">Corré, saltá picos, bloques y pozos en 5 tramos cada vez más difíciles. Al final de cada tramo respondé una pregunta de guita: si la acertás, el estrés de Toto baja. Cada nivel es más rápido y más difícil que el anterior... como la vida real.</p>
+        <button class="btn gold wide" id="startBtn">🎮 EMPEZAR</button>
+      </div>
+    `;
+    document.getElementById('startBtn').addEventListener('click', function(){
+      playSelect();
+      hud.style.display = 'grid';
+      updateRatHUD();
+      updateAttemptsHUD();
+      state.levelIndex = 0;
+      showLevelIntro();
+    });
+  }
+
+  function showLevelIntro(){
+    progressOuter.style.display = 'none';
+    const lvl = LEVELS[state.levelIndex];
+    state.attempts = 1;
+    updateAttemptsHUD();
+    screen.innerHTML = `
+      <div class="flash" id="flash"></div>
+      <div class="view">
+        <p class="eyebrow">${lvl.name}</p>
+        <h2 class="title">${state.levelIndex===0 ? '¡Arrancamos!' : '¡Siguiente tramo!'}</h2>
+        <div class="tip-card">
+          <div class="tip-emoji">${state.levelIndex===0?'🏁':'⚡'}</div>
+          <p class="body-text" style="margin:0;">${lvl.tip}</p>
+        </div>
+        <button class="btn wide" id="goBtn" style="margin-top:auto;">Saltar a la acción ➜</button>
+      </div>
+    `;
+    document.getElementById('goBtn').addEventListener('click', function(){
+      playSelect();
+      startLevel();
+    });
+  }
+
+  function startLevel(){
+    const lvl = LEVELS[state.levelIndex];
+    state.obstacles = generateLevel(lvl);
+    state.traveled = 0;
+    state.player.y = GROUND_Y - PLAYER_SIZE;
+    state.player.vy = 0;
+    state.player.grounded = true;
+    state.player.rot = 0;
+
+    progressOuter.style.display = 'block';
+    updateLevelHeader();
+    document.getElementById('progressFill').style.width = '0%';
+
+    screen.innerHTML = `
+      <div class="flash" id="flash"></div>
+      <div class="view game-wrap">
+        <canvas id="gameCanvas" width="${CANVAS_W}" height="${CANVAS_H}"></canvas>
+        <p class="hint-text">Tocá la pantalla, ESPACIO o ↑ para saltar</p>
+      </div>
+    `;
+
+    state.canvas = document.getElementById('gameCanvas');
+    state.ctx = state.canvas.getContext('2d');
+
+    state.canvas.addEventListener('pointerdown', jump, { passive:true });
+    state.running = true;
+    state.lastTs = null;
+    state.rafId = requestAnimationFrame(loop);
+  }
+
+  function jump(){
+    if(!state.running) return;
+    if(state.player.grounded){
+      state.player.grounded = false;
+      state.player.vy = JUMP_VELOCITY;
+      playJump();
+    }
+  }
+
+  function onKeyDown(e){
+    if(e.code === 'Space' || e.code === 'ArrowUp'){
+      e.preventDefault();
+      jump();
+    }
+  }
+  window.addEventListener('keydown', onKeyDown);
+
+  function rectsOverlap(ax,ay,aw,ah,bx,by,bw,bh){
+    return ax < bx+bw && ax+aw > bx && ay < by+bh && ay+ah > by;
+  }
+
+  function currentPit(cfg){
+    const wx = state.traveled + PLAYER_X + PLAYER_SIZE/2;
+    for(let i=0;i<state.obstacles.length;i++){
+      const o = state.obstacles[i];
+      if(o.type === 'pit' && wx >= o.worldX && wx <= o.worldX + o.width) return o;
+    }
+    return null;
+  }
+
+  function die(){
+    state.attempts++;
+    state.totalAttempts++;
+    updateAttemptsHUD();
+    playHit();
+    const f = document.getElementById('flash');
+    if(f){ f.classList.remove('show'); void f.offsetWidth; f.classList.add('show'); }
+    state.traveled = 0;
+    state.player.y = GROUND_Y - PLAYER_SIZE;
+    state.player.vy = 0;
+    state.player.grounded = true;
+    state.player.rot = 0;
+  }
+
+  function update(dt){
+    const cfg = LEVELS[state.levelIndex];
+    state.traveled += cfg.speed * dt;
+
+    const p = state.player;
+    p.vy += GRAVITY * dt;
+    p.y += p.vy * dt;
+
+    const restingY = GROUND_Y - PLAYER_SIZE;
+    const pit = currentPit(cfg);
+
+    if(pit){
+      p.grounded = false;
+      if(p.y > CANVAS_H){ die(); return; }
+    } else {
+      if(p.y >= restingY){ p.y = restingY; p.vy = 0; p.grounded = true; }
+    }
+
+    if(!p.grounded){ p.rot += 0.16 * dt; } else { p.rot = 0; }
+
+    // obstacle collisions
+    const px = PLAYER_X + 4, py = p.y + 4, pw = PLAYER_SIZE - 8, ph = PLAYER_SIZE - 8;
+    for(let i=0;i<state.obstacles.length;i++){
+      const o = state.obstacles[i];
+      if(o.type === 'pit') continue;
+      const screenX = o.worldX - state.traveled;
+      if(screenX < -40 || screenX > CANVAS_W + 40) continue;
+      let ox, oy, ow, oh;
+      if(o.type === 'spike'){ ox=screenX+6; oy=(GROUND_Y-o.height)+8; ow=o.width-12; oh=o.height-8; }
+      else { ox=screenX+2; oy=(GROUND_Y-o.height)+2; ow=o.width-4; oh=o.height-4; }
+      if(rectsOverlap(px,py,pw,ph, ox,oy,ow,oh)){ die(); return; }
+    }
+
+    // progress bar
+    const pct = clamp((state.traveled / cfg.length) * 100, 0, 100);
+    const pf = document.getElementById('progressFill');
+    if(pf) pf.style.width = pct + '%';
+
+    if(state.traveled >= cfg.length){
+      state.traveled = cfg.length;
+      finishLevel();
+    }
+  }
+
+  function draw(){
+    const ctx = state.ctx;
+    if(!ctx) return;
+    const cfg = LEVELS[state.levelIndex];
+    const c = cfg.colors;
+
+    // background
+    const grad = ctx.createLinearGradient(0,0,0,CANVAS_H);
+    grad.addColorStop(0, c.bg1);
+    grad.addColorStop(1, c.bg2);
+    ctx.fillStyle = grad;
+    ctx.fillRect(0,0,CANVAS_W,CANVAS_H);
+
+    // parallax shapes
+    ctx.globalAlpha = 0.25;
+    ctx.fillStyle = c.accent;
+    for(let i=0;i<5;i++){
+      const sx = ( (i*160) - (state.traveled*0.3) % 160 + 1600) % (CANVAS_W+160) - 80;
+      ctx.beginPath();
+      ctx.arc(sx, 60 + (i%2)*20, 26, 0, Math.PI*2);
+      ctx.fill();
+    }
+    ctx.globalAlpha = 1;
+
+    // ground + pits
+    ctx.fillStyle = c.ground;
+    ctx.fillRect(0, GROUND_Y, CANVAS_W, CANVAS_H - GROUND_Y);
+    ctx.fillStyle = c.dark ? '#120a17' : '#160f22';
+    state.obstacles.forEach(o=>{
+      if(o.type !== 'pit') return;
+      const sx = o.worldX - state.traveled;
+      if(sx > CANVAS_W || sx + o.width < 0) return;
+      ctx.fillRect(sx, GROUND_Y, o.width, CANVAS_H - GROUND_Y);
+    });
+
+    // finish flag
+    const finishScreenX = cfg.length - state.traveled;
+    if(finishScreenX < CANVAS_W + 40 && finishScreenX > -40){
+      ctx.fillStyle = '#fff';
+      ctx.fillRect(finishScreenX, GROUND_Y-70, 4, 70);
+      ctx.fillStyle = c.accent;
+      ctx.beginPath();
+      ctx.moveTo(finishScreenX+4, GROUND_Y-70);
+      ctx.lineTo(finishScreenX+34, GROUND_Y-58);
+      ctx.lineTo(finishScreenX+4, GROUND_Y-46);
+      ctx.closePath();
+      ctx.fill();
+    }
+
+    // obstacles
+    state.obstacles.forEach(o=>{
+      if(o.type === 'pit') return;
+      const sx = o.worldX - state.traveled;
+      if(sx > CANVAS_W+40 || sx < -40) return;
+      if(o.type === 'spike'){
+        ctx.fillStyle = c.dark ? '#FF4F81' : '#3a2b52';
+        ctx.beginPath();
+        ctx.moveTo(sx, GROUND_Y);
+        ctx.lineTo(sx + o.width/2, GROUND_Y - o.height);
+        ctx.lineTo(sx + o.width, GROUND_Y);
+        ctx.closePath();
+        ctx.fill();
+      } else {
+        ctx.fillStyle = c.dark ? '#FF4F81' : '#3a2b52';
+        const oy = GROUND_Y - o.height;
+        ctx.fillRect(sx, oy, o.width, o.height);
+      }
+    });
+
+    // player
+    const p = state.player;
+    ctx.save();
+    ctx.translate(PLAYER_X + PLAYER_SIZE/2, p.y + PLAYER_SIZE/2);
+    ctx.rotate(p.rot);
+    const pg = ctx.createLinearGradient(-PLAYER_SIZE/2,-PLAYER_SIZE/2,PLAYER_SIZE/2,PLAYER_SIZE/2);
+    pg.addColorStop(0,'#FFC94A'); pg.addColorStop(1,'#E0A415');
+    ctx.fillStyle = pg;
+    roundRect(ctx, -PLAYER_SIZE/2, -PLAYER_SIZE/2, PLAYER_SIZE, PLAYER_SIZE, 7);
+    ctx.fill();
+    // eyes
+    ctx.fillStyle = '#241B3A';
+    ctx.beginPath(); ctx.arc(-4,-3,2.6,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(6,-3,2.6,0,Math.PI*2); ctx.fill();
+    // ears
+    ctx.fillStyle = '#E0A415';
+    ctx.beginPath(); ctx.arc(-9,-11,4,0,Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(9,-11,4,0,Math.PI*2); ctx.fill();
+    ctx.restore();
+  }
+
+  function roundRect(ctx,x,y,w,h,r){
+    ctx.beginPath();
+    ctx.moveTo(x+r,y);
+    ctx.arcTo(x+w,y,x+w,y+h,r);
+    ctx.arcTo(x+w,y+h,x,y+h,r);
+    ctx.arcTo(x,y+h,x,y,r);
+    ctx.arcTo(x,y,x+w,y,r);
+    ctx.closePath();
+  }
+
+  function loop(ts){
+    if(!state.running) return;
+    if(state.lastTs === null) state.lastTs = ts;
+    const dt = clamp((ts - state.lastTs)/16.6667, 0, 3);
+    state.lastTs = ts;
+    update(dt);
+    if(state.running) draw();
+    if(state.running) state.rafId = requestAnimationFrame(loop);
+  }
+
+  function finishLevel(){
+    state.running = false;
+    if(state.rafId) cancelAnimationFrame(state.rafId);
+    playFanfare();
+    draw();
+    spawnConfetti();
+    setTimeout(showQuestion, 850);
+  }
+
+  function spawnConfetti(){
+    const emojis = ['✨','🎉','⭐','💛'];
+    for(let i=0;i<18;i++){
+      const el = document.createElement('span');
+      el.className = 'confetti-piece';
+      el.textContent = emojis[rand(0,emojis.length-1)];
+      el.style.left = rand(5,90) + '%';
+      el.style.animationDuration = (1.1 + Math.random()*0.9) + 's';
+      el.style.animationDelay = (Math.random()*0.3) + 's';
+      screen.appendChild(el);
+      setTimeout(()=> el.remove(), 2200);
+    }
+  }
+
+  /* ============ QUESTIONS ============ */
+  function showQuestion(){
+    const q = QUESTIONS[state.levelIndex];
+    const order = shuffle([0,1,2]);
+    screen.innerHTML = `
+      <div class="flash" id="flash"></div>
+      <div class="view">
+        <span class="q-tag">Pregunta ${state.levelIndex+1}/${QUESTIONS.length}</span>
+        <h2 class="title">${q.q}</h2>
+        <div class="q-options" id="qOptions">
+          ${order.map(i=> `<button class="q-opt" data-idx="${i}">${q.options[i]}</button>`).join('')}
+        </div>
+      </div>
+    `;
+    document.querySelectorAll('.q-opt').forEach(btn=>{
+      btn.addEventListener('click', function(){
+        const idx = parseInt(this.dataset.idx,10);
+        const isCorrect = idx === q.correct;
+        document.querySelectorAll('.q-opt').forEach(b=>{
+          b.disabled = true;
+          const bi = parseInt(b.dataset.idx,10);
+          if(bi === q.correct) b.classList.add('correct');
+          else if(b === this) b.classList.add('wrong');
+        });
+        setTimeout(()=> answerFeedback(isCorrect), 500);
+      });
+    });
+  }
+
+  function answerFeedback(isCorrect){
+    let delta;
+    if(isCorrect){ playCorrect(); delta = -25; state.correctCount++; }
+    else { playWrong(); delta = 10; }
+    state.ratStress = clamp(state.ratStress + delta, 0, 100);
+    updateRatHUD();
+
+    const isLast = state.levelIndex >= LEVELS.length - 1;
+    screen.innerHTML = `
+      <div class="flash" id="flash"></div>
+      <div class="feedback-box">
+        <div class="fb-emoji">${isCorrect ? '✅' : '❌'}</div>
+        <p class="eyebrow" style="align-self:center;">${isCorrect ? '¡Correcto!' : 'No era esa...'}</p>
+        <div class="rat-mood-big">${ratMood(state.ratStress)}</div>
+        <span class="stress-delta ${isCorrect?'down':'up'}">${isCorrect? '🐭 Estrés de Toto -25' : '🐭 Estrés de Toto +10'}</span>
+        <button class="btn gold wide" id="nextBtn">${isLast ? 'Ver resultado final 🏁' : 'Siguiente nivel ➜'}</button>
+      </div>
+    `;
+    document.getElementById('nextBtn').addEventListener('click', function(){
+      playClick();
+      if(isLast){
+        renderFinal();
+      } else {
+        state.levelIndex++;
+        showLevelIntro();
+      }
+    });
+  }
+
+  /* ============ FINAL ============ */
+  function computeResult(){
+    const s = state.ratStress;
+    if(s <= 20) return { emoji:'🧘', title:'RATA ZEN TOTAL', desc:'Toto terminó re relajado. Contestaste bien la mayoría de las preguntas de guita, y eso —sumado a que cruzaste los 5 tramos— le bajó un montón el estrés. Che, esto también aplica afuera del juego: entender un poco de finanzas alivia de verdad.' };
+    if(s <= 45) return { emoji:'😌', title:'MUCHO MÁS TRANQUILO', desc:'Toto se relajó bastante. Le acertaste a varias preguntas y esquivaste la mayoría de los obstáculos. Todavía le queda alguna tensión, pero va por buen camino.' };
+    if(s <= 70) return { emoji:'😟', title:'TODAVÍA ALGO NERVIOSO', desc:'Toto bajó un poco el estrés, pero no del todo. Entre los golpes del circuito y algunas respuestas erradas, todavía le queda tela para cortar. Repasar los temas de guita capaz ayuda para la próxima.' };
+    return { emoji:'🥴', title:'AL BORDE DEL COLAPSO', desc:'Toto sigue re estresado. El circuito estuvo durísimo y varias respuestas se le escaparon. No pasa nada: la idea del juego es justamente mostrar que sin un poco de orden financiero (y algo de práctica esquivando picos) el estrés no baja solo.' };
+  }
+
+  function renderFinal(){
+    playFanfare();
+    hud.style.display = 'grid';
+    progressOuter.style.display = 'none';
+    const result = computeResult();
+
+    screen.innerHTML = `
+      <div class="flash" id="flash"></div>
+      <div class="view">
+        <div style="text-align:center; margin-bottom:6px;">
+          <div class="tip-emoji" style="font-size:50px;">${result.emoji}</div>
+          <p class="eyebrow">Circuito completo</p>
+          <h2 class="title">${result.title}</h2>
+        </div>
+        <div class="final-bars">
+          <div class="stat-row">
+            <span class="stat-icon">🐭</span>
+            <div class="stat-track"><div class="stat-fill" style="width:${state.ratStress}%; background:linear-gradient(90deg,#E14C4C,#FF6B6B);"></div></div>
+            <span class="stat-num">${state.ratStress}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-icon">✅</span>
+            <div class="stat-track"><div class="stat-fill" style="width:${(state.correctCount/QUESTIONS.length)*100}%; background:linear-gradient(90deg,#17B187,#2FD9A5);"></div></div>
+            <span class="stat-num">${state.correctCount}/${QUESTIONS.length}</span>
+          </div>
+          <div class="stat-row">
+            <span class="stat-icon">💥</span>
+            <div class="stat-track"><div class="stat-fill" style="width:${clamp(state.totalAttempts*10,0,100)}%; background:linear-gradient(90deg,#b9820c,#FFC94A);"></div></div>
+            <span class="stat-num">${state.totalAttempts}</span>
+          </div>
+        </div>
+        <div class="result-box">
+          <p class="result-title">¿El orden financiero trae paz mental?</p>
+          <p class="result-desc">${result.desc}</p>
+        </div>
+        <div class="btn-row">
+          <button class="btn gold wide" id="replayBtn">🔁 JUGAR DE NUEVO</button>
+        </div>
+      </div>
+    `;
+
+    document.getElementById('replayBtn').addEventListener('click', function(){
+      playClick();
+      state.levelIndex = 0;
+      state.ratStress = 100;
+      state.correctCount = 0;
+      state.totalAttempts = 0;
+      state.attempts = 1;
+      renderIntro();
+    });
+  }
+
+  /* ============ INIT ============ */
+  renderIntro();
+
+})();
+</script>
+</body>
+</html>
