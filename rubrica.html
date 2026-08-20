@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Rúbrica docente — Cuentas claras, mente sana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Serif+4:ital,wght@0,400;0,600;0,700&family=IBM+Plex+Mono:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#eef1ee; --card:#fbfbf8; --ink:#1f2e2b; --ink-soft:#5c6a64;
+    --teal:#2c6e63; --rule:#d3d9d2;
+  }
+  *{ box-sizing:border-box; }
+  body{
+    margin:0; background:var(--paper);
+    background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+    background-size:14px 14px;
+    font-family:'Source Serif 4', serif; color:var(--ink);
+    padding: 28px 14px 60px;
+  }
+  .wrap{ max-width: 780px; margin:0 auto; }
+
+  .header{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px;
+    padding: 24px 24px; margin-bottom:18px; text-align:center;
+    box-shadow: 0 14px 30px rgba(20,30,25,0.08);
+  }
+  .header img.logo{ width:70px; height:70px; border-radius:50%; margin-bottom:10px; }
+  .eyebrow{ font-family:'IBM Plex Mono',monospace; font-size:10.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--ink-soft); margin-bottom:6px; }
+  h1{ font-size:22px; margin:0 0 6px; font-weight:700; }
+  .header .sub{ color:var(--ink-soft); font-size:13.5px; margin:2px 0; }
+
+  .actions{ margin-top:14px; }
+  .btn{
+    display:inline-flex; align-items:center; gap:7px;
+    font-family:'IBM Plex Mono',monospace; font-size:12.5px; letter-spacing:.05em; text-transform:uppercase;
+    text-decoration:none; padding:11px 18px; border-radius:30px; font-weight:600;
+    background:var(--ink); color:var(--card);
+    transition: opacity .15s ease;
+  }
+  .btn:hover{ opacity:.85; }
+
+  section{
+    background:var(--card); border:1px solid var(--rule); border-radius:6px;
+    padding:22px 22px; margin-bottom:16px;
+  }
+  p{ font-size:14.5px; line-height:1.6; margin:0 0 12px; }
+
+  table{ width:100%; border-collapse:collapse; font-size:13.5px; }
+  th, td{ text-align:left; padding:10px 10px; border:1px solid var(--rule); vertical-align:middle; }
+  th{ font-family:'IBM Plex Mono',monospace; font-size:11px; letter-spacing:.05em; text-transform:uppercase; color:var(--ink-soft); background:var(--paper); }
+  td.cat{ font-weight:700; color:var(--teal); }
+  td.score{ text-align:center; width:60px; }
+
+  .obs{ margin-top:16px; font-size:14px; line-height:2; }
+  .obs .line{ border-bottom:1px dashed var(--rule); display:block; height:22px; }
+
+  .stand-field{ margin-top:14px; font-size:14px; }
+  .stand-field .line{ border-bottom:1px solid var(--ink); display:inline-block; width:220px; margin-left:6px; }
+
+  footer{ text-align:center; font-family:'IBM Plex Mono',monospace; font-size:11px; color:var(--ink-soft); margin-top:24px; }
+
+  @media print{ .actions{ display:none; } body{ background:var(--card); } }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="header">
+    <img class="logo" src="logo.jpg" alt="Escuela N° 4-084 Libertador Simón Bolívar">
+    <div class="eyebrow">Escuela N° 4-084 "Libertador Simón Bolívar"</div>
+    <h1>Rúbrica docente</h1>
+    <p class="sub">Intervención "Cuentas claras, mente sana" — Muestra de juegos a alumnos de 2° año</p>
+    <p class="sub">Sistemas de Información Contable I e Informática Aplicada a la Gestión · 3° 1° Bachiller de Economía</p>
+    <p class="sub">Profesoras/es: Mariela Arrojo y Humberto Montaldi</p>
+    <div class="actions">
+      <a class="btn" href="rubrica.pdf" download>⬇ Descargar PDF</a>
+    </div>
+  </div>
+
+  <section>
+    <p>Completada por los docentes que visiten cada stand. Escala de <strong>1 (mínimo) a 5 (máximo)</strong>.</p>
+
+    <div class="stand-field">Stand / Grupo N°: <span class="line"></span> &nbsp;&nbsp; Fecha: <span class="line" style="width:120px;"></span></div>
+    <br>
+
+    <table>
+      <thead><tr><th>Categoría</th><th>Criterio</th><th>1–5</th></tr></thead>
+      <tbody>
+        <tr><td class="cat" rowspan="2">Presentación (oratoria)</td><td>Claridad y fluidez al exponer</td><td class="score"></td></tr>
+        <tr><td>Dominio del tema y del juego</td><td class="score"></td></tr>
+        <tr><td class="cat" rowspan="2">Stand</td><td>Orden y prolijidad del espacio</td><td class="score"></td></tr>
+        <tr><td>Cumplimiento de vestimenta/estética asignada</td><td class="score"></td></tr>
+        <tr><td class="cat" rowspan="2">Relación con economía</td><td>Pertinencia del tema económico elegido</td><td class="score"></td></tr>
+        <tr><td>Profundidad del análisis del problema económico</td><td class="score"></td></tr>
+        <tr><td class="cat" rowspan="2">Juego (producto digital)</td><td>Funcionalidad del juego (sin errores)</td><td class="score"></td></tr>
+        <tr><td>Claridad del mensaje educativo</td><td class="score"></td></tr>
+        <tr><td class="cat" rowspan="2">Folletería</td><td>El QR funciona y lleva al juego correcto</td><td class="score"></td></tr>
+        <tr><td>Claridad de la explicación escrita</td><td class="score"></td></tr>
+      </tbody>
+    </table>
+
+    <div class="obs">
+      <strong>Observaciones:</strong>
+      <span class="line"></span>
+      <span class="line"></span>
+    </div>
+  </section>
+
+  <footer>✧ Cuentas claras, mente sana ✧</footer>
+</div>
+</body>
+</html>
