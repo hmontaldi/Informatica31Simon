@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Creador de Códigos QR</title>
+  <!-- Cargamos la librería para generar QR -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * {
+      box-sizing: border-box;
+      font-family: Arial, sans-serif;
+    }
+    body {
+      background-color: #f4f6f8;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+    }
+    .card {
+      background: #ffffff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+      width: 100%;
+      max-width: 450px;
+      text-align: center;
+    }
+    h2 {
+      margin-top: 0;
+      color: #333;
+    }
+    label {
+      display: block;
+      text-align: left;
+      margin-top: 15px;
+      font-weight: bold;
+      color: #555;
+    }
+    input[type="text"], input[type="number"] {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 14px;
+    }
+    .checkbox-container {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-top: 15px;
+      cursor: pointer;
+    }
+    .checkbox-container input {
+      cursor: pointer;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 20px;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background-color: #0056b3;
+    }
+    #preview-area {
+      margin-top: 25px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    #canvas-container {
+      margin-top: 15px;
+      background: #fff;
+      padding: 10px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+    }
+    .btn-download {
+      background-color: #28a745;
+      display: none;
+    }
+    .btn-download:hover {
+      background-color: #218838;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="card">
+    <h2>Generador de QR</h2>
+    
+    <label for="url-input">Enlace o texto:</label>
+    <input type="text" id="url-input" placeholder="https://ejemplo.com" value="https://informatica31simon.vercel.app/juego1.html">
+
+    <label for="size-input">Tamaño del QR (px):</label>
+    <input type="number" id="size-input" value="250" min="100" max="800">
+
+    <div class="checkbox-container">
+      <input type="checkbox" id="show-text-check" checked>
+      <label for="show-text-check" style="margin: 0;">Incluir enlace escrito debajo</label>
+    </div>
+
+    <button onclick="generarQR()">Generar Código QR</button>
+
+    <div id="preview-area">
+      <div id="canvas-container">
+        <!-- El canvas generado se mostrará aquí -->
+        <canvas id="qr-canvas"></canvas>
+      </div>
+      <button id="download-btn" class="btn-download" onclick="descargarQR()">Descargar Imagen PNG</button>
+    </div>
+  </div>
+
+  <!-- Contenedor oculto para la librería interna de QR -->
+  <div id="temp-qr" style="display: none;"></div>
+
+  <script>
+    function generarQR() {
+      const url = document.getElementById("url-input").value.trim();
+      const qrSize = parseInt(document.getElementById("size-input").value) || 250;
+      const showText = document.getElementById("show-text-check").checked;
+
+      if (!url) {
+        alert("Por favor, introduce una URL o texto.");
+        return;
+      }
+
+      // Limpiar contenedor temporal
+      const tempDiv = document.getElementById("temp-qr");
+      tempDiv.innerHTML = "";
+
+      // Generar código QR básico con la librería
+      const qrcode = new QRCode(tempDiv, {
+        text: url,
+        width: qrSize,
+        height: qrSize,
+        correctLevel: QRCode.CorrectLevel.H
+      });
+
+      // Esperar brevemente a que el elemento HTML de la librería se construya
+      setTimeout(() => {
+        const qrImg = tempDiv.querySelector("img") || tempDiv.querySelector("canvas");
+        
+        const canvas = document.getElementById("qr-canvas");
+        const ctx = canvas.getContext("2d");
+
+        const textPadding = showText ? 40 : 0;
+        const totalWidth = qrSize + 20; // 10px de margen a cada lado
+        const totalHeight = qrSize + 20 + textPadding;
+
+        canvas.width = totalWidth;
+        canvas.height = totalHeight;
+
+        // Fondo blanco
+        ctx.fillStyle = "#FFFFFF";
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Dibujar el QR centrado
+        ctx.drawImage(qrImg, 10, 10, qrSize, qrSize);
+
+        // Dibujar texto si está seleccionado
+        if (showText) {
+          ctx.fillStyle = "#000000";
+          ctx.font = "14px Arial";
+          ctx.textAlign = "center";
+          
+          // Recortar texto si es extremadamente largo
+          let displayUrl = url;
+          if (displayUrl.length > 45) {
+            displayUrl = displayUrl.substring(0, 42) + "...";
+          }
+
+          ctx.fillText(displayUrl, totalWidth / 2, totalHeight - 15);
+        }
+
+        // Mostrar botón de descarga
+        document.getElementById("download-btn").style.display = "block";
+      }, 100);
+    }
+
+    function descargarQR() {
+      const canvas = document.getElementById("qr-canvas");
+      const link = document.createElement("a");
+      link.download = "codigo_qr.png";
+      link.href = canvas.toDataURL("image/png");
+      link.click();
+    }
+
+    // Generar el primer QR al cargar la página
+    window.onload = generarQR;
+  </script>
+
+</body>
+</html>
