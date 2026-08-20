@@ -1,0 +1,874 @@
+<!DOCTYPE html>
+<html lang="es-AR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, viewport-fit=cover">
+<title>Atrapados por el Algoritmo</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Nunito:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --celeste:#AEE1F9;
+    --amarillo:#FFF3B0;
+    --naranja:#FFD3AE;
+    --rosado:#FFC9DE;
+    --lila:#E4CFF7;
+    --verde:#C8F5D0;
+    --tinta:#3A3552;
+    --tinta-suave:#6B6484;
+    --papel:#FFFBF6;
+    --sombra: 0 10px 24px rgba(58,53,82,.14);
+    --radio: 22px;
+  }
+  *{box-sizing:border-box; -webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    min-height:100vh;
+    min-height:100dvh;
+    background:
+      radial-gradient(circle at 12% 8%, var(--amarillo) 0%, transparent 40%),
+      radial-gradient(circle at 90% 12%, var(--rosado) 0%, transparent 38%),
+      radial-gradient(circle at 15% 92%, var(--celeste) 0%, transparent 40%),
+      radial-gradient(circle at 88% 90%, var(--verde) 0%, transparent 38%),
+      var(--papel);
+    font-family:'Nunito', sans-serif;
+    color:var(--tinta);
+    display:flex;
+    justify-content:center;
+    padding:0;
+  }
+  h1,h2,h3,.disp{font-family:'Baloo 2', sans-serif;}
+
+  .app{
+    width:100%;
+    max-width:480px;
+    min-height:100vh;
+    min-height:100dvh;
+    background:transparent;
+    display:flex;
+    flex-direction:column;
+    padding: max(16px, env(safe-area-inset-top)) 18px max(20px, env(safe-area-inset-bottom));
+    position:relative;
+  }
+
+  /* ---------- Barra de indicador ---------- */
+  .topbar{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    background:#fff;
+    border-radius:999px;
+    padding:10px 16px;
+    box-shadow: var(--sombra);
+    margin-bottom:16px;
+  }
+  .topbar .cara{
+    font-size:26px;
+    flex:0 0 auto;
+    transition: transform .3s ease;
+  }
+  .topbar .medidor{ flex:1; }
+  .topbar .medidor-label{
+    display:flex;
+    justify-content:space-between;
+    font-size:11.5px;
+    font-weight:800;
+    letter-spacing:.02em;
+    color:var(--tinta-suave);
+    text-transform:uppercase;
+    margin-bottom:4px;
+  }
+  .medidor-track{
+    height:10px;
+    border-radius:999px;
+    background:#EFEAF7;
+    overflow:hidden;
+  }
+  .medidor-fill{
+    height:100%;
+    border-radius:999px;
+    background:linear-gradient(90deg, var(--rosado), var(--amarillo), var(--verde));
+    width:50%;
+    transition: width .5s cubic-bezier(.34,1.56,.64,1);
+  }
+
+  /* ---------- Pantallas ---------- */
+  .screen{ display:none; flex:1; flex-direction:column; }
+  .screen.activa{ display:flex; }
+
+  .tarjeta{
+    background:#fff;
+    border-radius: var(--radio);
+    box-shadow: var(--sombra);
+    padding:22px;
+  }
+
+  .eyebrow{
+    display:inline-block;
+    font-size:12px;
+    font-weight:800;
+    letter-spacing:.06em;
+    text-transform:uppercase;
+    color:var(--tinta-suave);
+    background:var(--lila);
+    padding:5px 12px;
+    border-radius:999px;
+    margin-bottom:10px;
+  }
+
+  /* ---------- Intro ---------- */
+  #pantalla-intro .tarjeta{ margin-top:6px; text-align:center; }
+  .titulo-hero{
+    font-size:29px;
+    line-height:1.08;
+    margin:6px 0 4px;
+  }
+  .titulo-hero span{
+    background: linear-gradient(180deg, transparent 55%, var(--amarillo) 55%);
+  }
+  .subtitulo{
+    color:var(--tinta-suave);
+    font-size:15px;
+    font-weight:600;
+    margin:0 0 16px;
+  }
+  .emoji-hero{ font-size:50px; margin:6px 0 8px; }
+
+  .como-jugar{
+    text-align:left;
+    background:var(--celeste);
+    border-radius:16px;
+    padding:14px 16px;
+    margin:12px 0 18px;
+  }
+  .como-jugar h3{ margin:0 0 8px; font-size:15px; }
+  .como-jugar ol{ margin:0; padding-left:20px; font-size:13.5px; font-weight:600; line-height:1.5; }
+  .como-jugar li{ margin-bottom:4px; }
+
+  .btn{
+    border:none;
+    font-family:'Baloo 2', sans-serif;
+    font-weight:700;
+    font-size:16.5px;
+    padding:15px 20px;
+    border-radius:16px;
+    cursor:pointer;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    transition: transform .15s ease, box-shadow .15s ease;
+    box-shadow: 0 6px 0 rgba(58,53,82,.15);
+  }
+  .btn:active{ transform: translateY(3px); box-shadow: 0 2px 0 rgba(58,53,82,.15); }
+  .btn-primario{ background: var(--naranja); color:var(--tinta); }
+  .btn-secundario{ background:#fff; color:var(--tinta); border:2px solid #EFEAF7; box-shadow:none; }
+  .btn:disabled{ opacity:.5; cursor:not-allowed; transform:none; box-shadow:0 6px 0 rgba(58,53,82,.15); }
+
+  .nota-legal{ font-size:12px; color:var(--tinta-suave); margin-top:14px; font-weight:600; }
+
+  /* ---------- Ruleta ---------- */
+  #pantalla-juego{ align-items:center; text-align:center; }
+  .progreso{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:6px; margin-bottom:6px; max-width:220px;
+  }
+  .punto{
+    width:9px; height:9px; border-radius:50%;
+    background:#EFEAF7;
+    transition: background .3s ease, transform .3s ease;
+  }
+  .punto.hecho{ background:var(--tinta); transform:scale(1.15); }
+
+  .contador{
+    font-size:13px;
+    font-weight:800;
+    color:var(--tinta-suave);
+    margin:8px 0 14px;
+  }
+
+  .wheel-wrap{
+    position:relative;
+    width:min(80vw, 310px);
+    height:min(80vw, 310px);
+    margin: 4px auto 20px;
+  }
+  .puntero{
+    position:absolute;
+    top:-14px; left:50%;
+    transform:translateX(-50%);
+    width:0; height:0;
+    border-left:14px solid transparent;
+    border-right:14px solid transparent;
+    border-top:22px solid var(--tinta);
+    z-index:5;
+    filter:drop-shadow(0 3px 3px rgba(0,0,0,.15));
+  }
+  .rueda{
+    width:100%; height:100%;
+    border-radius:50%;
+    background: conic-gradient(from 0deg,
+      var(--celeste) 0deg 36deg,
+      var(--amarillo) 36deg 72deg,
+      var(--naranja) 72deg 108deg,
+      var(--rosado) 108deg 144deg,
+      var(--lila) 144deg 180deg,
+      var(--verde) 180deg 216deg,
+      var(--celeste) 216deg 252deg,
+      var(--amarillo) 252deg 288deg,
+      var(--naranja) 288deg 324deg,
+      var(--rosado) 324deg 360deg);
+    box-shadow: 0 12px 30px rgba(58,53,82,.25), inset 0 0 0 8px #fff;
+    position:relative;
+    transition: transform 3.8s cubic-bezier(.17,.89,.24,1);
+  }
+  .rueda-centro{
+    position:absolute; top:50%; left:50%;
+    width:20%; height:20%;
+    background:#fff;
+    border-radius:50%;
+    transform:translate(-50%,-50%);
+    box-shadow: 0 2px 8px rgba(58,53,82,.2);
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+    z-index:3;
+  }
+  .segmento-emoji{
+    position:absolute;
+    top:50%; left:50%;
+    width:30px; height:30px;
+    margin:-15px 0 0 -15px;
+    display:flex; align-items:center; justify-content:center;
+    font-size:18px;
+    transform-origin:center;
+  }
+  .segmento-emoji.usado{ opacity:.28; filter:grayscale(60%); }
+
+  .btn-girar{
+    background:var(--naranja);
+    max-width:280px;
+  }
+  .btn-girar .flecha{ font-size:19px; }
+
+  /* ---------- Modal escenario ---------- */
+  .overlay{
+    position:fixed; inset:0;
+    background:rgba(58,53,82,.45);
+    display:none;
+    align-items:flex-end;
+    justify-content:center;
+    z-index:50;
+    padding:14px;
+  }
+  .overlay.activa{ display:flex; }
+  @media (min-height:640px){ .overlay{ align-items:center; } }
+
+  .modal{
+    background:#fff;
+    border-radius:24px 24px 18px 18px;
+    padding:22px 20px 20px;
+    width:100%;
+    max-width:440px;
+    max-height:88vh;
+    overflow-y:auto;
+    box-shadow:0 -8px 30px rgba(58,53,82,.3);
+    animation: subir .35s ease;
+  }
+  @keyframes subir{ from{ transform:translateY(24px); opacity:0;} to{ transform:translateY(0); opacity:1;} }
+
+  .modal .eyebrow-cat{
+    display:inline-flex; align-items:center; gap:6px;
+    font-size:12.5px; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+    padding:5px 12px; border-radius:999px; margin-bottom:10px;
+  }
+  .modal h2{ font-size:19px; line-height:1.3; margin:0 0 6px; }
+  .modal .situacion{ font-size:14.5px; font-weight:600; color:var(--tinta-suave); line-height:1.5; margin-bottom:16px; }
+
+  .opciones{ display:flex; flex-direction:column; gap:10px; }
+  .opcion{
+    text-align:left;
+    background:#F7F4FC;
+    border:2px solid transparent;
+    border-radius:16px;
+    padding:13px 14px;
+    font-family:'Nunito', sans-serif;
+    font-weight:700;
+    font-size:14.5px;
+    line-height:1.35;
+    color:var(--tinta);
+    cursor:pointer;
+    display:flex;
+    gap:10px;
+    align-items:flex-start;
+  }
+  .opcion .letra{
+    flex:0 0 auto;
+    width:26px;height:26px;
+    border-radius:50%;
+    background:#fff;
+    display:flex;align-items:center;justify-content:center;
+    font-family:'Baloo 2', sans-serif;
+    font-size:13px;
+  }
+  .opcion:active{ transform:scale(.98); }
+
+  /* ---------- Feedback dentro del modal ---------- */
+  .feedback{ display:none; }
+  .feedback.activa{ display:block; }
+  .feedback-cabecera{
+    display:flex; align-items:center; gap:12px; margin-bottom:12px;
+  }
+  .feedback-emoji{ font-size:38px; }
+  .feedback-puntos{
+    font-family:'Baloo 2', sans-serif;
+    font-size:22px;
+    font-weight:800;
+  }
+  .feedback-puntos.pos{ color:#3E8F5B; }
+  .feedback-puntos.neg{ color:#D3688C; }
+  .feedback-texto{ font-size:14.5px; font-weight:600; line-height:1.5; color:var(--tinta); margin-bottom:18px; }
+  .feedback-tip{
+    background:var(--amarillo);
+    border-radius:14px;
+    padding:12px 14px;
+    font-size:13.5px;
+    font-weight:700;
+    line-height:1.4;
+    margin-bottom:18px;
+  }
+
+  /* ---------- Final ---------- */
+  #pantalla-final .tarjeta{ text-align:center; margin-top:6px; }
+  .final-emoji{ font-size:54px; margin-bottom:6px; }
+  .final-puntaje{
+    font-family:'Baloo 2', sans-serif;
+    font-size:42px;
+    font-weight:800;
+    margin:2px 0 2px;
+  }
+  .final-etiqueta{
+    font-size:13px; font-weight:800; text-transform:uppercase; letter-spacing:.04em;
+    color:var(--tinta-suave); margin-bottom:14px;
+  }
+  .final-mensaje{ font-size:15px; font-weight:700; line-height:1.5; margin-bottom:16px; }
+  .dato{
+    text-align:left;
+    background:var(--lila);
+    border-radius:16px;
+    padding:14px 16px;
+    font-size:13.5px;
+    font-weight:600;
+    line-height:1.5;
+    margin-bottom:18px;
+  }
+  .dato b{ font-family:'Baloo 2',sans-serif; font-weight:700; display:block; margin-bottom:4px; }
+  .resumen{
+    display:flex; flex-direction:column; gap:7px; margin-bottom:20px; text-align:left;
+    max-height:280px; overflow-y:auto; padding-right:2px;
+  }
+  .resumen-item{
+    display:flex; align-items:center; gap:10px;
+    background:#F7F4FC; border-radius:12px; padding:9px 12px;
+    font-size:12.5px; font-weight:700;
+  }
+  .resumen-item .r-emoji{ font-size:17px; }
+  .resumen-item .r-signo{ margin-left:auto; font-family:'Baloo 2',sans-serif; }
+  .resumen-item .r-signo.pos{ color:#3E8F5B; }
+  .resumen-item .r-signo.neg{ color:#D3688C; }
+
+  .sr-only{ position:absolute; width:1px;height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+
+  @media (prefers-reduced-motion: reduce){
+    .rueda{ transition: transform .6s linear; }
+    .modal{ animation:none; }
+  }
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- Barra de indicador (visible durante el juego y el final) -->
+  <div class="topbar" id="barra-indicador" style="display:none;">
+    <div class="cara" id="cara-indicador">🙂</div>
+    <div class="medidor">
+      <div class="medidor-label"><span>Libertad de elección</span><span id="valor-indicador">50</span></div>
+      <div class="medidor-track"><div class="medidor-fill" id="fill-indicador"></div></div>
+    </div>
+  </div>
+
+  <!-- PANTALLA 1: intro -->
+  <section class="screen activa" id="pantalla-intro">
+    <div class="tarjeta">
+      <span class="eyebrow">Un juego para pensar</span>
+      <div class="emoji-hero">🎡📱</div>
+      <h1 class="titulo-hero"><span>Atrapados</span> por el algoritmo</h1>
+      <p class="subtitulo">¿Elegís vos lo que comprás, o hay algo del otro lado de la pantalla eligiendo por vos?</p>
+
+      <div class="como-jugar">
+        <h3>🎯 Cómo se juega</h3>
+        <ol>
+          <li>Girás la ruleta y te toca una situación de la vida real.</li>
+          <li>Elegís qué harías vos, sin vueltas.</li>
+          <li>Cada decisión suma o resta puntos a tu <b>Libertad de elección</b>.</li>
+          <li>Son 10 vueltas. Al final ves tu resultado.</li>
+        </ol>
+      </div>
+
+      <button class="btn btn-primario" id="btn-empezar">Girar la primera ruleta 🎡</button>
+      <p class="nota-legal">No hay respuestas correctas ni incorrectas. Es un juego para pensar cómo gastamos la plata y usamos las redes en el día a día.</p>
+    </div>
+  </section>
+
+  <!-- PANTALLA 2: ruleta -->
+  <section class="screen" id="pantalla-juego">
+    <div class="progreso" id="progreso"></div>
+    <div class="contador" id="contador">Vuelta 1 de 10</div>
+
+    <div class="wheel-wrap">
+      <div class="puntero"></div>
+      <div class="rueda" id="rueda">
+        <div class="segmento-emoji" data-i="0" style="transform:rotate(18deg) translateY(-112px) rotate(-18deg);">🛍️</div>
+        <div class="segmento-emoji" data-i="1" style="transform:rotate(54deg) translateY(-112px) rotate(-54deg);">👯</div>
+        <div class="segmento-emoji" data-i="2" style="transform:rotate(90deg) translateY(-112px) rotate(-90deg);">📱</div>
+        <div class="segmento-emoji" data-i="3" style="transform:rotate(126deg) translateY(-112px) rotate(-126deg);">🛒</div>
+        <div class="segmento-emoji" data-i="4" style="transform:rotate(162deg) translateY(-112px) rotate(-162deg);">😅</div>
+        <div class="segmento-emoji" data-i="5" style="transform:rotate(198deg) translateY(-112px) rotate(-198deg);">👟</div>
+        <div class="segmento-emoji" data-i="6" style="transform:rotate(234deg) translateY(-112px) rotate(-234deg);">🎁</div>
+        <div class="segmento-emoji" data-i="7" style="transform:rotate(270deg) translateY(-112px) rotate(-270deg);">🗓️</div>
+        <div class="segmento-emoji" data-i="8" style="transform:rotate(306deg) translateY(-112px) rotate(-306deg);">🎮</div>
+        <div class="segmento-emoji" data-i="9" style="transform:rotate(342deg) translateY(-112px) rotate(-342deg);">💳</div>
+        <div class="rueda-centro">🎯</div>
+      </div>
+    </div>
+
+    <button class="btn btn-girar" id="btn-girar">
+      <span class="flecha">🎡</span> Girar la ruleta
+    </button>
+  </section>
+
+  <!-- PANTALLA 3: final -->
+  <section class="screen" id="pantalla-final">
+    <div class="tarjeta">
+      <div class="final-emoji" id="final-emoji">🧠</div>
+      <div class="final-puntaje" id="final-puntaje">50</div>
+      <div class="final-etiqueta">de 100 · Libertad de elección</div>
+      <div class="final-mensaje" id="final-mensaje"></div>
+
+      <div class="dato">
+        <b>💡 Dato posta</b>
+        <span id="dato-texto"></span>
+      </div>
+
+      <div class="resumen" id="resumen"></div>
+
+      <button class="btn btn-primario" id="btn-repetir">Jugar de nuevo 🔁</button>
+    </div>
+  </section>
+
+  <!-- OVERLAY: escenario / feedback -->
+  <div class="overlay" id="overlay">
+    <div class="modal">
+
+      <div id="vista-pregunta">
+        <span class="eyebrow-cat" id="modal-categoria"></span>
+        <h2 id="modal-titulo"></h2>
+        <p class="situacion" id="modal-situacion"></p>
+        <div class="opciones" id="modal-opciones"></div>
+      </div>
+
+      <div class="feedback" id="vista-feedback">
+        <div class="feedback-cabecera">
+          <div class="feedback-emoji" id="feedback-emoji">😊</div>
+          <div class="feedback-puntos" id="feedback-puntos">+10</div>
+        </div>
+        <p class="feedback-texto" id="feedback-texto"></p>
+        <div class="feedback-tip" id="feedback-tip"></div>
+        <button class="btn btn-primario" id="btn-continuar">Seguir jugando</button>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ---------- Datos del juego ----------
+  const ESCENARIOS = [
+    {
+      emoji:"🛍️",
+      categoria:"Oferta relámpago",
+      color:"var(--celeste)",
+      titulo:"Últimas horas de descuento",
+      situacion:"Son las 23 h y estás mirando el celular. Aparece un cartel: “¡Últimas horas! 40% OFF en esa campera que viste ayer”. No la necesitás para nada urgente.",
+      opciones:[
+        { texto:"La compro ahora mismo, después seguro no está más el descuento.", puntos:-12,
+          feedback:"El “últimas horas” es un truco para apurarte y que no lo pienses. Casi siempre aparece otra oferta parecida más adelante.",
+          tip:"🕒 Truco del algoritmo: la urgencia falsa te apura para que no pienses." },
+        { texto:"Cierro la app y, si mañana la sigo queriendo, la busco con la cabeza más tranquila.", puntos:12,
+          feedback:"Esperar un poco corta el impulso. Si al otro día la seguís queriendo, es una decisión tuya, no del cartelito.",
+          tip:"🧠 Esperar un día antes de comprar algo que no es urgente ayuda a decidir mejor." }
+      ]
+    },
+    {
+      emoji:"👯",
+      categoria:"Salida con amigos",
+      color:"var(--amarillo)",
+      titulo:"Un amigo te invita a salir",
+      situacion:"Un amigo te invita a salir el sábado y no tenés mucho dinero esta semana.",
+      opciones:[
+        { texto:"Voy igual y gasto lo que tengo, después me las arreglo.", puntos:-10,
+          feedback:"Ir “igual” a veces significa quedarte sin nada para el resto de la semana. No pasa nada por decir que esta vez no podés.",
+          tip:"💸 Decir “esta vez no puedo” no te saca amigos de verdad." },
+        { texto:"Le cuento cómo estoy y armamos otro plan que salga menos plata.", puntos:10,
+          feedback:"Buena onda: elegís vos el plan, en vez de que la plata elija por vos. Un amigo posta se copa igual.",
+          tip:"🙌 Cambiar el plan, no la amistad, es una forma de cuidar la plata sin quedar afuera." }
+      ]
+    },
+    {
+      emoji:"📱",
+      categoria:"Publicidad que “te lee la mente”",
+      color:"var(--naranja)",
+      titulo:"Justo lo que hablaste apareció",
+      situacion:"Hablaste con un amigo sobre unas zapatillas nuevas. A los 10 minutos te empiezan a aparecer anuncios de esa marca en todas las apps.",
+      opciones:[
+        { texto:"Qué casualidad. Las miro, me convencen rápido y las compro sin fijarme el precio en otro lado.", puntos:-12,
+          feedback:"No es casualidad: es publicidad que se arma con tus búsquedas y gustos. Comprar rápido, sin comparar, suele salir más caro.",
+          tip:"🎯 El algoritmo no lee tu mente: junta datos de lo que mirás, buscás y con quién hablás cerca del celular." },
+        { texto:"Me doy cuenta de que es publicidad armada para mí y busco en otro lado antes de decidir.", puntos:12,
+          feedback:"Darte cuenta de que es publicidad dirigida es el primer paso para no caer en el primer anuncio.",
+          tip:"🔍 Comparar en 2 o 3 lugares antes de comprar suele bajar bastante el precio final." }
+      ]
+    },
+    {
+      emoji:"🛒",
+      categoria:"El carrito que crece solo",
+      color:"var(--rosado)",
+      titulo:"Comprás uno y sumás tres",
+      situacion:"Entrás a comprar auriculares nuevos. La página te muestra “otros también compraron esta funda y este cargador”. Terminás con el triple en el carrito.",
+      opciones:[
+        { texto:"Agrego todo, total ya estoy comprando y aprovecho.", puntos:-10,
+          feedback:"Esas sugerencias están pensadas para sumar cosas que no tenías planeadas. “Ya que estoy” es una trampa clásica.",
+          tip:"🛒 “Ya que estoy comprando” suele ser la frase que más infla el gasto." },
+        { texto:"Compro solo lo que fui a buscar y listo.", puntos:10,
+          feedback:"Ir con una idea clara de lo que necesitás te ayuda a no llevarte cosas de más.",
+          tip:"📝 Antes de pagar, preguntate: ¿esto lo agregué porque lo necesito o porque me lo sugirieron?" }
+      ]
+    },
+    {
+      emoji:"😅",
+      categoria:"FOMO en redes",
+      color:"var(--lila)",
+      titulo:"Todos suben algo, menos vos",
+      situacion:"Tus amigos suben historias mostrando un viaje o una compra. Sentís que si no mostrás algo parecido, quedás afuera.",
+      opciones:[
+        { texto:"Gasto en algo para mostrar, aunque no lo tenía pensado ni ahorrado.", puntos:-12,
+          feedback:"Gastar para no “quedar afuera” es justo lo que busca esa sensación de FOMO. El gasto queda, y las ganas de mostrar vuelven a la próxima historia.",
+          tip:"😮‍💨 FOMO = miedo a quedarte afuera. Las redes están hechas para activarlo seguido." },
+        { texto:"Me acuerdo de que las redes muestran solo un pedacito lindo de la vida de cada uno.", puntos:12,
+          feedback:"Nadie sube el resto del mes en el que no gastó nada. Verlo así te saca presión de encima.",
+          tip:"🎬 Una historia de 15 segundos no muestra el mes completo de nadie." }
+      ]
+    },
+    {
+      emoji:"👟",
+      categoria:"Zapatillas caras",
+      color:"var(--verde)",
+      titulo:"Zapatillas de $80.000, tenés $20.000",
+      situacion:"Te querés comprar unas zapatillas de $80.000. Tenés ahorrados $20.000 nomás. ¿Qué hacés?",
+      opciones:[
+        { texto:"Las pido “ya” con una tarjeta o un préstamo, y después me fijo cómo pago el resto.", puntos:-15,
+          feedback:"Cuando pagás algo de a poco con intereses, terminás pagando más caro que el precio original. Endeudarte sin un plan puede complicarte los meses siguientes.",
+          tip:"💳 Un interés es la plata extra que pagás por no pagar todo de una. Cuanto más tardás, más terminás pagando." },
+        { texto:"Sigo ahorrando, espero una oferta o busco otro modelo parecido más barato.", puntos:15,
+          feedback:"Esperar y planificar es una forma de cuidar tu plata a futuro. También podés buscar alternativas sin gastar de más.",
+          tip:"🐷 Ahorrar para algo que realmente querés se siente mejor que pagar en cuotas algo que después te complica." }
+      ]
+    },
+    {
+      emoji:"🎁",
+      categoria:"Regalo de cumpleaños",
+      color:"var(--celeste)",
+      titulo:"El cumple de tu mejor amigo",
+      situacion:"Es el cumpleaños de tu mejor amigo. Ves un regalo carísimo que “todos” dicen que hay que comprar para quedar bien.",
+      opciones:[
+        { texto:"Lo compro igual, aunque me quede sin plata para el resto del mes.", puntos:-10,
+          feedback:"Un regalo no vale más por lo que costó. Gastar de más para “quedar bien” con otros suele pesar después.",
+          tip:"🎈 La presión de grupo también empuja a gastar, no solo la publicidad." },
+        { texto:"Hago o busco algo más simple, pensado especialmente para él o ella.", puntos:10,
+          feedback:"Un regalo pensado suele valer más que uno caro comprado por presión. Además cuidás tu plata.",
+          tip:"💛 Los regalos con onda no siempre son los más caros." }
+      ]
+    },
+    {
+      emoji:"🗓️",
+      categoria:"Prueba “gratis”",
+      color:"var(--amarillo)",
+      titulo:"7 días gratis... y después cobra",
+      situacion:"Una app de juegos o de streaming te ofrece “7 días gratis”. Sabés que si no la cancelás a tiempo, después te empieza a cobrar todos los meses.",
+      opciones:[
+        { texto:"La activo y ya me voy a acordar de cancelarla antes de que cobre.", puntos:-8,
+          feedback:"Muchas apps cuentan justamente con que te olvides. Así siguen cobrando mes a mes sin que casi te des cuenta.",
+          tip:"⏳ Las pruebas gratis están pensadas para que te “quedes” pagando sin planearlo." },
+        { texto:"Pongo un recordatorio en el celular para decidir antes de que termine la prueba.", puntos:8,
+          feedback:"Anotar la fecha te da el control a vos, no a la app. Así decidís con tiempo si te sirve seguir pagando o no.",
+          tip:"📆 Un recordatorio simple puede ahorrarte varios meses de un gasto que no querías." }
+      ]
+    },
+    {
+      emoji:"🎮",
+      categoria:"Skins de un videojuego",
+      color:"var(--naranja)",
+      titulo:"El streamer que juega tenía la skin nueva",
+      situacion:"Estás viendo a un streamer jugar y tiene una skin (un diseño especial) nuevo carísimo dentro del juego. Te dan ganas de comprarlo también.",
+      opciones:[
+        { texto:"La compro ya, aunque sea con la plata que estaba juntando para otra cosa.", puntos:-10,
+          feedback:"Los streamers muestran objetos pagos porque muchas veces las marcas o los juegos les pagan por eso. Es publicidad, aunque no lo digan siempre.",
+          tip:"🕹️ Ver algo “piola” en un video no significa que lo necesites vos también." },
+        { texto:"Me gusta cómo se ve, pero sigo con el plan que ya tenía para mi plata.", puntos:10,
+          feedback:"Podés disfrutar de ver el juego sin gastar en cada cosa que aparece en pantalla.",
+          tip:"🎯 Separar “me gusta mirarlo” de “lo tengo que comprar” es una habilidad que sirve toda la vida." }
+      ]
+    },
+    {
+      emoji:"💳",
+      categoria:"Comprá ahora, pagá después",
+      color:"var(--rosado)",
+      titulo:"3 cuotas “sin interés”",
+      situacion:"Vas a comprar algo y te ofrecen pagarlo en 3 cuotas “sin interés”. Suena fácil, pero no tenés muy claro cuánto vas a terminar pagando en total ni si te va a alcanzar los próximos meses.",
+      opciones:[
+        { texto:"Acepto sin pensarlo mucho, 3 cuotas suena poca cosa.", puntos:-10,
+          feedback:"Aunque no tenga “interés”, cada cuota sigue siendo un gasto fijo los próximos meses. Si no lo planeás, puede complicarte más adelante.",
+          tip:"🧾 Antes de aceptar cuotas, conviene sumar cuánto es el total y pensar si te conviene ese gasto fijo." },
+        { texto:"Calculo cuánto es cada cuota y si me cierra con lo que voy a tener esos meses.", puntos:10,
+          feedback:"Pensar el total antes de aceptar te ayuda a no comprometerte con un gasto que después no podés sostener.",
+          tip:"📊 Las cuotas no son magia: es plata real que vas a tener que tener esos meses." }
+      ]
+    }
+  ];
+
+  const COLORES_SEGMENTO = [
+    "var(--celeste)","var(--amarillo)","var(--naranja)","var(--rosado)","var(--lila)",
+    "var(--verde)","var(--celeste)","var(--amarillo)","var(--naranja)","var(--rosado)"
+  ];
+
+  const TOTAL = ESCENARIOS.length; // 10
+  const ANGULO = 360 / TOTAL; // 36
+  let indicador = 50;
+  let restantes = ESCENARIOS.map((_, i) => i);
+  let usados = [];
+  let rotacionActual = 0;
+
+  // ---------- Referencias ----------
+  const $ = (id) => document.getElementById(id);
+  const barraIndicador = $("barra-indicador");
+  const fillIndicador = $("fill-indicador");
+  const valorIndicador = $("valor-indicador");
+  const caraIndicador = $("cara-indicador");
+
+  const pantallaIntro = $("pantalla-intro");
+  const pantallaJuego = $("pantalla-juego");
+  const pantallaFinal = $("pantalla-final");
+
+  const progreso = $("progreso");
+  const contador = $("contador");
+  const rueda = $("rueda");
+  const btnGirar = $("btn-girar");
+
+  const overlay = $("overlay");
+  const vistaPregunta = $("vista-pregunta");
+  const vistaFeedback = $("vista-feedback");
+  const modalCategoria = $("modal-categoria");
+  const modalTitulo = $("modal-titulo");
+  const modalSituacion = $("modal-situacion");
+  const modalOpciones = $("modal-opciones");
+
+  const feedbackEmoji = $("feedback-emoji");
+  const feedbackPuntos = $("feedback-puntos");
+  const feedbackTexto = $("feedback-texto");
+  const feedbackTip = $("feedback-tip");
+  const btnContinuar = $("btn-continuar");
+
+  // ---------- Utilidades ----------
+  function barajar(arr){
+    const a = arr.slice();
+    for(let i=a.length-1;i>0;i--){
+      const j = Math.floor(Math.random()*(i+1));
+      [a[i],a[j]] = [a[j],a[i]];
+    }
+    return a;
+  }
+
+  function actualizarIndicador(){
+    indicador = Math.max(0, Math.min(100, indicador));
+    fillIndicador.style.width = indicador + "%";
+    valorIndicador.textContent = indicador;
+    caraIndicador.textContent = indicador >= 70 ? "🧠" : indicador >= 40 ? "🤔" : "😵‍💫";
+  }
+
+  function crearProgreso(){
+    progreso.innerHTML = "";
+    for(let i=0;i<TOTAL;i++){
+      const p = document.createElement("div");
+      p.className = "punto";
+      p.id = "punto-"+i;
+      progreso.appendChild(p);
+    }
+  }
+
+  function actualizarContador(){
+    const hechas = usados.length;
+    contador.textContent = hechas >= TOTAL ? "¡Completaste la ruleta!" : `Vuelta ${hechas+1} de ${TOTAL}`;
+  }
+
+  // ---------- Navegación entre pantallas ----------
+  $("btn-empezar").addEventListener("click", () => {
+    pantallaIntro.classList.remove("activa");
+    pantallaJuego.classList.add("activa");
+    barraIndicador.style.display = "flex";
+    crearProgreso();
+    actualizarContador();
+    actualizarIndicador();
+  });
+
+  $("btn-repetir").addEventListener("click", () => {
+    indicador = 50;
+    restantes = ESCENARIOS.map((_, i) => i);
+    usados = [];
+    rotacionActual = 0;
+    rueda.style.transition = "none";
+    rueda.style.transform = "rotate(0deg)";
+    void rueda.offsetWidth;
+    rueda.style.transition = "";
+    document.querySelectorAll(".segmento-emoji").forEach(el => el.classList.remove("usado"));
+    crearProgreso();
+    actualizarContador();
+    actualizarIndicador();
+    btnGirar.disabled = false;
+    btnGirar.innerHTML = '<span class="flecha">🎡</span> Girar la ruleta';
+    pantallaFinal.classList.remove("activa");
+    pantallaJuego.classList.add("activa");
+  });
+
+  // ---------- Girar la ruleta ----------
+  btnGirar.addEventListener("click", () => {
+    if(restantes.length === 0) return;
+    btnGirar.disabled = true;
+
+    const idx = Math.floor(Math.random() * restantes.length);
+    const escenarioIndex = restantes[idx];
+
+    const centro = escenarioIndex * ANGULO + (ANGULO / 2); // ángulo del centro del segmento desde arriba
+    const objetivoMod = (360 - centro) % 360;
+    const actualMod = ((rotacionActual % 360) + 360) % 360;
+    let delta = objetivoMod - actualMod;
+    if(delta <= 0) delta += 360;
+    const vueltasExtra = 5 * 360;
+    rotacionActual += delta + vueltasExtra;
+
+    rueda.style.transform = `rotate(${rotacionActual}deg)`;
+
+    setTimeout(() => {
+      restantes = restantes.filter(v => v !== escenarioIndex);
+      abrirEscenario(escenarioIndex);
+    }, 3900);
+  });
+
+  // ---------- Mostrar escenario ----------
+  function abrirEscenario(index){
+    const escenario = ESCENARIOS[index];
+
+    modalCategoria.textContent = escenario.emoji + " " + escenario.categoria;
+    modalCategoria.style.background = escenario.color;
+    modalTitulo.textContent = escenario.titulo;
+    modalSituacion.textContent = escenario.situacion;
+
+    const letras = ["A","B"];
+    const opcionesBarajadas = barajar(escenario.opciones);
+    modalOpciones.innerHTML = "";
+    opcionesBarajadas.forEach((op, i) => {
+      const btn = document.createElement("button");
+      btn.className = "opcion";
+      btn.innerHTML = `<span class="letra">${letras[i]}</span><span>${op.texto}</span>`;
+      btn.addEventListener("click", () => elegirOpcion(op, index));
+      modalOpciones.appendChild(btn);
+    });
+
+    vistaPregunta.style.display = "block";
+    vistaFeedback.classList.remove("activa");
+    overlay.classList.add("activa");
+  }
+
+  function elegirOpcion(opcion, index){
+    indicador += opcion.puntos;
+    actualizarIndicador();
+
+    feedbackEmoji.textContent = opcion.puntos > 0 ? "🎉" : "😬";
+    feedbackPuntos.textContent = (opcion.puntos > 0 ? "+" : "") + opcion.puntos;
+    feedbackPuntos.className = "feedback-puntos " + (opcion.puntos > 0 ? "pos" : "neg");
+    feedbackTexto.textContent = opcion.feedback;
+    feedbackTip.textContent = opcion.tip;
+
+    usados.push({ index, puntos: opcion.puntos, emoji: ESCENARIOS[index].emoji, categoria: ESCENARIOS[index].categoria });
+
+    const puntoEl = $("punto-"+index);
+    if(puntoEl) puntoEl.classList.add("hecho");
+    const segEl = document.querySelector('.segmento-emoji[data-i="'+index+'"]');
+    if(segEl) segEl.classList.add("usado");
+
+    vistaPregunta.style.display = "none";
+    vistaFeedback.classList.add("activa");
+    actualizarContador();
+  }
+
+  btnContinuar.addEventListener("click", () => {
+    overlay.classList.remove("activa");
+    if(usados.length >= TOTAL){
+      setTimeout(mostrarFinal, 250);
+    } else {
+      btnGirar.disabled = false;
+    }
+  });
+
+  // ---------- Pantalla final ----------
+  function mostrarFinal(){
+    pantallaJuego.classList.remove("activa");
+    pantallaFinal.classList.add("activa");
+
+    $("final-puntaje").textContent = indicador;
+
+    let emoji, mensaje, dato;
+    if(indicador >= 75){
+      emoji = "🧠✨";
+      mensaje = "Pensás bastante antes de tocar “comprar”. Reconocés varios trucos del algoritmo, aunque nadie es 100% inmune: hasta el más pilas cae alguna vez.";
+      dato = "Las apps ganan plata con tu tiempo y tu atención. Cuanto más tiempo pasás mirando, más publicidad ven tus ojos. Por eso están diseñadas para que te cueste soltar el celular.";
+    } else if(indicador >= 45){
+      emoji = "🤔";
+      mensaje = "Vas y venís: a veces frenás a tiempo y otras veces el algoritmo te gana la pulseada. Con un poco de práctica vas a notar más rápido cuándo te están apurando.";
+      dato = "Una técnica simple: antes de comprar algo que no tenías pensado, esperá un día. Si lo seguís queriendo con la cabeza tranquila, decidís vos, no el anuncio.";
+    } else {
+      emoji = "😵‍💫";
+      mensaje = "Hoy el algoritmo te ganó bastante seguido. La buena noticia es que ahora conocés sus trucos, y eso ya es la mitad del camino para cambiarlo la próxima vez.";
+      dato = "Ofertas con cronómetro, anuncios “armados para vos”, cuotas y el FOMO de las historias no son casualidad: son diseños pensados para que gastes rápido y sin pensar mucho.";
+    }
+    $("final-emoji").textContent = emoji;
+    $("final-mensaje").textContent = mensaje;
+    $("dato-texto").textContent = dato;
+
+    const resumen = $("resumen");
+    resumen.innerHTML = "";
+    usados.slice().sort((a,b)=>a.index-b.index).forEach(u => {
+      const div = document.createElement("div");
+      div.className = "resumen-item";
+      div.innerHTML = `<span class="r-emoji">${u.emoji}</span><span>${u.categoria}</span><span class="r-signo ${u.puntos>0?'pos':'neg'}">${u.puntos>0?'+':''}${u.puntos}</span>`;
+      resumen.appendChild(div);
+    });
+  }
+
+})();
+</script>
+</body>
+</html>
