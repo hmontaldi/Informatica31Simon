@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Espacio curricular</title>
+<style>
+  :root{
+    --bg:#faf9f6;
+    --ink:#1f1e1c;
+    --muted:#6b6862;
+    --line:#d8d4cb;
+    --accent:#8a7b5c;
+  }
+  *{box-sizing:border-box;}
+  html,body{
+    margin:0;
+    padding:0;
+    height:100%;
+    background:var(--bg);
+    color:var(--ink);
+    font-family:"Georgia","Iowan Old Style","Times New Roman",serif;
+  }
+  body{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:100vh;
+    padding:2.5rem 1.5rem;
+  }
+  main{
+    width:100%;
+    max-width:34rem;
+    text-align:center;
+  }
+  .eyebrow{
+    font-size:0.78rem;
+    letter-spacing:0.14em;
+    color:var(--muted);
+    margin:0 0 1.1rem;
+  }
+  h1{
+    font-weight:400;
+    font-size:1.9rem;
+    line-height:1.35;
+    margin:0 0 0.6rem;
+  }
+  .meta{
+    color:var(--muted);
+    font-size:0.95rem;
+    margin:0.15rem 0;
+  }
+  hr{
+    border:none;
+    border-top:1px solid var(--line);
+    width:3rem;
+    margin:1.8rem auto;
+  }
+  .opciones{
+    display:flex;
+    flex-direction:column;
+    gap:0.9rem;
+    margin:2rem 0 2.4rem;
+  }
+  a.boton{
+    display:block;
+    padding:0.95rem 1.4rem;
+    border:1px solid var(--ink);
+    color:var(--ink);
+    text-decoration:none;
+    font-size:1rem;
+    letter-spacing:0.01em;
+    transition:background 0.2s ease, color 0.2s ease;
+  }
+  a.boton:hover, a.boton:focus-visible{
+    background:var(--ink);
+    color:var(--bg);
+  }
+  a.boton .flecha{
+    color:var(--accent);
+    margin-left:0.4rem;
+  }
+  a.boton:hover .flecha, a.boton:focus-visible .flecha{
+    color:var(--bg);
+  }
+  .tagline{
+    color:var(--muted);
+    font-size:0.85rem;
+    letter-spacing:0.04em;
+  }
+</style>
+</head>
+<body>
+<main>
+  <p class="eyebrow">Espacio curricular</p>
+  <h1>Informática aplicada a la gestión</h1>
+  <p class="meta">Profesor <strong>Humberto Montaldi</strong></p>
+  <p class="meta">Esc. N°: 4-084 &quot;Libertador Simón Bolívar&quot;</p>
+
+  <hr>
+
+  <div class="opciones">
+    <a class="boton" href="index2.html">Proyecto: Finanzas que cuidan <span class="flecha">→</span></a>
+    <a class="boton" href="24-09.pdf">Continuidad Pedagógica No Presencial 24/09/2026 <span class="flecha">→</span></a>
+  </div>
+
+  <p class="tagline">✧ Comprensión · Honestidad · Trabajo ✧</p>
+</main>
+</body>
+</html>
