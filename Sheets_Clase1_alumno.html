@@ -1,0 +1,53 @@
+<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Clase1_alumno</title><style>
+@page{size:A4;margin:14mm 15mm}
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:10.5pt;line-height:1.4;color:#222;max-width:820px;margin:0 auto;padding:16px;background:#fff}
+h1{font-size:19pt;margin:0 0 2px;color:#1f4e79}
+h2{font-size:13pt;margin:16px 0 4px;color:#1f4e79;border-bottom:1.5px solid #9dbbd6;padding-bottom:2px;break-after:avoid}
+h3{font-size:11pt;margin:10px 0 2px;break-after:avoid}
+.meta{color:#555;font-size:9.5pt;margin-bottom:8px}
+table{border-collapse:collapse;width:100%;margin:6px 0;font-size:9.5pt;break-inside:avoid}
+th{text-align:left;border-bottom:2px solid #1f4e79;padding:3px 6px}
+td{border-bottom:1px solid #ccc;padding:3px 6px;vertical-align:top}
+code{font-family:Consolas,monospace;font-size:9.5pt;border:1px solid #cfd8e3;border-radius:3px;padding:0 3px}
+p,ul,ol{margin:4px 0}
+ul,ol{padding-left:20px}
+.nota{border-left:3px solid #9dbbd6;padding:2px 10px;margin:6px 0;color:#333}
+.pb{break-before:page;page-break-before:always}
+.campos{margin:6px 0 10px}
+@media (max-width:600px){body{padding:10px}table{font-size:9pt}}
+
+.grid{width:auto;min-width:55%}.grid th,.grid td{border:1px solid #999;padding:3px 10px}.grid th{border-bottom:2px solid #555}
+</style></head><body><div class='meta'>Escuela N° 4-084 «Libertador Simón Bolívar» · Informática · Segundo período · Prof. Humberto Montaldi · Clase 1 · Material del alumno</div>
+<h1>Clase 1: funciones en Google Sheets</h1><p class='campos'>Alumnos: ______________________ y ______________________ &nbsp; Curso: ________ &nbsp; Fecha: ________</p>
+<p><b>Situación:</b> un kiosco escolar quiere calcular sus ventas y los descuentos. Seguí los pasos en orden.</p><p class='nota'><b>Trabajo en pareja:</b> los dos trabajan en <u>un único archivo</u> de Google Sheets compartido. En cada paso uno escribe y el otro lee y controla; después cambian los roles.</p>
+<h2>Paso 1. Crear, compartir y cargar los datos (15 min)</h2>
+<ol><li>Entrá a <b>sheets.google.com</b> con tu cuenta y creá una hoja en blanco (Nuevo &gt; Hojas de cálculo de Google).</li>
+<li>Poné de nombre al archivo (arriba a la izquierda): <code>Kiosco - Apellido1 y Apellido2</code>.</li>
+<li>Clic derecho sobre la pestaña de abajo &gt; Cambiar nombre: <b>Ventas</b>.</li>
+<li>Botón <b>Compartir</b> (arriba a la derecha): agregá el correo de tu compañero/a con permiso de <b>Editor</b>.</li>
+<li>Cargá esta tabla desde la primera celda. Las columnas Subtotal, Descuento y Total quedan vacías: se completan con fórmulas.</li></ol><table class='grid'><tr><th>Producto</th><th>Cantidad</th><th>Precio</th><th>Vendedor</th><th>Subtotal</th><th>Descuento</th><th>Total</th></tr><tr><td>Cuaderno</td><td>12</td><td>1200</td><td>Ana</td><td></td><td></td><td></td></tr><tr><td>Lapicera</td><td>30</td><td>350</td><td>Luis</td><td></td><td></td><td></td></tr><tr><td>Mochila</td><td>2</td><td>15000</td><td>Ana</td><td></td><td></td><td></td></tr><tr><td>Regla</td><td>8</td><td>400</td><td>Luis</td><td></td><td></td><td></td></tr><tr><td>Carpeta</td><td>5</td><td>2800</td><td>Ana</td><td></td><td></td><td></td></tr><tr><td>Calculadora</td><td>1</td><td>9500</td><td>Luis</td><td></td><td></td><td></td></tr><tr><td>Lapicera</td><td>15</td><td>350</td><td>Ana</td><td></td><td></td><td></td></tr><tr><td>Cuaderno</td><td>6</td><td>1200</td><td>Luis</td><td></td><td></td><td></td></tr></table>
+<h2>Paso 2. Subtotal y formatos (20 min)</h2>
+<ol><li>En la celda <b>E2</b> (columna Subtotal, primera fila de datos) escribí <code>=B2*C2</code> y apretá Enter.</li>
+<li>Seleccioná E2 y arrastrá el cuadradito azul de la esquina inferior derecha hasta la última fila de datos (E9).</li>
+<li>Seleccioná Precio y Subtotal y aplicá formato moneda: menú <b>Formato &gt; Número &gt; Moneda</b>.</li>
+<li>Seleccioná toda la tabla y usá el botón <b>Bordes &gt; Todos los bordes</b>. Poné los encabezados en negrita y centrados.</li></ol>
+<h2>Paso 3. La función SI: descuento (25 min)</h2>
+<p>Regla: si se compran <b>10 o más</b> unidades, el descuento es 10%. Si no, no hay descuento.</p>
+<ol><li>En <b>F2</b> escribí <code>=SI(B2&gt;=10;10%;0)</code> y copiala hasta F9.</li>
+<li>Aplicá formato <b>Porcentaje</b> a la columna Descuento (botón <b>%</b> de la barra).</li>
+<li>En <b>G2</b> escribí <code>=E2*(1-F2)</code>, copiala hasta G9 y aplicá formato moneda.</li></ol>
+<p>La función SI se lee así: <b>SI( condición ; si es verdadera ; si es falsa )</b>.</p>
+<p><b>Pausa de 5 minutos.</b></p>
+<h2>Paso 4. Resumen con SUMA y SUMAR.SI (25 min)</h2>
+<p>Debajo de la tabla, en la fila 11:</p>
+<ol><li>En <b>F11</b> escribí <code>Total general</code> y en <b>G11</b>: <code>=SUMA(G2:G9)</code>.</li>
+<li>En <b>F12</b> escribí <code>Total Ana</code> y en <b>G12</b>: <code>=SUMAR.SI(D2:D9;"Ana";G2:G9)</code>.</li>
+<li>En <b>F13</b> escribí <code>Total Luis</code> y en <b>G13</b>: <code>=SUMAR.SI(D2:D9;"Luis";G2:G9)</code>.</li></ol>
+<p><b>SUMAR.SI(</b> dónde busco ; qué busco ; qué sumo <b>)</b>. Pensá: ¿qué tiene que pasar al sumar Ana y Luis?</p>
+<h2>Paso 5. CONTAR.SI y PROMEDIO.SI (20 min)</h2>
+<ol><li>F14 <code>Ventas de Ana</code> y G14: <code>=CONTAR.SI(D2:D9;"Ana")</code>.</li>
+<li>F15 <code>Ventas de 10 o más unidades</code> y G15: <code>=CONTAR.SI(B2:B9;"&gt;=10")</code>.</li>
+<li>F16 <code>Promedio de Ana</code> y G16: <code>=PROMEDIO.SI(D2:D9;"Ana";G2:G9)</code>.</li></ol>
+<h2>Cierre (10 min)</h2>
+<p>Repetí los pasos 4 y 5 para Luis (contar sus ventas y calcular su promedio). Ticket de salida: ¿qué diferencia hay entre <code>SUMA</code> y <code>SUMAR.SI</code>? ______________________________</p><h3>Entrega</h3><p>Compartí el archivo con <b>profesormontaldi@gmail.com</b>: botón <b>Compartir</b> &gt; escribí el correo &gt; permiso <b>Editor</b> &gt; Enviar. El archivo debe llevar los nombres de ambos integrantes y estar compartido también con tu compañero/a.</p></body></html>
