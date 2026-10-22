@@ -1,0 +1,51 @@
+<!DOCTYPE html><html lang='es'><head><meta charset='utf-8'><meta name='viewport' content='width=device-width, initial-scale=1'><title>Clase2_alumno</title><style>
+@page{size:A4;margin:14mm 15mm}
+*{box-sizing:border-box}
+body{font-family:'Segoe UI',Arial,sans-serif;font-size:10.5pt;line-height:1.4;color:#222;max-width:820px;margin:0 auto;padding:16px;background:#fff}
+h1{font-size:19pt;margin:0 0 2px;color:#1f4e79}
+h2{font-size:13pt;margin:16px 0 4px;color:#1f4e79;border-bottom:1.5px solid #9dbbd6;padding-bottom:2px;break-after:avoid}
+h3{font-size:11pt;margin:10px 0 2px;break-after:avoid}
+.meta{color:#555;font-size:9.5pt;margin-bottom:8px}
+table{border-collapse:collapse;width:100%;margin:6px 0;font-size:9.5pt;break-inside:avoid}
+th{text-align:left;border-bottom:2px solid #1f4e79;padding:3px 6px}
+td{border-bottom:1px solid #ccc;padding:3px 6px;vertical-align:top}
+code{font-family:Consolas,monospace;font-size:9.5pt;border:1px solid #cfd8e3;border-radius:3px;padding:0 3px}
+p,ul,ol{margin:4px 0}
+ul,ol{padding-left:20px}
+.nota{border-left:3px solid #9dbbd6;padding:2px 10px;margin:6px 0;color:#333}
+.pb{break-before:page;page-break-before:always}
+.campos{margin:6px 0 10px}
+@media (max-width:600px){body{padding:10px}table{font-size:9pt}}
+
+.grid{width:auto;min-width:55%}.grid th,.grid td{border:1px solid #999;padding:3px 10px}.grid th{border-bottom:2px solid #555}
+</style></head><body><div class='meta'>Escuela N° 4-084 «Libertador Simón Bolívar» · Informática · Segundo período · Prof. Humberto Montaldi · Clase 2 · Material del alumno</div>
+<h1>Clase 2: gráficos, formato y página en Google Sheets</h1><p class='campos'>Alumnos: ______________________ y ______________________ &nbsp; Curso: ________ &nbsp; Fecha: ________</p><p class='nota'><b>Trabajo en pareja:</b> los dos trabajan en <u>un único archivo</u> de Google Sheets compartido. En cada paso uno escribe y el otro lee y controla; después cambian los roles.</p>
+<h2>Paso 6. Tabla resumen por producto (20 min)</h2>
+<ol><li>Abrí el archivo <code>Kiosco - Apellido1 y Apellido2</code> desde Google Drive.</li>
+<li>Agregá una hoja nueva con el botón <b>+</b> (abajo a la izquierda) y llamala <b>Resumen</b>.</li>
+<li>Armá estas dos tablas con bordes (los totales se calculan con fórmulas):</li></ol><table class='grid'><tr><th>Producto</th><th>Total vendido</th></tr><tr><td>Cuaderno</td><td></td></tr><tr><td>Lapicera</td><td></td></tr><tr><td>Mochila</td><td></td></tr><tr><td>Regla</td><td></td></tr><tr><td>Carpeta</td><td></td></tr><tr><td>Calculadora</td><td></td></tr></table><table class='grid'><tr><th>Vendedor</th><th>Total vendido</th></tr><tr><td>Ana</td><td></td></tr><tr><td>Luis</td><td></td></tr></table>
+<ol start='4'><li>En el primer total de productos escribí <code>=SUMAR.SI(Ventas!$A$2:$A$9;A2;Ventas!$G$2:$G$9)</code> y copiala hacia abajo. Los signos <code>$</code> fijan el rango para que no se corra al copiar.</li>
+<li>En el total de Ana (celda E2): <code>=SUMAR.SI(Ventas!$D$2:$D$9;D2;Ventas!$G$2:$G$9)</code>, y copiala a Luis. Las tablas de vendedores empiezan en la columna D.</li></ol>
+<h2>Paso 7. Gráfico de columnas (25 min)</h2>
+<ol><li>Seleccioná la tabla de productos (con encabezados) y elegí <b>Insertar &gt; Gráfico</b>.</li>
+<li>En el editor de gráficos (derecha) &gt; <b>Configuración</b> &gt; Tipo de gráfico: <b>Gráfico de columnas</b>.</li>
+<li>Pestaña <b>Personalizar</b> &gt; Título del gráfico y ejes: escribí el título <b>Ventas por producto</b>. Con el mismo menú, agregá el título del eje horizontal (Producto) y del vertical (Pesos).</li>
+<li>Personalizar &gt; Serie: tildá <b>Etiquetas de datos</b>.</li></ol>
+<p><b>Pausa de 5 minutos.</b></p>
+<h2>Paso 8. Gráfico circular (15 min)</h2>
+<ol><li>Seleccioná la tabla de vendedores (con encabezados) y elegí Insertar &gt; Gráfico.</li>
+<li>Tipo de gráfico: <b>Gráfico circular</b>. Título: <b>Ventas por vendedor</b>.</li>
+<li>Personalizar &gt; Gráfico circular &gt; Etiqueta del sector: <b>Porcentaje</b>.</li></ol>
+<p>Pensá: ¿por qué el circular sirve para vendedores y las columnas para productos? ______________________________</p>
+<h2>Paso 9. Formato condicional y hojas (20 min)</h2>
+<ol><li>En <b>Ventas</b>, seleccioná la columna Total (solo los datos) &gt; <b>Formato &gt; Formato condicional</b>.</li>
+<li>En Reglas de formato elegí <b>Es mayor que</b>, escribí <code>20000</code> y un color de relleno. Apretá <b>Listo</b>.</li>
+<li>Clic derecho sobre cada pestaña &gt; <b>Cambiar color</b>: uno distinto para Ventas y Resumen.</li></ol>
+<h2>Paso 10. Configuración de página (15 min)</h2>
+<ol><li>En la hoja <b>Ventas</b>: <b>Archivo &gt; Imprimir</b>.</li>
+<li>Orientación: <b>Horizontal</b>. Escala: <b>Ajustar al ancho</b>. Márgenes: <b>Estrechos</b>.</li>
+<li>En <b>Encabezados y pies de página</b> tildá Números de página y editá el encabezado personalizado con los nombres de la pareja.</li>
+<li>Revisá la vista previa: todo debe entrar en una página. Cerrá sin imprimir.</li></ol>
+<h2>Autoevaluación (5 min)</h2>
+<p>☐ Mis fórmulas funcionan y no dan error &nbsp; ☐ Mis gráficos tienen título y etiquetas &nbsp; ☐ La hoja Ventas entra en una página &nbsp; ☐ Trabajamos los dos en el mismo archivo</p>
+<p>Lo que más me costó: ______________________________</p><h3>Entrega</h3><p>Compartí el archivo con <b>profesormontaldi@gmail.com</b>: botón <b>Compartir</b> &gt; escribí el correo &gt; permiso <b>Editor</b> &gt; Enviar. El archivo debe llevar los nombres de ambos integrantes y estar compartido también con tu compañero/a.</p></body></html>
